@@ -1,0 +1,56 @@
+{
+  "master_rows": 1076,
+  "bruker_maldi_rows": 409,
+  "wgs_st131_rows": 150,
+  "bruker_maldi_st131_rows": 55,
+  "join_report": [
+    {
+      "source": "WGS manifest",
+      "unique_ids": "1076",
+      "overlap_wgs": "1076",
+      "overlap_bruker_maldi": "409"
+    },
+    {
+      "source": "Bruker MALDI bridge",
+      "unique_ids": "409",
+      "overlap_wgs": "409",
+      "overlap_bruker_maldi": "409"
+    },
+    {
+      "source": "mash phylogroup",
+      "unique_ids": "1076",
+      "overlap_wgs": "1076",
+      "overlap_bruker_maldi": "409"
+    },
+    {
+      "source": "MLST",
+      "unique_ids": "1076",
+      "overlap_wgs": "1076",
+      "overlap_bruker_maldi": "409"
+    },
+    {
+      "source": "MIC",
+      "unique_ids": "980",
+      "overlap_wgs": "938",
+      "overlap_bruker_maldi": "385"
+    },
+    {
+      "source": "papG",
+      "unique_ids": "1076",
+      "overlap_wgs": "1076",
+      "overlap_bruker_maldi": "409"
+    },
+    {
+      "source": "AMR genes",
+      "unique_ids": "1076",
+      "overlap_wgs": "1075",
+      "overlap_bruker_maldi": "409"
+    },
+    {
+      "source": "825 representative strains",
+      "unique_ids": "825",
+      "overlap_wgs": "825",
+      "overlap_bruker_maldi": "307"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+site,drug,cnn_raw_auc,cnn_centered_auc,cnn_raw_minus_centered,cnn_centered_ci,cnn_p,cnn_retention,cnn_adequacy,lgbm_raw_auc,lgbm_centered_auc,lgbm_raw_minus_centered,lgbm_centered_ci,lgbm_p,lgbm_retention,lgbm_adequacy,model_family_consensus
+A-2018,Amoxicillin-Clavulanic acid,0.650,0.541,0.109,0.504-0.576,0.038,0.922,interpretable,0.635,0.482,0.153,0.436-0.522,0.186,0.922,interpretable,collapses after matching
+A-2018,Cefepime,0.867,0.659,0.208,0.531-0.780,0.002,0.060,caution_low_n_matched_and_low_retention,0.886,0.539,0.347,0.385-0.682,0.002,0.060,caution_low_n_matched_and_low_retention,model-dependent / mixed
+A-2018,Ceftazidime,0.838,0.367,0.471,0.212-0.561,0.876,0.037,caution_low_n_matched_and_low_retention,0.806,0.342,0.465,0.188-0.515,0.920,0.037,caution_low_n_matched_and_low_retention,low support
+A-2018,Ceftriaxone,0.863,0.645,0.218,0.520-0.762,0.004,0.109,interpretable,0.854,0.726,0.129,0.633-0.819,0.002,0.109,interpretable,survives background matching
+A-2018,Ciprofloxacin,0.823,0.703,0.120,0.664-0.747,0.002,0.619,interpretable,0.828,0.640,0.188,0.584-0.692,0.002,0.619,interpretable,survives background matching
+A-2018,Norfloxacin,0.743,,,,,0.000,not_interpretable_no_valid_strata,0.744,,,,,0.000,not_interpretable_no_valid_strata,not matched
+DRIAMS-B,Amoxicillin-Clavulanic acid,0.694,0.576,0.118,0.410-0.715,0.204,0.621,interpretable,0.749,0.642,0.107,0.486-0.804,0.040,0.621,interpretable,residual signal in both models
+DRIAMS-B,Cefepime,0.753,,,,,0.000,not_interpretable_no_valid_strata,0.844,,,,,0.000,not_interpretable_no_valid_strata,not matched
+DRIAMS-B,Ceftazidime,0.735,,,,,0.000,not_interpretable_no_valid_strata,0.802,,,,,0.000,not_interpretable_no_valid_strata,not matched
+DRIAMS-B,Ceftriaxone,0.743,,,,,0.000,not_interpretable_no_valid_strata,0.816,,,,,0.000,not_interpretable_no_valid_strata,not matched
+DRIAMS-B,Ciprofloxacin,0.774,0.860,-0.086,0.636-1.000,0.010,0.118,caution_low_n_matched,0.816,0.510,0.306,0.200-0.819,0.537,0.118,caution_low_n_matched,model-dependent / mixed
+DRIAMS-B,Norfloxacin,0.703,0.343,0.360,0.176-0.578,0.882,0.543,interpretable,0.763,0.628,0.136,0.314-0.890,0.168,0.543,interpretable,model-dependent / mixed
+DRIAMS-C,Amoxicillin-Clavulanic acid,0.535,0.497,0.038,0.449-0.547,0.675,0.892,interpretable,0.593,0.518,0.074,0.463-0.573,0.036,0.892,interpretable,collapses after matching
+DRIAMS-C,Cefepime,0.648,0.394,0.254,0.238-0.562,0.912,0.077,caution_low_n_matched_and_low_retention,0.684,0.336,0.348,0.163-0.508,0.992,0.077,caution_low_n_matched_and_low_retention,low support
+DRIAMS-C,Ceftazidime,0.609,0.503,0.107,0.091-0.791,0.491,0.075,caution_low_n_matched_and_low_retention,0.637,0.246,0.391,0.107-0.392,0.934,0.075,caution_low_n_matched_and_low_retention,low support
+DRIAMS-C,Ceftriaxone,0.623,0.727,-0.104,0.536-0.893,0.022,0.036,caution_low_n_matched_and_low_retention,0.659,0.718,-0.058,0.478-0.916,0.010,0.036,caution_low_n_matched_and_low_retention,"suggestive, low support"
+DRIAMS-C,Ciprofloxacin,0.750,0.646,0.104,0.576-0.719,0.002,0.476,interpretable,0.814,0.637,0.177,0.544-0.730,0.002,0.476,interpretable,survives background matching
+DRIAMS-C,Norfloxacin,0.779,,,,,0.000,not_interpretable_no_valid_strata,0.837,,,,,0.000,not_interpretable_no_valid_strata,not matched
+DRIAMS-D,Amoxicillin-Clavulanic acid,0.557,0.486,0.070,0.450-0.521,0.854,0.974,interpretable,0.580,0.449,0.131,0.413-0.487,0.850,0.974,interpretable,collapses after matching
+DRIAMS-D,Cefepime,0.769,0.605,0.164,0.474-0.745,0.068,0.049,caution_low_n_matched_and_low_retention,0.812,0.557,0.254,0.427-0.686,0.028,0.049,caution_low_n_matched_and_low_retention,model-dependent / mixed
+DRIAMS-D,Ceftazidime,0.727,0.581,0.146,0.485-0.662,0.006,0.834,interpretable,0.757,0.438,0.320,0.325-0.542,0.008,0.834,interpretable,model-dependent / mixed
+DRIAMS-D,Ceftriaxone,0.726,0.592,0.133,0.489-0.705,0.042,0.822,interpretable,0.750,0.520,0.230,0.398-0.643,0.064,0.822,interpretable,model-dependent / mixed
+DRIAMS-D,Ciprofloxacin,0.671,0.596,0.075,0.565-0.624,0.002,0.984,interpretable,0.723,0.576,0.147,0.537-0.614,0.002,0.984,interpretable,partial/weak residual signal

@@ -1,0 +1,16 @@
+target,mz_center,published_mz,delta_da,protein,annotation
+Ceftriaxone_R,11787.5,11783,4.5,cytochrome b562,soluble cytochrome b562
+Ceftriaxone_R,4862.5,4857,5.5,HdeA multivalent ion,multivalent ion of HdeA m/z 9710
+Ceftriaxone_R,8437.5,8448,10.5,YnfD,uncharacterized protein YnfD
+Ceftriaxone_R,6837.5,6827,10.5,unidentified,ST131-specific peak not identified by LC-MS/MS
+Ceftriaxone_R,8337.5,8351,13.5,YjbJ,UPF0337 protein YjbJ
+Ciprofloxacin_R,11787.5,11783,4.5,cytochrome b562,soluble cytochrome b562
+Ciprofloxacin_R,4862.5,4857,5.5,HdeA multivalent ion,multivalent ion of HdeA m/z 9710
+Ciprofloxacin_R,7662.5,7655,7.5,YahO,uncharacterized protein YahO
+Ciprofloxacin_R,8437.5,8448,10.5,YnfD,uncharacterized protein YnfD
+Ciprofloxacin_R,6837.5,6827,10.5,unidentified,ST131-specific peak not identified by LC-MS/MS
+ST131,9712.5,9710,2.5,HdeA,acid stress chaperone HdeA
+ST131,11787.5,11783,4.5,cytochrome b562,soluble cytochrome b562
+ST131,4862.5,4857,5.5,HdeA multivalent ion,multivalent ion of HdeA m/z 9710
+ST131,7662.5,7655,7.5,YahO,uncharacterized protein YahO
+ST131,8437.5,8448,10.5,YnfD,uncharacterized protein YnfD

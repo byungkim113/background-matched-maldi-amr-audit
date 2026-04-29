@@ -1,0 +1,24 @@
+site,drug,resistance_ecology_block,strongest_network_partner,partner_phi,partner_lift,cnn_raw_auc,cnn_centered_auc,cnn_drop,lgbm_raw_auc,lgbm_centered_auc,lgbm_drop,interpretation
+A-2018,Amoxicillin-Clavulanic acid,mixed beta-lactam/background,Ceftazidime,0.379,3.014,0.650,0.541,0.109,0.635,0.482,0.153,background-driven in both model families
+A-2018,Cefepime,cephalosporin/ESBL block,Ceftazidime,0.828,10.212,0.867,0.659,0.208,0.886,0.539,0.347,partial residual focal signal
+A-2018,Ceftazidime,cephalosporin/ESBL block,Ceftriaxone,0.884,7.841,0.838,0.367,0.471,0.806,0.342,0.465,background-driven in both model families
+A-2018,Ceftriaxone,cephalosporin/ESBL block,Ceftazidime,0.884,7.841,0.863,0.645,0.218,0.854,0.726,0.129,focal signal survives background matching
+A-2018,Ciprofloxacin,fluoroquinolone block,Norfloxacin,0.976,3.993,0.823,0.703,0.120,0.828,0.640,0.188,focal signal survives background matching
+A-2018,Norfloxacin,fluoroquinolone block,Ciprofloxacin,0.976,3.993,0.743,,,0.744,,,insufficient matched support
+DRIAMS-B,Amoxicillin-Clavulanic acid,mixed beta-lactam/background,Ceftazidime,0.379,3.014,0.694,0.576,0.118,0.749,0.642,0.107,partial residual focal signal
+DRIAMS-B,Cefepime,cephalosporin/ESBL block,Ceftazidime,0.828,10.212,0.753,,,0.844,,,insufficient matched support
+DRIAMS-B,Ceftazidime,cephalosporin/ESBL block,Ceftriaxone,0.884,7.841,0.735,,,0.802,,,insufficient matched support
+DRIAMS-B,Ceftriaxone,cephalosporin/ESBL block,Ceftazidime,0.884,7.841,0.743,,,0.816,,,insufficient matched support
+DRIAMS-B,Ciprofloxacin,fluoroquinolone block,Norfloxacin,0.976,3.993,0.774,0.860,-0.086,0.816,0.510,0.306,partial residual focal signal
+DRIAMS-B,Norfloxacin,fluoroquinolone block,Ciprofloxacin,0.976,3.993,0.703,0.343,0.360,0.763,0.628,0.136,partial residual focal signal
+DRIAMS-C,Amoxicillin-Clavulanic acid,mixed beta-lactam/background,Ceftazidime,0.379,3.014,0.535,0.497,0.038,0.593,0.518,0.074,background-driven in both model families
+DRIAMS-C,Cefepime,cephalosporin/ESBL block,Ceftazidime,0.828,10.212,0.648,0.394,0.254,0.684,0.336,0.348,background-driven in both model families
+DRIAMS-C,Ceftazidime,cephalosporin/ESBL block,Ceftriaxone,0.884,7.841,0.609,0.503,0.107,0.637,0.246,0.391,background-driven in both model families
+DRIAMS-C,Ceftriaxone,cephalosporin/ESBL block,Ceftazidime,0.884,7.841,0.623,0.727,-0.104,0.659,0.718,-0.058,focal signal survives background matching
+DRIAMS-C,Ciprofloxacin,fluoroquinolone block,Norfloxacin,0.976,3.993,0.750,0.646,0.104,0.814,0.637,0.177,focal signal survives background matching
+DRIAMS-C,Norfloxacin,fluoroquinolone block,Ciprofloxacin,0.976,3.993,0.779,,,0.837,,,insufficient matched support
+DRIAMS-D,Amoxicillin-Clavulanic acid,mixed beta-lactam/background,Ceftazidime,0.379,3.014,0.557,0.486,0.070,0.580,0.449,0.131,background-driven in both model families
+DRIAMS-D,Cefepime,cephalosporin/ESBL block,Ceftazidime,0.828,10.212,0.769,0.605,0.164,0.812,0.557,0.254,partial residual focal signal
+DRIAMS-D,Ceftazidime,cephalosporin/ESBL block,Ceftriaxone,0.884,7.841,0.727,0.581,0.146,0.757,0.438,0.320,partial residual focal signal
+DRIAMS-D,Ceftriaxone,cephalosporin/ESBL block,Ceftazidime,0.884,7.841,0.726,0.592,0.133,0.750,0.520,0.230,partial residual focal signal
+DRIAMS-D,Ciprofloxacin,fluoroquinolone block,Norfloxacin,0.976,3.993,0.671,0.596,0.075,0.723,0.576,0.147,partial residual focal signal

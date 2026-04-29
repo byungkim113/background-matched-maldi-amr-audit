@@ -1,0 +1,30 @@
+site,drug,n_known,n_resistant,prevalence
+A-2018,Ciprofloxacin,1350,355,0.262963
+A-2018,Norfloxacin,439,87,0.198178
+A-2018,Amoxicillin-Clavulanic acid,1367,383,0.280176
+A-2018,Ceftriaxone,1390,258,0.185612
+A-2018,Ceftazidime,1257,120,0.0954654
+A-2018,Cefepime,1230,65,0.0528455
+ALL,Ciprofloxacin,4387,972,0.221564
+ALL,Norfloxacin,1091,274,0.251146
+ALL,Amoxicillin-Clavulanic acid,4461,1006,0.22551
+ALL,Ceftriaxone,4510,649,0.143902
+ALL,Ceftazidime,4365,482,0.110424
+ALL,Cefepime,3975,301,0.0757233
+DRIAMS-B,Ciprofloxacin,212,58,0.273585
+DRIAMS-B,Norfloxacin,210,69,0.328571
+DRIAMS-B,Amoxicillin-Clavulanic acid,198,61,0.308081
+DRIAMS-B,Ceftriaxone,213,45,0.211268
+DRIAMS-B,Ceftazidime,213,45,0.211268
+DRIAMS-B,Cefepime,213,43,0.201878
+DRIAMS-C,Ciprofloxacin,886,188,0.21219
+DRIAMS-C,Norfloxacin,442,118,0.266968
+DRIAMS-C,Amoxicillin-Clavulanic acid,902,230,0.254989
+DRIAMS-C,Ceftriaxone,913,148,0.162103
+DRIAMS-C,Ceftazidime,908,139,0.153084
+DRIAMS-C,Cefepime,609,113,0.18555
+DRIAMS-D,Ciprofloxacin,1939,371,0.191336
+DRIAMS-D,Amoxicillin-Clavulanic acid,1994,332,0.166499
+DRIAMS-D,Ceftriaxone,1994,198,0.0992979
+DRIAMS-D,Ceftazidime,1987,178,0.0895823
+DRIAMS-D,Cefepime,1923,80,0.0416017

@@ -1,0 +1,19 @@
+{
+  "wgs_rows": 1076,
+  "wgs_unique_isolate_ids": 1076,
+  "bruker_code_rows": 115,
+  "bruker_code_unique_tgnr": 28,
+  "bridge_unique_wgs_matched_tgnr": 409,
+  "median_peak_rows": 101674,
+  "median_peak_unique_spectra": 1693,
+  "median_peak_unique_tgnr": 407,
+  "median_peak_tgnr_matched_to_wgs": 407,
+  "csv_tar_files": 1823,
+  "csv_tar_files_matched_to_wgs": 1723,
+  "csv_tar_unique_wgs_matched_isolates": 408,
+  "csv_tar_resolution_methods": {
+    "numeric_tgnr": 1612,
+    "uuid_mapped": 111,
+    "unmapped_other": 100
+  }
+}

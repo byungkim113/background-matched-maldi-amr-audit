@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+title: "Background-Matched MALDI-AMR Audit"
+message: "If you use this research code, please cite the associated manuscript or repository."
+authors:
+  - family-names: "Kim"
+    given-names: "Byung"
+date-released: 2026-04-29
+version: "0.1.0"
+repository-code: "https://github.com/byungkim113/background-matched-maldi-amr-audit"
+license: "MIT"

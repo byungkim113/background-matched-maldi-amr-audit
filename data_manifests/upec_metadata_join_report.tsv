@@ -1,0 +1,9 @@
+source	unique_ids	overlap_wgs	overlap_bruker_maldi
+WGS manifest	1076	1076	409
+Bruker MALDI bridge	409	409	409
+mash phylogroup	1076	1076	409
+MLST	1076	1076	409
+MIC	980	938	385
+papG	1076	1076	409
+AMR genes	1076	1075	409
+825 representative strains	825	825	307

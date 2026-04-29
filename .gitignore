@@ -1,0 +1,29 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+
+# Large/local data that should not be committed
+data/
+raw_data/
+runs/
+kaggle/
+*.pt
+*.pth
+*.ckpt
+*.pkl
+*.tar
+*.tar.gz
+*.fastq
+*.fastq.gz
+*.mzML
+
+# Local OS/editor files
+.idea/
+.vscode/
+
+# Nested repositories
+*/.git/

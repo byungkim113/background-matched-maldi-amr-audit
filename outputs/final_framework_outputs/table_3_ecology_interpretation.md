@@ -1,0 +1,29 @@
+# Resistance Ecology Interpretation
+
+Links each pair/site to co-resistance partners and background-sensitive behavior.
+
+| site     | drug      | resistance_ecology_block     | strongest_network_partner | partner_phi | partner_lift | cnn_drop | lgbm_drop | interpretation                            |
+| -------- | --------- | ---------------------------- | ------------------------- | ----------- | ------------ | -------- | --------- | ----------------------------------------- |
+| A-2018   | Amox-Clav | mixed beta-lactam/background | CAZ                       | 0.379       | 3.014        | 0.109    | 0.153     | background-driven in both model families  |
+| A-2018   | FEP       | cephalosporin/ESBL block     | CAZ                       | 0.828       | 10.212       | 0.208    | 0.347     | partial residual focal signal             |
+| A-2018   | CAZ       | cephalosporin/ESBL block     | CRO                       | 0.884       | 7.841        | 0.471    | 0.465     | background-driven in both model families  |
+| A-2018   | CRO       | cephalosporin/ESBL block     | CAZ                       | 0.884       | 7.841        | 0.218    | 0.129     | focal signal survives background matching |
+| A-2018   | Cipro     | fluoroquinolone block        | Norflox                   | 0.976       | 3.993        | 0.120    | 0.188     | focal signal survives background matching |
+| A-2018   | Norflox   | fluoroquinolone block        | Cipro                     | 0.976       | 3.993        |          |           | insufficient matched support              |
+| DRIAMS-B | Amox-Clav | mixed beta-lactam/background | CAZ                       | 0.379       | 3.014        | 0.118    | 0.107     | partial residual focal signal             |
+| DRIAMS-B | FEP       | cephalosporin/ESBL block     | CAZ                       | 0.828       | 10.212       |          |           | insufficient matched support              |
+| DRIAMS-B | CAZ       | cephalosporin/ESBL block     | CRO                       | 0.884       | 7.841        |          |           | insufficient matched support              |
+| DRIAMS-B | CRO       | cephalosporin/ESBL block     | CAZ                       | 0.884       | 7.841        |          |           | insufficient matched support              |
+| DRIAMS-B | Cipro     | fluoroquinolone block        | Norflox                   | 0.976       | 3.993        | -0.086   | 0.306     | partial residual focal signal             |
+| DRIAMS-B | Norflox   | fluoroquinolone block        | Cipro                     | 0.976       | 3.993        | 0.360    | 0.136     | partial residual focal signal             |
+| DRIAMS-C | Amox-Clav | mixed beta-lactam/background | CAZ                       | 0.379       | 3.014        | 0.038    | 0.074     | background-driven in both model families  |
+| DRIAMS-C | FEP       | cephalosporin/ESBL block     | CAZ                       | 0.828       | 10.212       | 0.254    | 0.348     | background-driven in both model families  |
+| DRIAMS-C | CAZ       | cephalosporin/ESBL block     | CRO                       | 0.884       | 7.841        | 0.107    | 0.391     | background-driven in both model families  |
+| DRIAMS-C | CRO       | cephalosporin/ESBL block     | CAZ                       | 0.884       | 7.841        | -0.104   | -0.058    | focal signal survives background matching |
+| DRIAMS-C | Cipro     | fluoroquinolone block        | Norflox                   | 0.976       | 3.993        | 0.104    | 0.177     | focal signal survives background matching |
+| DRIAMS-C | Norflox   | fluoroquinolone block        | Cipro                     | 0.976       | 3.993        |          |           | insufficient matched support              |
+| DRIAMS-D | Amox-Clav | mixed beta-lactam/background | CAZ                       | 0.379       | 3.014        | 0.070    | 0.131     | background-driven in both model families  |
+| DRIAMS-D | FEP       | cephalosporin/ESBL block     | CAZ                       | 0.828       | 10.212       | 0.164    | 0.254     | partial residual focal signal             |
+| DRIAMS-D | CAZ       | cephalosporin/ESBL block     | CRO                       | 0.884       | 7.841        | 0.146    | 0.320     | partial residual focal signal             |
+| DRIAMS-D | CRO       | cephalosporin/ESBL block     | CAZ                       | 0.884       | 7.841        | 0.133    | 0.230     | partial residual focal signal             |
+| DRIAMS-D | Cipro     | fluoroquinolone block        | Norflox                   | 0.976       | 3.993        | 0.075    | 0.147     | partial residual focal signal             |

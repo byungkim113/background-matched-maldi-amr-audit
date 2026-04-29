@@ -1,0 +1,3 @@
+phenotype,st131_resistant,st131_susceptible,nonst131_resistant,nonst131_susceptible,haldane_odds_ratio
+Ciprofloxacin,30,17,23,280,20.803
+Ceftriaxone,21,27,9,303,24.977
