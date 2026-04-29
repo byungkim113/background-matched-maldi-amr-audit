@@ -1,0 +1,37 @@
+target,feature,mz_center,effect_pos_minus_neg,published_mz,delta_da,protein,annotation,source
+ST131,mz_6850_6875,6862.5,-4.985879,6827,35.5,unidentified,ST131-specific peak not identified by LC-MS/MS,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+ST131,mz_9725_9750,9737.5,-4.086176,9710,27.5,HdeA,acid stress chaperone HdeA,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+ST131,mz_8300_8325,8312.5,-2.96247,8351,38.5,YjbJ,UPF0337 protein YjbJ,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+ST131,mz_9700_9725,9712.5,2.672193,9710,2.5,HdeA,acid stress chaperone HdeA,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+ST131,mz_8425_8450,8437.5,2.010483,8448,10.5,YnfD,uncharacterized protein YnfD,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+ST131,mz_4850_4875,4862.5,-1.626366,4857,5.5,HdeA multivalent ion,multivalent ion of HdeA m/z 9710,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+ST131,mz_4150_4175,4162.5,-1.567482,4176,13.5,YjbJ multivalent ion,multivalent ion of YjbJ m/z 8351,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+ST131,mz_11775_11800,11787.5,1.540108,11783,4.5,cytochrome b562,soluble cytochrome b562,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+ST131,mz_6825_6850,6837.5,1.452372,6827,10.5,unidentified,ST131-specific peak not identified by LC-MS/MS,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+ST131,mz_7650_7675,7662.5,1.411499,7655,7.5,YahO,uncharacterized protein YahO,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+ST131,mz_6800_6825,6812.5,1.336852,6827,14.5,unidentified,ST131-specific peak not identified by LC-MS/MS,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+ST131,mz_4825_4850,4837.5,1.140872,4857,19.5,HdeA multivalent ion,multivalent ion of HdeA m/z 9710,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+ST131,mz_8350_8375,8362.5,-1.007136,8351,11.5,YjbJ,UPF0337 protein YjbJ,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+ST131,mz_8325_8350,8337.5,-0.981004,8351,13.5,YjbJ,UPF0337 protein YjbJ,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+Ciprofloxacin_R,mz_11775_11800,11787.5,2.243023,11783,4.5,cytochrome b562,soluble cytochrome b562,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+Ciprofloxacin_R,mz_6850_6875,6862.5,-2.065412,6827,35.5,unidentified,ST131-specific peak not identified by LC-MS/MS,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+Ciprofloxacin_R,mz_8325_8350,8337.5,-1.624701,8351,13.5,YjbJ,UPF0337 protein YjbJ,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+Ciprofloxacin_R,mz_4850_4875,4862.5,-1.549755,4857,5.5,HdeA multivalent ion,multivalent ion of HdeA m/z 9710,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+Ciprofloxacin_R,mz_9725_9750,9737.5,-1.455435,9710,27.5,HdeA,acid stress chaperone HdeA,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+Ciprofloxacin_R,mz_8425_8450,8437.5,1.155134,8448,10.5,YnfD,uncharacterized protein YnfD,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+Ciprofloxacin_R,mz_7650_7675,7662.5,0.87446,7655,7.5,YahO,uncharacterized protein YahO,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+Ciprofloxacin_R,mz_6825_6850,6837.5,0.773814,6827,10.5,unidentified,ST131-specific peak not identified by LC-MS/MS,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+Ciprofloxacin_R,mz_8300_8325,8312.5,-0.65763,8351,38.5,YjbJ,UPF0337 protein YjbJ,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+Ciprofloxacin_R,mz_5350_5375,5362.5,0.639183,5381,18.5,unidentified,ST131-specific peak not identified by LC-MS/MS,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+Ceftriaxone_R,mz_6850_6875,6862.5,-3.274295,6827,35.5,unidentified,ST131-specific peak not identified by LC-MS/MS,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+Ceftriaxone_R,mz_8425_8450,8437.5,2.245798,8448,10.5,YnfD,uncharacterized protein YnfD,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+Ceftriaxone_R,mz_9725_9750,9737.5,-1.895103,9710,27.5,HdeA,acid stress chaperone HdeA,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+Ceftriaxone_R,mz_11775_11800,11787.5,1.759089,11783,4.5,cytochrome b562,soluble cytochrome b562,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+Ceftriaxone_R,mz_8300_8325,8312.5,-1.329016,8351,38.5,YjbJ,UPF0337 protein YjbJ,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+Ceftriaxone_R,mz_8325_8350,8337.5,-1.275908,8351,13.5,YjbJ,UPF0337 protein YjbJ,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+Ceftriaxone_R,mz_4850_4875,4862.5,-1.163755,4857,5.5,HdeA multivalent ion,multivalent ion of HdeA m/z 9710,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+Ceftriaxone_R,mz_6825_6850,6837.5,1.1459,6827,10.5,unidentified,ST131-specific peak not identified by LC-MS/MS,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+Ceftriaxone_R,mz_4200_4225,4212.5,1.137007,4176,36.5,YjbJ multivalent ion,multivalent ion of YjbJ m/z 8351,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+Ceftriaxone_R,mz_8375_8400,8387.5,1.005655,8351,36.5,YjbJ,UPF0337 protein YjbJ,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+Ceftriaxone_R,mz_4150_4175,4162.5,-0.877365,4176,13.5,YjbJ multivalent ion,multivalent ion of YjbJ m/z 8351,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z
+Ceftriaxone_R,mz_7675_7700,7687.5,-0.817711,7655,32.5,YahO,uncharacterized protein YahO,Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z

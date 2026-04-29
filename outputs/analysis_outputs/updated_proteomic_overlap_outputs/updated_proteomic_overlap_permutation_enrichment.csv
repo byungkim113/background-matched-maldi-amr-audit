@@ -1,0 +1,5 @@
+target,observed_overlap_count,top_peak_count,null_mean_overlap_count,null_sd_overlap_count,fold_enrichment,z_score,empirical_p_ge_observed,permutations,mz_strata,tolerance_da
+ST131,14,75,4.5065,1.851474,3.106624,5.127535,0.0001,10000,10,40.0
+Ciprofloxacin_R,10,75,4.4738,1.859815,2.235236,2.97137,0.006799,10000,10,40.0
+Ceftriaxone_R,12,75,4.539,1.867801,2.643754,3.994538,0.0006,10000,10,40.0
+ALL_TARGETS,36,225,13.5504,2.568864,2.656748,8.739117,0.0001,10000,10,40.0

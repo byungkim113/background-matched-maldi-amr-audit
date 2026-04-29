@@ -10,10 +10,9 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-BRIDGE_ROOT = ROOT / "maldi-wgs-bridge-audit"
-DEFAULT_METADATA = BRIDGE_ROOT / "data" / "upec_master_metadata.tsv"
-DEFAULT_WGS_OUT = ROOT / "analysis_outputs" / "upec_wgs_validation_outputs"
-DEFAULT_PROTEOMIC_OUT = ROOT / "analysis_outputs" / "updated_proteomic_overlap_outputs"
+DEFAULT_METADATA = ROOT / "data_manifests" / "upec_master_metadata.tsv"
+DEFAULT_WGS_OUT = ROOT / "outputs" / "analysis_outputs" / "upec_wgs_validation_outputs"
+DEFAULT_PROTEOMIC_OUT = ROOT / "outputs" / "analysis_outputs" / "updated_proteomic_overlap_outputs"
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -30,8 +29,8 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main() -> None:
     args = build_parser().parse_args()
-    validation_script = BRIDGE_ROOT / "scripts" / "upec_wgs_validation_analysis.py"
-    proteomic_script = BRIDGE_ROOT / "scripts" / "updated_proteomic_overlap_analysis.py"
+    validation_script = ROOT / "scripts" / "upec_wgs_validation_analysis.py"
+    proteomic_script = ROOT / "scripts" / "updated_proteomic_overlap_analysis.py"
 
     cmd = [
         sys.executable, str(validation_script),

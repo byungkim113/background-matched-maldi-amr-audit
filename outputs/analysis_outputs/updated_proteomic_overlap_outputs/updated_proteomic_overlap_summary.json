@@ -1,0 +1,70 @@
+{
+  "metadata_rows": 1076,
+  "bruker_maldi_rows": 409,
+  "tgnrs_with_peak_features": 407,
+  "top_peaks_per_target": 75,
+  "bin_width": 25.0,
+  "tolerance_da": 40.0,
+  "permutations": 10000,
+  "mz_strata": 10,
+  "overlap_rows": 36,
+  "overlap_by_target": {
+    "ST131": 14,
+    "Ciprofloxacin_R": 10,
+    "Ceftriaxone_R": 12
+  },
+  "permutation_enrichment": [
+    {
+      "target": "ST131",
+      "observed_overlap_count": 14,
+      "top_peak_count": 75,
+      "null_mean_overlap_count": 4.5065,
+      "null_sd_overlap_count": 1.851474,
+      "fold_enrichment": 3.106624,
+      "z_score": 5.127535,
+      "empirical_p_ge_observed": 0.0001,
+      "permutations": 10000,
+      "mz_strata": 10,
+      "tolerance_da": 40.0
+    },
+    {
+      "target": "Ciprofloxacin_R",
+      "observed_overlap_count": 10,
+      "top_peak_count": 75,
+      "null_mean_overlap_count": 4.4738,
+      "null_sd_overlap_count": 1.859815,
+      "fold_enrichment": 2.235236,
+      "z_score": 2.97137,
+      "empirical_p_ge_observed": 0.006799,
+      "permutations": 10000,
+      "mz_strata": 10,
+      "tolerance_da": 40.0
+    },
+    {
+      "target": "Ceftriaxone_R",
+      "observed_overlap_count": 12,
+      "top_peak_count": 75,
+      "null_mean_overlap_count": 4.539,
+      "null_sd_overlap_count": 1.867801,
+      "fold_enrichment": 2.643754,
+      "z_score": 3.994538,
+      "empirical_p_ge_observed": 0.0006,
+      "permutations": 10000,
+      "mz_strata": 10,
+      "tolerance_da": 40.0
+    },
+    {
+      "target": "ALL_TARGETS",
+      "observed_overlap_count": 36,
+      "top_peak_count": 225,
+      "null_mean_overlap_count": 13.5504,
+      "null_sd_overlap_count": 2.568864,
+      "fold_enrichment": 2.656748,
+      "z_score": 8.739117,
+      "empirical_p_ge_observed": 0.0001,
+      "permutations": 10000,
+      "mz_strata": 10,
+      "tolerance_da": 40.0
+    }
+  ]
+}
