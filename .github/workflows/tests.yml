@@ -1,0 +1,40 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  audit-framework:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install lightweight test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest numpy==1.26.4 pandas==2.2.3 scipy==1.12.0 scikit-learn==1.4.2 pillow==10.4.0
+
+      - name: Syntax-check scripts
+        run: |
+          PYTHONPYCACHEPREFIX=/tmp/pycache python -m py_compile \
+            run_background_audit_framework.py \
+            scripts/run_background_audit.py \
+            scripts/export_weis_predictions_for_audit.py \
+            scripts/upec_wgs_validation_analysis.py \
+            scripts/updated_proteomic_overlap_analysis.py \
+            scripts/run_public_upec_analysis.py \
+            scripts/make_final_framework_tables_figures.py \
+            scripts/make_paper_figures.py
+
+      - name: Run audit framework unit tests
+        run: python -m unittest tests.test_background_audit_framework
+
+      - name: Run Mega/source regression tests
+        run: python -m unittest tests.test_mega_model_regressions

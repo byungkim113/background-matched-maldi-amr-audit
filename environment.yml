@@ -1,0 +1,17 @@
+name: background-matched-maldi-amr
+channels:
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3.11
+  - numpy=1.26.4
+  - pandas=2.2.3
+  - scipy=1.12.0
+  - scikit-learn=1.4.2
+  - pillow=10.4.0
+  - pytest=8.3.5
+  - lightgbm=4.5.0
+  - rdkit=2023.09.6
+  - pip
+  - pip:
+      - torch==2.2.2

@@ -17,20 +17,20 @@ import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
 
 
-ROOT = Path(__file__).resolve().parent
-OUT = ROOT / "final_framework_outputs"
+ROOT = Path(__file__).resolve().parents[1]
+OUT = ROOT / "outputs" / "final_framework_outputs"
 
 INPUTS = {
-    "figure_table": ROOT / "analysis_outputs" / "background_matched_transfer_audit_figure_table.csv",
-    "cnn_lgbm": ROOT / "analysis_outputs" / "background_matched_transfer_audit_cnn_vs_lgbm.csv",
-    "ecology": ROOT / "analysis_outputs" / "background_audit_with_resistance_ecology.csv",
-    "prediction_assessment": ROOT / "analysis_outputs" / "ecoli_mechanism6_pair_prediction_assessment.csv",
-    "block_site": ROOT / "analysis_outputs" / "ecoli_mechanism6_block_site_summary.csv",
-    "cross_edges": ROOT / "analysis_outputs" / "cross_resistance_network" / "cross_resistance_edges.csv",
-    "wgs_auc": Path("/Users/byungkim/Desktop/MALDI Research/upec_wgs_validation_outputs/centroid_binary_cv_results.csv"),
-    "wgs_assoc": Path("/Users/byungkim/Desktop/MALDI Research/upec_wgs_validation_outputs/st131_resistance_associations.csv"),
-    "proteomic_enrichment": Path("/Users/byungkim/Desktop/MALDI Research/updated_proteomic_overlap_outputs/updated_proteomic_overlap_permutation_enrichment.csv"),
-    "proteomic_overlaps": Path("/Users/byungkim/Desktop/MALDI Research/updated_proteomic_overlap_outputs/updated_published_st131_proteomic_overlap.csv"),
+    "figure_table": ROOT / "outputs" / "analysis_outputs" / "background_matched_transfer_audit_figure_table.csv",
+    "cnn_lgbm": ROOT / "outputs" / "analysis_outputs" / "background_matched_transfer_audit_cnn_vs_lgbm.csv",
+    "ecology": ROOT / "outputs" / "analysis_outputs" / "background_audit_with_resistance_ecology.csv",
+    "prediction_assessment": ROOT / "outputs" / "analysis_outputs" / "ecoli_mechanism6_pair_prediction_assessment.csv",
+    "block_site": ROOT / "outputs" / "analysis_outputs" / "ecoli_mechanism6_block_site_summary.csv",
+    "cross_edges": ROOT / "outputs" / "analysis_outputs" / "cross_resistance_network" / "cross_resistance_edges.csv",
+    "wgs_auc": ROOT / "outputs" / "analysis_outputs" / "upec_wgs_validation_outputs" / "centroid_binary_cv_results.csv",
+    "wgs_assoc": ROOT / "outputs" / "analysis_outputs" / "upec_wgs_validation_outputs" / "st131_resistance_associations.csv",
+    "proteomic_enrichment": ROOT / "outputs" / "analysis_outputs" / "updated_proteomic_overlap_outputs" / "updated_proteomic_overlap_permutation_enrichment.csv",
+    "proteomic_overlaps": ROOT / "outputs" / "analysis_outputs" / "updated_proteomic_overlap_outputs" / "updated_published_st131_proteomic_overlap.csv",
 }
 
 

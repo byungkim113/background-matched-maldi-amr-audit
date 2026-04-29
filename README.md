@@ -44,7 +44,7 @@ data_manifests/
   raw UPEC spectrum archives are not included.
 
 docs/
-  Longer background-matched audit notes.
+  Reproducibility guide, data/source notes, and longer audit notes.
 ```
 
 ## Core Claim
@@ -63,6 +63,11 @@ If the answer is yes, the model retains focal/background-independent signal. If
 the answer is no, raw AUC was likely inflated by resistant-population background.
 
 ## Minimal Workflow
+
+For the fuller command-by-command version, see
+[`docs/reproduce.md`](docs/reproduce.md). Source citations and redistribution
+notes are in [`docs/sources.md`](docs/sources.md) and
+[`docs/data_availability.md`](docs/data_availability.md).
 
 Train or evaluate a Mega model:
 
@@ -133,6 +138,10 @@ This repository does not include raw DRIAMS spectra, raw AST exports, raw WGS
 FASTQ files, or raw Bruker archives. Reproducing the full pipeline requires
 access to the corresponding public or controlled datasets and local paths passed
 through the command-line wrappers.
+
+The repository does include derived analysis outputs, public UPEC manifest
+tables, processed Bruker median-peak features for the public support analysis,
+and a locked Mega CNN checkpoint archive for the current snapshot.
 
 ## Status
 

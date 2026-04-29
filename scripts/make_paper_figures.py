@@ -10,7 +10,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_BUILDER = ROOT / "make_final_framework_tables_figures.py"
+DEFAULT_BUILDER = ROOT / "scripts" / "make_final_framework_tables_figures.py"
 
 
 def build_parser() -> argparse.ArgumentParser:

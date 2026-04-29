@@ -1,0 +1,211 @@
+# Reproducibility Guide
+
+This guide separates three levels of reproduction:
+
+1. Run the model-agnostic audit on an existing prediction CSV.
+2. Regenerate the current paper-facing tables and figures from committed outputs.
+3. Reproduce training/evaluation from raw DRIAMS data.
+
+Most reviewers should start with levels 1 and 2. Level 3 requires local access to raw DRIAMS data.
+
+## 1. Environment Setup
+
+Recommended conda/mamba setup:
+
+```bash
+mamba env create -f environment.yml
+conda activate background-matched-maldi-amr
+```
+
+Minimal pip setup:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+RDKit is only required for Morgan-fingerprint drug conditioning. If you need that path, prefer the conda environment because RDKit is much cleaner through conda-forge.
+
+## 2. Verify The Repository
+
+```bash
+python -m unittest tests.test_background_audit_framework
+python -m unittest tests.test_mega_model_regressions
+```
+
+Syntax-check the main scripts:
+
+```bash
+PYTHONPYCACHEPREFIX=/tmp/pycache python -m py_compile \
+  run_background_audit_framework.py \
+  scripts/run_background_audit.py \
+  scripts/export_mega_predictions_for_audit.py \
+  scripts/export_weis_predictions_for_audit.py \
+  scripts/upec_wgs_validation_analysis.py \
+  scripts/updated_proteomic_overlap_analysis.py \
+  scripts/run_public_upec_analysis.py \
+  scripts/make_final_framework_tables_figures.py \
+  scripts/make_paper_figures.py
+```
+
+## 3. Run The Audit On Any Model
+
+Prepare a long prediction CSV with one row per isolate/drug prediction:
+
+```text
+isolate_id,site,year,organism,drug,label,prob
+```
+
+Then run:
+
+```bash
+python scripts/run_background_audit.py \
+  --predictions-csv /path/to/predictions_long.csv \
+  --output-dir outputs/background_audit_custom \
+  --bootstrap-n 500 \
+  --permutation-n 500
+```
+
+If your CSV uses different column names, call the core script directly:
+
+```bash
+python run_background_audit_framework.py \
+  --predictions-csv /path/to/predictions_long.csv \
+  --output-dir outputs/background_audit_custom \
+  --id-col sample_id \
+  --site-col hospital \
+  --year-col collection_year \
+  --organism-col species \
+  --drug-col antibiotic \
+  --label-col phenotype \
+  --prob-col score
+```
+
+Main outputs:
+
+- `background_matched_audit_summary.csv`
+- `background_matched_retained_rows.csv`
+- `background_matched_sensitivity.csv`
+- `background_audit_with_resistance_ecology.csv`
+- `cross_resistance_edges.csv`
+- `background_audit_report.md`
+
+## 4. Export Mega/CNN Predictions From A Locked Run
+
+Use this when you have a completed Mega run directory with `config.json` and model checkpoints:
+
+```bash
+python scripts/export_mega_predictions_for_audit.py \
+  --run-dir runs/exp_ecoli_mechanism6_drugid_mae30 \
+  --data-root /path/to/driams \
+  --output-csv runs/exp_ecoli_mechanism6_drugid_mae30/metrics/mega_predictions_long.csv \
+  --model-name Mega-CNN
+```
+
+Then audit:
+
+```bash
+python scripts/run_background_audit.py \
+  --predictions-csv runs/exp_ecoli_mechanism6_drugid_mae30/metrics/mega_predictions_long.csv \
+  --output-dir outputs/mega_cnn_background_audit
+```
+
+## 5. Train The Clinical4 Mega/CNN Experiment
+
+```bash
+python scripts/run_training_clinical4.py \
+  --data-root /path/to/driams \
+  --output-dir runs \
+  --experiment exp_clinical4_mae30 \
+  --mae-epochs 30 \
+  --early-stop macro \
+  --seed-policy all
+```
+
+This runs the four-pair clinical panel:
+
+- *E. coli* / Ciprofloxacin
+- *E. coli* / Amoxicillin-Clavulanic acid
+- *S. aureus* / Oxacillin
+- *S. epidermidis* / Erythromycin
+
+## 6. Train The E. coli Mechanism6 Mega/CNN Experiment
+
+```bash
+python scripts/run_training_ecoli6.py \
+  --data-root /path/to/driams \
+  --output-dir runs \
+  --experiment exp_ecoli_mechanism6_drugid_mae30 \
+  --mae-epochs 30 \
+  --early-stop primary \
+  --seed-policy all \
+  --prevalence-shift none
+```
+
+This runs the six-pair E. coli panel:
+
+- Ciprofloxacin
+- Norfloxacin
+- Amoxicillin-Clavulanic acid
+- Ceftriaxone
+- Ceftazidime
+- Cefepime
+
+## 7. Run LightGBM Baselines
+
+```bash
+python scripts/run_lgbm_baselines.py \
+  --data-root /path/to/driams \
+  --pair-profile ecoli_mechanism6 \
+  --output-dir runs \
+  --experiment lgbm_ecoli_mechanism6 \
+  --with-random-cv
+```
+
+This produces `runs/lgbm_ecoli_mechanism6/metrics/lgbm_results.csv` and, if requested, the temporal-versus-random-CV diagnostic.
+
+## 8. Run Public UPEC WGS/Proteomic Support Analyses
+
+Using the processed Bruker median-peak feature table committed in this repository:
+
+```bash
+python scripts/run_public_upec_analysis.py \
+  --metadata data_manifests/upec_master_metadata.tsv \
+  --median-peaks data_manifests/Bruker_csv_medianpeaks_df.csv \
+  --wgs-output-dir outputs/analysis_outputs/upec_wgs_validation_outputs \
+  --proteomic-output-dir outputs/analysis_outputs/updated_proteomic_overlap_outputs \
+  --folds 5 \
+  --permutations 10000
+```
+
+Key outputs:
+
+- `outputs/analysis_outputs/upec_wgs_validation_outputs/centroid_binary_cv_results.csv`
+- `outputs/analysis_outputs/upec_wgs_validation_outputs/st131_resistance_associations.csv`
+- `outputs/analysis_outputs/updated_proteomic_overlap_outputs/updated_proteomic_overlap_permutation_enrichment.csv`
+
+## 9. Regenerate Final Tables And Figures
+
+```bash
+python scripts/make_paper_figures.py
+```
+
+The final artifact folder is:
+
+```text
+outputs/final_framework_outputs/
+```
+
+It contains the current paper-facing tables, figures, and argument draft.
+
+## 10. Weis/Borgwardt Compatibility Audit
+
+The notebook:
+
+```text
+notebooks/weis_lightgbm_background_audit_kaggle.ipynb
+```
+
+is a Kaggle-oriented compatibility workflow. It clones the Borgwardt/Weis code, exports Weis-style predictions with isolate IDs, then runs the same model-agnostic background audit. Treat this as supplementary unless rerun with final locked settings and all intended external rows.
