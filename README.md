@@ -47,6 +47,12 @@ docs/
   Reproducibility guide, data/source notes, and longer audit notes.
 ```
 
+## Key Script Labels
+
+- `scripts/export_mega_predictions_for_audit.py` — **Mega/CNN locked-prediction exporter**. Use this after a completed Mega run to create `mega_predictions_long.csv`, the isolate-level prediction table required by the background-matched audit.
+- `run_background_audit_framework.py` — **model-agnostic audit engine**. Use this on any long prediction CSV from Mega/CNN, LGBM, Weis-style models, or external models.
+- `scripts/run_background_audit.py` — **thin audit wrapper** for the default prediction CSV format.
+
 ## Core Claim
 
 MALDI-TOF AMR models are background-sensitive predictors. Their apparent AMR
