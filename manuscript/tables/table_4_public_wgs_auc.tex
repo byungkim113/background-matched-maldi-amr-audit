@@ -1,0 +1,16 @@
+\begin{table}[ht]
+\centering
+\small
+\caption{Public WGS-linked Basel UPEC MALDI validation.}
+\label{tab:public-wgs}
+\begin{tabular}{lccccc}
+\toprule
+Target & n & positive & AUC & folds & Model \\
+\midrule
+ST131 & 407 & 55 & 0.906 & 5 & centroid\_direction \\
+Ciprofloxacin R & 350 & 53 & 0.739 & 5 & centroid\_direction \\
+Ceftriaxone R & 360 & 30 & 0.650 & 5 & centroid\_direction \\
+\bottomrule
+\end{tabular}
+\vspace{2mm}\parbox{0.95\linewidth}{\footnotesize A simple centroid-direction classifier is used to ask whether lineage and resistance labels are encoded in Bruker MALDI peak features.}
+\end{table}

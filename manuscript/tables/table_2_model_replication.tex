@@ -1,0 +1,19 @@
+\begin{table}[ht]
+\centering
+\small
+\caption{Model-family replication of raw-to-background-centered attenuation.}
+\label{tab:model-replication}
+\begin{tabular}{lcccccc}
+\toprule
+Site & Drug & CNN raw & CNN centered & LGBM raw & LGBM centered & Consensus \\
+\midrule
+A-2018 & Amox-Clav & 0.650 & 0.541 & 0.635 & 0.482 & collapses after matching \\
+A-2018 & Cipro & 0.823 & 0.703 & 0.828 & 0.640 & survives background matching \\
+DRIAMS-C & Amox-Clav & 0.535 & 0.497 & 0.593 & 0.518 & collapses after matching \\
+DRIAMS-C & Cipro & 0.750 & 0.646 & 0.814 & 0.637 & survives background matching \\
+DRIAMS-D & Amox-Clav & 0.557 & 0.486 & 0.580 & 0.449 & collapses after matching \\
+DRIAMS-D & Cipro & 0.671 & 0.596 & 0.723 & 0.576 & partial/weak residual signal \\
+\bottomrule
+\end{tabular}
+\vspace{2mm}\parbox{0.95\linewidth}{\footnotesize The same audit is applied to CNN and multi-task LGBM predictions.}
+\end{table}

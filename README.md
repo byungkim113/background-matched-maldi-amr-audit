@@ -45,6 +45,10 @@ data_manifests/
 
 docs/
   Reproducibility guide, data/source notes, and longer audit notes.
+
+manuscript/
+  Overleaf-ready Nature Communications-style manuscript draft, vector PDF
+  figures, LaTeX tables, references, and literature-positioning notes.
 ```
 
 ## Key Script Labels
@@ -107,6 +111,12 @@ Build the current paper tables/figures:
 
 ```bash
 python scripts/make_paper_figures.py
+```
+
+Build the Nature Communications-style manuscript figures and LaTeX tables:
+
+```bash
+python scripts/make_ncomms_figures.py
 ```
 
 ## Required Prediction Format
