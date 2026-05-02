@@ -1,0 +1,13 @@
+{
+  "input_csv": "/Users/byungkim/Downloads/AMR.csv",
+  "n_rows": 36141,
+  "n_unique_identifiers": 29679,
+  "n_unique_paths": 34246,
+  "n_eligible_targets": 10,
+  "n_manifest_rows": 14239,
+  "n_manifest_unique_paths": 4564,
+  "n_manifest_unique_identifiers": 3841,
+  "min_s": 50,
+  "min_r": 50,
+  "min_background_labels": 3
+}
