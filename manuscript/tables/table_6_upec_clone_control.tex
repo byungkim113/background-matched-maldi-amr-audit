@@ -1,0 +1,23 @@
+\begin{table}[ht]
+\centering
+\small
+\caption{WGS-lineage-controlled MALDI prediction in the public Basel UPEC cohort.}
+\label{tab:upec-clone-control}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{llcccl}
+\toprule
+Target & Control or subset & n & positive & AUC & Interpretation \\
+\midrule
+ST131 & overall & 407 & 55 & 0.932 & lineage is strongly encoded \\
+Ciprofloxacin R & overall & 350 & 53 & 0.755 & unadjusted resistance signal \\
+Ciprofloxacin R & ST131 only & 47 & 30 & 0.725 & residual signal within ST131 \\
+Ciprofloxacin R & non-ST131 only & 303 & 23 & 0.644 & weaker residual signal outside ST131 \\
+Ciprofloxacin R & exact-ST centered & 125 & -- & 0.564 & attenuated after sequence-type control \\
+Ceftriaxone R & overall & 360 & 30 & 0.689 & unadjusted resistance signal \\
+Ceftriaxone R & ST131 only & 48 & 21 & 0.515 & near chance inside ST131 \\
+Ceftriaxone R & exact-ST centered & 147 & -- & 0.503 & chance after sequence-type control \\
+\bottomrule
+\end{tabular}%
+}
+\vspace{2mm}\parbox{0.95\linewidth}{\footnotesize Exact-ST centered rows report retained isolates from sequence types containing both resistant and susceptible isolates for the focal drug. These analyses use WGS metadata from the public UPEC cohort and are independent of the DRIAMS-trained CNN.}
+\end{table}

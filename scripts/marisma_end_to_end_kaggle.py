@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """MARISMa v2 preprocessing pipeline for background-matched MALDI-AMR audits.
 
-This script is intentionally staged. The current reliable stage is
-``preprocess``: it reads MARISMa Bruker spectra, converts them into the
-6000-bin representation used by the DRIAMS/Mega experiments, and writes a
-long manifest of organism-drug labels. The later ``predict`` and ``audit``
-stages are placeholders until the locked Mega checkpoints/config are mounted.
+This script is intentionally staged. The ``preprocess`` stage reads MARISMa
+Bruker spectra, converts them into the 6000-bin representation used by the
+DRIAMS/Mega experiments, and writes a long manifest of organism-drug labels.
+The ``predict`` stage loads a completed Mega_Model run and writes isolate-level
+MARISMa predictions for overlapping organism-drug pairs.
 
 Example Kaggle use:
 
@@ -19,9 +19,11 @@ Example Kaggle use:
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import math
 import re
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
@@ -109,12 +111,20 @@ BACKGROUND_PANELS = {
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="Preprocess MARISMa v2 spectra for MALDI-AMR background audits.")
+    p = argparse.ArgumentParser(
+        description=(
+            "Preprocess MARISMa v2 Bruker spectra and export Mega_Model "
+            "prediction rows for background-matched MALDI-AMR audits."
+        )
+    )
     p.add_argument(
         "--stage",
         choices=["preprocess", "predict", "audit", "all"],
         default="preprocess",
-        help="Currently only preprocess is implemented; predict/audit are guarded placeholders.",
+        help=(
+            "preprocess builds vectors/manifest; predict scores an existing Mega_Model run; "
+            "all runs preprocess then predict. The audit stage is handled by run_background_audit.py."
+        ),
     )
     p.add_argument("--amr-csv", type=Path, default=None, help="Path to MARISMa AMR.csv.")
     p.add_argument("--marisma-root", type=Path, default=None, help="Path to directory containing year folders.")
@@ -125,6 +135,15 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--progress-every", type=int, default=250)
     p.add_argument("--include-target", action="append", default=None, help="Optional paper drug names to include.")
     p.add_argument("--skip-existing", action="store_true", help="Skip vectorization if all preprocess outputs exist.")
+    p.add_argument("--mega-model-path", type=Path, default=Path("Mega_Model.py"), help="Path to Mega_Model.py.")
+    p.add_argument("--run-dir", type=Path, default=None, help="Mega run directory containing config.json and models/.")
+    p.add_argument("--vectors-npy", type=Path, default=None, help="Override path to marisma_vectors_6000.npy.")
+    p.add_argument("--manifest-csv", type=Path, default=None, help="Override path to marisma_prediction_manifest.csv.")
+    p.add_argument("--prediction-csv", type=Path, default=None, help="Output path for marisma_mega_predictions_long.csv.")
+    p.add_argument("--model-name", default="Mega-CNN-MARISMa")
+    p.add_argument("--batch-size", type=int, default=256)
+    p.add_argument("--tta-passes", type=int, default=None, help="Override config TTA passes. Use 1 for smoke tests.")
+    p.add_argument("--max-prediction-rows", type=int, default=None, help="Optional smoke-test cap after pair filtering.")
     return p
 
 
@@ -504,12 +523,263 @@ def preprocess(args: argparse.Namespace) -> None:
     log(json.dumps(summary, indent=2))
 
 
+def load_mega_module(path: Path):
+    path = Path(path)
+    if not path.exists():
+        raise FileNotFoundError(f"Mega_Model.py not found: {path}")
+    spec = importlib.util.spec_from_file_location("Mega_Model_marisma_predict", path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Could not import Mega_Model.py from {path}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules["Mega_Model_marisma_predict"] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def resolve_run_dir(run_dir: Path | None) -> Path:
+    candidates = []
+    if run_dir is not None:
+        candidates.append(Path(run_dir))
+    candidates.extend(
+        [
+            Path("/kaggle/input/newruns/runs/exp_ecoli_mechanism6_drugid_mae30"),
+            Path("/kaggle/input/private-data-source/runs/exp_ecoli_mechanism6_drugid_mae30"),
+            Path("/kaggle/input/datasets/bfdf121/newruns/runs/exp_ecoli_mechanism6_drugid_mae30"),
+            Path("/kaggle/working/runs/exp_ecoli_mechanism6_drugid_mae30"),
+        ]
+    )
+    checked: list[Path] = []
+    for candidate in candidates:
+        checked.append(candidate)
+        if (candidate / "config.json").exists():
+            return candidate
+    checked_text = "\n  ".join(str(path) for path in checked)
+    raise FileNotFoundError(f"Mega run config.json not found. Checked:\n  {checked_text}")
+
+
+def resolve_prediction_inputs(args: argparse.Namespace) -> tuple[Path, Path]:
+    vectors = args.vectors_npy or (args.output_dir / "marisma_vectors_6000.npy")
+    manifest = args.manifest_csv or (args.output_dir / "marisma_prediction_manifest.csv")
+    if not vectors.exists():
+        raise FileNotFoundError(f"Missing MARISMa vector matrix: {vectors}")
+    if not manifest.exists():
+        raise FileNotFoundError(f"Missing MARISMa prediction manifest: {manifest}")
+    return vectors, manifest
+
+
+def resolve_checkpoints(config: dict, run_dir: Path) -> list[Path]:
+    configured = config.get("ckpt_dir")
+    checkpoint_dirs = []
+    if configured:
+        checkpoint_dirs.append(Path(configured))
+        configured_path = Path(configured)
+        if configured_path.is_absolute():
+            checkpoint_dirs.append(run_dir / "models")
+    else:
+        checkpoint_dirs.append(run_dir / "models")
+    checkpoint_dirs.append(run_dir / "models")
+
+    selected = config.get("selected_seed_indices") or []
+    for ckpt_dir in checkpoint_dirs:
+        if not ckpt_dir.exists():
+            continue
+        if selected:
+            checkpoints = [ckpt_dir / f"maldi_amr_seed{int(seed)}.pt" for seed in selected]
+        else:
+            checkpoints = sorted(ckpt_dir.glob("maldi_amr_seed*.pt"))
+        checkpoints = [path for path in checkpoints if path.exists()]
+        if checkpoints:
+            return checkpoints
+
+    checked = "\n  ".join(str(path) for path in checkpoint_dirs)
+    raise FileNotFoundError(f"No Mega checkpoints found. Checked:\n  {checked}")
+
+
+def load_mega_models(mega, config: dict, run_dir: Path):
+    import torch
+
+    drug_conditioning = config.get("drug_conditioning") or "task_id"
+    checkpoints = resolve_checkpoints(config, run_dir)
+    models = []
+    for checkpoint in checkpoints:
+        state = torch.load(checkpoint, map_location=mega.DEVICE)
+        if any(str(key).startswith("module.") for key in state):
+            state = {str(key).removeprefix("module."): value for key, value in state.items()}
+        model = mega.create_maldi_model(
+            n_sites=mega.N_SITES,
+            n_organisms=mega.N_ORGANISMS,
+            drug_conditioning=drug_conditioning,
+        ).to(mega.DEVICE)
+        model.load_state_dict(state)
+        model.eval()
+        models.append(model)
+        log(f"[predict] loaded checkpoint: {checkpoint}")
+    return models
+
+
+def augment_for_tta(x: np.ndarray, mega) -> np.ndarray:
+    """Apply Mega's test-time augmentation when requested."""
+    try:
+        return mega.augment(np.asarray(x, dtype=np.float32))
+    except Exception:
+        return np.asarray(x, dtype=np.float32)
+
+
+def predict_vectors_for_rows(
+    mega,
+    models,
+    vectors: np.ndarray,
+    rows: pd.DataFrame,
+    temperature: float,
+    batch_size: int,
+    tta_passes: int,
+) -> np.ndarray:
+    import torch
+
+    probs_by_model = []
+    vector_indices = rows["vector_index"].astype(int).to_numpy()
+    org_ids = rows["org_id"].astype(int).to_numpy()
+
+    for model_index, model in enumerate(models, start=1):
+        pass_probs = []
+        model.eval()
+        for pass_index in range(max(1, tta_passes)):
+            out_chunks = []
+            for start in range(0, len(rows), batch_size):
+                end = min(start + batch_size, len(rows))
+                x_np = vectors[vector_indices[start:end]]
+                if tta_passes > 1:
+                    x_np = np.stack([augment_for_tta(row, mega) for row in x_np]).astype(np.float32)
+                x = torch.from_numpy(np.asarray(x_np, dtype=np.float32)).unsqueeze(1).to(mega.DEVICE)
+                org = torch.from_numpy(org_ids[start:end].astype(np.int64)).to(mega.DEVICE)
+                with torch.no_grad():
+                    logits = model(x, org) / temperature
+                    out_chunks.append(torch.sigmoid(logits).detach().cpu().numpy())
+            pass_probs.append(np.concatenate(out_chunks))
+            log(
+                f"[predict] model {model_index}/{len(models)} "
+                f"pass {pass_index + 1}/{max(1, tta_passes)} complete"
+            )
+        probs_by_model.append(np.mean(pass_probs, axis=0))
+    return np.mean(probs_by_model, axis=0)
+
+
+def predict(args: argparse.Namespace) -> None:
+    run_dir = resolve_run_dir(args.run_dir)
+    vectors_path, manifest_path = resolve_prediction_inputs(args)
+    prediction_csv = args.prediction_csv or (args.output_dir / "marisma_mega_predictions_long.csv")
+    args.output_dir.mkdir(parents=True, exist_ok=True)
+
+    log(f"[predict] using Mega run: {run_dir}")
+    log(f"[predict] vectors: {vectors_path}")
+    log(f"[predict] manifest: {manifest_path}")
+
+    config = json.loads((run_dir / "config.json").read_text())
+    mega = load_mega_module(args.mega_model_path)
+    pair_profile = config.get("pair_profile", "ecoli_mechanism6")
+    mega.init_config(pair_profile)
+
+    active_pairs = [tuple(row) for row in config.get("active_pairs", [])]
+    if not active_pairs:
+        active_pairs = [(i, org, drug) for i, (org, drug) in enumerate(mega.ORGANISM_DRUG_PAIRS)]
+    pair_to_org_id = {(organism, drug): int(org_id) for org_id, organism, drug in active_pairs}
+    log(f"[predict] active pairs in checkpoint: {active_pairs}")
+
+    manifest = pd.read_csv(manifest_path)
+    keep_rows = []
+    for (organism, drug), org_id in pair_to_org_id.items():
+        pair_rows = manifest[manifest["organism"].eq(organism) & manifest["drug"].eq(drug)].copy()
+        if pair_rows.empty:
+            log(f"[predict] no MARISMa rows for checkpoint pair: {organism} / {drug}")
+            continue
+        pair_rows["org_id"] = org_id
+        keep_rows.append(pair_rows)
+        n_r = int(pair_rows["label"].sum())
+        log(f"[predict] matched {organism} / {drug}: n={len(pair_rows):,} R={n_r:,}")
+
+    if not keep_rows:
+        raise ValueError("No MARISMa manifest rows overlap the Mega checkpoint active pairs")
+    pred_rows = pd.concat(keep_rows, ignore_index=True)
+    if args.max_prediction_rows is not None:
+        pred_rows = pred_rows.head(args.max_prediction_rows).copy()
+        log(f"[predict] max_prediction_rows cap active: {len(pred_rows):,}")
+
+    vectors = np.load(vectors_path, mmap_mode="r")
+    if vectors.ndim != 2 or vectors.shape[1] != N_BINS:
+        raise ValueError(f"Expected vectors with shape [n, {N_BINS}], got {vectors.shape}")
+    if int(pred_rows["vector_index"].max()) >= vectors.shape[0]:
+        raise ValueError("Manifest vector_index exceeds vector matrix rows")
+
+    models = load_mega_models(mega, config, run_dir)
+    temperature = float(config.get("temperature", 1.0))
+    tta_passes = int(args.tta_passes if args.tta_passes is not None else config.get("tta_passes", 1))
+    log(
+        f"[predict] scoring {len(pred_rows):,} rows using {len(models)} checkpoints, "
+        f"temperature={temperature:.4f}, tta_passes={tta_passes}"
+    )
+
+    probs = predict_vectors_for_rows(
+        mega=mega,
+        models=models,
+        vectors=vectors,
+        rows=pred_rows,
+        temperature=temperature,
+        batch_size=args.batch_size,
+        tta_passes=tta_passes,
+    )
+
+    out = pred_rows.copy()
+    out.insert(0, "model_name", args.model_name)
+    out["prob"] = probs.astype(float)
+    out["score"] = out["prob"]
+    output_columns = [
+        "model_name",
+        "site",
+        "year",
+        "isolate_id",
+        "spot_id",
+        "organism",
+        "drug",
+        "paper_drug",
+        "marisma_drug",
+        "drug_relationship",
+        "ecology_block",
+        "label",
+        "prob",
+        "score",
+        "vector_index",
+        "path",
+    ]
+    background_columns = [col for col in out.columns if col.startswith("background__")]
+    output_columns.extend(background_columns)
+    output_columns = [col for col in output_columns if col in out.columns]
+    out[output_columns].to_csv(prediction_csv, index=False)
+
+    report = {
+        "run_dir": str(run_dir),
+        "pair_profile": pair_profile,
+        "n_prediction_rows": int(len(out)),
+        "n_unique_vectors_scored": int(out["vector_index"].nunique()),
+        "n_models": int(len(models)),
+        "temperature": temperature,
+        "tta_passes": tta_passes,
+        "prediction_csv": str(prediction_csv),
+        "pairs": (
+            out.groupby(["organism", "drug", "marisma_drug"])
+            .agg(n=("label", "size"), resistant=("label", "sum"))
+            .reset_index()
+            .to_dict("records")
+        ),
+    }
+    (args.output_dir / "marisma_prediction_report.json").write_text(json.dumps(report, indent=2) + "\n")
+    log(f"[predict] wrote {prediction_csv} ({len(out):,} rows)")
+    log(json.dumps(report, indent=2))
+
+
 def guarded_not_implemented(stage: str) -> None:
     raise NotImplementedError(
-        f"Stage '{stage}' is intentionally not implemented yet. First generate "
-        "marisma_vectors_6000.npy and marisma_prediction_manifest.csv, then mount "
-        "the locked Mega checkpoints/config so prediction can write "
-        "marisma_mega_predictions_long.csv."
+        f"Stage '{stage}' is not implemented in this script yet. Run the exported "
+        "prediction CSV through scripts/run_background_audit.py."
     )
 
 
@@ -519,9 +789,12 @@ def main() -> None:
         preprocess(args)
     elif args.stage == "all":
         preprocess(args)
-        guarded_not_implemented("predict")
+        predict(args)
     else:
-        guarded_not_implemented(args.stage)
+        if args.stage == "predict":
+            predict(args)
+        else:
+            guarded_not_implemented(args.stage)
 
 
 if __name__ == "__main__":

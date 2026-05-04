@@ -24,6 +24,7 @@ FINAL = ROOT / "outputs" / "final_framework_outputs"
 ANALYSIS = ROOT / "outputs" / "analysis_outputs"
 FIG_DIR = ROOT / "manuscript" / "figures"
 TABLE_DIR = ROOT / "manuscript" / "tables"
+SOURCE_DIR = ROOT / "manuscript" / "source_data"
 
 
 BLUE = colors.HexColor("#2B6CB0")
@@ -55,6 +56,7 @@ DRUG_ORDER = ["Cipro", "Norflox", "Amox-Clav", "CRO", "CAZ", "FEP"]
 def ensure_dirs() -> None:
     FIG_DIR.mkdir(parents=True, exist_ok=True)
     TABLE_DIR.mkdir(parents=True, exist_ok=True)
+    SOURCE_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def short_drug(name: str) -> str:
@@ -101,6 +103,11 @@ def panel_label(c: canvas.Canvas, x: float, y: float, label: str) -> None:
     text(c, x, y, label, size=13, bold=True, fill=DARK)
 
 
+def white_page(c: canvas.Canvas, w: float, h: float) -> None:
+    c.setFillColor(colors.white)
+    c.rect(0, 0, w, h, stroke=0, fill=1)
+
+
 def axis_auc(c: canvas.Canvas, x0: float, x1: float, y: float, xmin: float = 0.45, xmax: float = 0.90) -> None:
     c.setStrokeColor(LIGHT_GRAY)
     c.setLineWidth(0.6)
@@ -128,12 +135,13 @@ def marker(c: canvas.Canvas, x: float, y: float, color, shape: str, hollow: bool
 
 def figure_1_framework() -> Path:
     path = FIG_DIR / "figure_1_framework.pdf"
-    c = canvas.Canvas(str(path), pagesize=landscape(letter))
-    w, h = landscape(letter)
-    text(c, 0.55 * inch, h - 0.45 * inch, "Fig. 1 | Background-matched MALDI-AMR audit", 14, True)
-    text(c, 0.55 * inch, h - 0.70 * inch, "A model-agnostic test of whether focal-drug prediction survives after controlling for co-resistance background.", 9, False, GRAY)
+    w, h = 7.2 * inch, 3.05 * inch
+    c = canvas.Canvas(str(path), pagesize=(w, h))
+    white_page(c, w, h)
+    text(c, 0.18 * inch, h - 0.32 * inch, "Fig. 1 | Background-matched MALDI-AMR audit", 12, True)
+    text(c, 0.18 * inch, h - 0.52 * inch, "A model-agnostic test of whether focal-drug prediction survives co-resistance background control.", 7.8, False, GRAY)
 
-    y = h - 1.65 * inch
+    y = h - 1.45 * inch
     boxes = [
         ("Model predictions", "isolate ID, site/year,\norganism, drug, label,\nprobability score"),
         ("Raw transfer", "External AUC/AUPR\nbefore background control"),
@@ -141,18 +149,18 @@ def figure_1_framework() -> Path:
         ("Centered audit", "Subtract each stratum's\nmean model score"),
         ("Interpretation", "retained focal signal,\npartial retention, or\nbackground-driven collapse"),
     ]
-    x0 = 0.55 * inch
-    box_w = 1.65 * inch
-    gap = 0.33 * inch
-    box_h = 1.28 * inch
+    x0 = 0.18 * inch
+    box_w = 1.16 * inch
+    gap = 0.25 * inch
+    box_h = 0.86 * inch
     for i, (title, body) in enumerate(boxes):
         x = x0 + i * (box_w + gap)
         c.setFillColor(PALE)
         c.setStrokeColor(LIGHT_GRAY)
         c.roundRect(x, y, box_w, box_h, 8, stroke=1, fill=1)
-        text(c, x + 0.12 * inch, y + box_h - 0.28 * inch, title, 9, True, DARK)
+        text(c, x + 0.08 * inch, y + box_h - 0.20 * inch, title, 6.6, True, DARK)
         for j, line in enumerate(body.split("\n")):
-            text(c, x + 0.12 * inch, y + box_h - 0.52 * inch - j * 0.18 * inch, line, 7.5, False, GRAY)
+            text(c, x + 0.08 * inch, y + box_h - 0.38 * inch - j * 0.14 * inch, line, 5.8, False, GRAY)
         if i < len(boxes) - 1:
             c.setStrokeColor(MID_GRAY)
             c.setLineWidth(1.0)
@@ -162,7 +170,7 @@ def figure_1_framework() -> Path:
             c.line(ax + gap - 0.15 * inch, ay + 4, ax + gap - 0.10 * inch, ay)
             c.line(ax + gap - 0.15 * inch, ay - 4, ax + gap - 0.10 * inch, ay)
 
-    panel_label(c, 0.60 * inch, 2.25 * inch, "Audit outputs")
+    panel_label(c, 0.22 * inch, 1.03 * inch, "Audit outputs")
     outputs = [
         ("raw AUC", "apparent external performance"),
         ("matched AUC", "performance in strata with both R and S isolates"),
@@ -171,11 +179,11 @@ def figure_1_framework() -> Path:
         ("cross-resistance network", "the label ecology the model could exploit"),
     ]
     for i, (name, desc) in enumerate(outputs):
-        yy = 1.95 * inch - i * 0.25 * inch
+        yy = 0.77 * inch - i * 0.16 * inch
         c.setFillColor(BLUE if i == 2 else LIGHT_GRAY)
-        c.circle(0.75 * inch, yy + 3, 3, stroke=0, fill=1)
-        text(c, 0.90 * inch, yy, name, 8.5, True, DARK)
-        text(c, 2.35 * inch, yy, desc, 8.5, False, GRAY)
+        c.circle(0.34 * inch, yy + 2, 2.2, stroke=0, fill=1)
+        text(c, 0.46 * inch, yy, name, 6.5, True, DARK)
+        text(c, 2.02 * inch, yy, desc, 6.5, False, GRAY)
 
     c.showPage()
     c.save()
@@ -186,6 +194,7 @@ def figure_2_primary_audit(primary: pd.DataFrame) -> Path:
     path = FIG_DIR / "figure_2_primary_background_audit.pdf"
     c = canvas.Canvas(str(path), pagesize=landscape(letter))
     w, h = landscape(letter)
+    white_page(c, w, h)
     text(c, 0.55 * inch, h - 0.45 * inch, "Fig. 2 | Focal-drug signal after background matching", 14, True)
     text(c, 0.55 * inch, h - 0.70 * inch, "Raw external AUC is compared with stratum-centered AUC. Centering removes score shifts shared by co-resistance strata.", 9, False, GRAY)
 
@@ -239,6 +248,7 @@ def figure_3_model_replication(model_df: pd.DataFrame) -> Path:
     path = FIG_DIR / "figure_3_model_family_replication.pdf"
     c = canvas.Canvas(str(path), pagesize=landscape(letter))
     w, h = landscape(letter)
+    white_page(c, w, h)
     text(c, 0.55 * inch, h - 0.45 * inch, "Fig. 3 | Background sensitivity across model families", 14, True)
     text(c, 0.55 * inch, h - 0.70 * inch, "CNN and multi-task LGBM outputs are audited using the same co-resistance strata.", 9, False, GRAY)
 
@@ -294,6 +304,7 @@ def figure_4_cross_resistance() -> Path:
 
     c = canvas.Canvas(str(path), pagesize=landscape(letter))
     w, h = landscape(letter)
+    white_page(c, w, h)
     text(c, 0.55 * inch, h - 0.45 * inch, "Fig. 4 | Co-resistance blocks define exploitable background", 14, True)
     text(c, 0.55 * inch, h - 0.70 * inch, "Phi correlations across E. coli resistance labels show that focal drug labels are embedded in structured resistance ecology.", 9, False, GRAY)
 
@@ -334,6 +345,7 @@ def figure_5_public_support(wgs: pd.DataFrame, enrichment: pd.DataFrame) -> Path
     path = FIG_DIR / "figure_5_public_wgs_proteomic_support.pdf"
     c = canvas.Canvas(str(path), pagesize=landscape(letter))
     w, h = landscape(letter)
+    white_page(c, w, h)
     text(c, 0.55 * inch, h - 0.45 * inch, "Fig. 5 | Public WGS-linked MALDI data support lineage encoding", 14, True)
     text(c, 0.55 * inch, h - 0.70 * inch, "A public Basel UPEC dataset links Bruker MALDI spectra, WGS-derived lineage labels, and susceptibility phenotypes.", 9, False, GRAY)
 
@@ -415,6 +427,7 @@ def write_latex_table(path: Path, caption: str, label: str, df: pd.DataFrame, no
         r"\small",
         rf"\caption{{{latex_escape(caption)}}}",
         rf"\label{{{label}}}",
+        r"\resizebox{\linewidth}{!}{%",
         rf"\begin{{tabular}}{{{align}}}",
         r"\toprule",
         " & ".join(latex_escape(col) for col in cols) + r" \\",
@@ -422,7 +435,7 @@ def write_latex_table(path: Path, caption: str, label: str, df: pd.DataFrame, no
     ]
     for _, row in df.iterrows():
         lines.append(" & ".join(latex_escape(row[col]) for col in cols) + r" \\")
-    lines.extend([r"\bottomrule", r"\end{tabular}"])
+    lines.extend([r"\bottomrule", r"\end{tabular}%", r"}"])
     if notes:
         lines.append(rf"\vspace{{2mm}}\parbox{{0.95\linewidth}}{{\footnotesize {latex_escape(notes)}}}")
     lines.append(r"\end{table}")
@@ -534,6 +547,32 @@ def make_tables(primary: pd.DataFrame, model_df: pd.DataFrame, wgs: pd.DataFrame
     )
 
 
+def write_source_data(primary: pd.DataFrame, model_df: pd.DataFrame, wgs: pd.DataFrame, enrichment: pd.DataFrame) -> None:
+    """Write figure source-data CSVs in a Nature-style layout."""
+    primary.copy().to_csv(SOURCE_DIR / "source_data_fig2_primary_background_audit.csv", index=False)
+
+    fig3 = model_df[
+        model_df["drug"].isin(["Cipro", "Amox-Clav"])
+        & model_df["site"].isin(["A-2018", "DRIAMS-C", "DRIAMS-D"])
+    ].copy()
+    fig3.to_csv(SOURCE_DIR / "source_data_fig3_model_family_replication.csv", index=False)
+
+    edges = pd.read_csv(ANALYSIS / "cross_resistance_network" / "cross_resistance_edges.csv")
+    edges[edges["site"].eq("ALL")].to_csv(SOURCE_DIR / "source_data_fig4_cross_resistance_edges_all_sites.csv", index=False)
+
+    wgs.copy().to_csv(SOURCE_DIR / "source_data_fig5a_public_wgs_maldi_auc.csv", index=False)
+    enrichment.copy().to_csv(SOURCE_DIR / "source_data_fig5b_proteomic_biomarker_enrichment.csv", index=False)
+
+    manifest = [
+        ["Figure 2", "source_data_fig2_primary_background_audit.csv", "Raw, matched and background-centered AUC values for the primary E. coli contrast."],
+        ["Figure 3", "source_data_fig3_model_family_replication.csv", "CNN and multi-task LGBM raw-to-centered audit rows."],
+        ["Figure 4", "source_data_fig4_cross_resistance_edges_all_sites.csv", "All-sites E. coli cross-resistance edges used for the phi heatmap and strongest-edge annotations."],
+        ["Figure 5a", "source_data_fig5a_public_wgs_maldi_auc.csv", "Public UPEC WGS-linked MALDI peak-feature AUCs."],
+        ["Figure 5b", "source_data_fig5b_proteomic_biomarker_enrichment.csv", "Published ST131 biomarker enrichment results."],
+    ]
+    pd.DataFrame(manifest, columns=["display_item", "file", "description"]).to_csv(SOURCE_DIR / "source_data_manifest.csv", index=False)
+
+
 def main() -> None:
     ensure_dirs()
     primary = pd.read_csv(FINAL / "table_1_primary_background_matched_audit.csv")
@@ -549,12 +588,16 @@ def main() -> None:
         figure_5_public_support(wgs, enrichment),
     ]
     make_tables(primary, model_df, wgs, enrichment)
+    write_source_data(primary, model_df, wgs, enrichment)
 
     print("Created figures:")
     for path in created:
         print(f"  {path.relative_to(ROOT)}")
     print("Created LaTeX tables:")
     for path in sorted(TABLE_DIR.glob("*.tex")):
+        print(f"  {path.relative_to(ROOT)}")
+    print("Created source-data files:")
+    for path in sorted(SOURCE_DIR.glob("*.csv")):
         print(f"  {path.relative_to(ROOT)}")
 
 

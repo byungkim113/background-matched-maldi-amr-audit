@@ -1,0 +1,13 @@
+site,drug,n_known,n_resistant,prevalence
+ALL,Ciprofloxacin,1102,408,0.370236
+ALL,Norfloxacin,279,125,0.448029
+ALL,Amoxicillin-Clavulanic acid,1154,389,0.337088
+ALL,Ceftriaxone,1170,231,0.197436
+ALL,Ceftazidime,1170,231,0.197436
+ALL,Cefepime,1167,215,0.184233
+MARISMa,Ciprofloxacin,1102,408,0.370236
+MARISMa,Norfloxacin,279,125,0.448029
+MARISMa,Amoxicillin-Clavulanic acid,1154,389,0.337088
+MARISMa,Ceftriaxone,1170,231,0.197436
+MARISMa,Ceftazidime,1170,231,0.197436
+MARISMa,Cefepime,1167,215,0.184233

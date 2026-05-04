@@ -209,3 +209,74 @@ notebooks/weis_lightgbm_background_audit_kaggle.ipynb
 ```
 
 is a Kaggle-oriented compatibility workflow. It clones the Borgwardt/Weis code, exports Weis-style predictions with isolate IDs, then runs the same model-agnostic background audit. Treat this as supplementary unless rerun with final locked settings and all intended external rows.
+
+## 11. MARISMa External Stress Test
+
+The script:
+
+```text
+scripts/marisma_end_to_end_kaggle.py
+```
+
+is a Kaggle-oriented external validation workflow for the MARISMa Bruker data.
+It has three stages:
+
+1. `preprocess`: read MARISMa `AMR.csv`, locate raw Bruker folders, and convert
+   spectra to 6,000-bin vectors over 2,000-20,000 Da.
+2. `predict`: apply a locked Mega/CNN checkpoint to the MARISMa vectors and write
+   a long prediction CSV.
+3. `audit`: run the model-agnostic background-matched audit on those MARISMa
+   predictions.
+
+Smoke-test preprocessing:
+
+```bash
+python scripts/marisma_end_to_end_kaggle.py \
+  --stage preprocess \
+  --amr-csv /kaggle/input/datasets/bfdf121/marisma2/AMR.csv \
+  --marisma-root /kaggle/input/datasets/bfdf121/marisma/MARISMa \
+  --output-dir /kaggle/working/marisma_preprocessed_smoke \
+  --max-spectra 50
+```
+
+Full preprocessing:
+
+```bash
+python scripts/marisma_end_to_end_kaggle.py \
+  --stage preprocess \
+  --amr-csv /kaggle/input/datasets/bfdf121/marisma2/AMR.csv \
+  --marisma-root /kaggle/input/datasets/bfdf121/marisma/MARISMa \
+  --output-dir /kaggle/working/marisma_preprocessed_full
+```
+
+Prediction from a locked Mega/CNN run:
+
+```bash
+python scripts/marisma_end_to_end_kaggle.py \
+  --stage predict \
+  --mega-model-path /kaggle/working/Mega_Model.py \
+  --run-dir /kaggle/input/datasets/bfdf121/newruns/runs/exp_ecoli_mechanism6_drugid_mae30 \
+  --vectors-npy /kaggle/input/datasets/bfdf121/marisma-vectors/results-5/marisma_preprocessed_full/marisma_vectors_6000.npy \
+  --manifest-csv /kaggle/input/datasets/bfdf121/marisma-vectors/results-5/marisma_preprocessed_full/marisma_prediction_manifest.csv \
+  --prediction-csv /kaggle/working/marisma_mega_predictions_long.csv \
+  --tta-passes 1
+```
+
+Audit:
+
+```bash
+python scripts/marisma_end_to_end_kaggle.py \
+  --stage audit \
+  --prediction-csv /kaggle/working/marisma_mega_predictions_long.csv \
+  --output-dir /kaggle/working/marisma_background_audit
+```
+
+The current locked snapshot is committed under:
+
+```text
+outputs/analysis_outputs/marisma_external_validation/
+```
+
+In that snapshot, raw MARISMa AUCs for the six E. coli mechanism6 targets are
+near chance. The audit therefore labels this as an external stress-test failure,
+not a positive deployment validation.

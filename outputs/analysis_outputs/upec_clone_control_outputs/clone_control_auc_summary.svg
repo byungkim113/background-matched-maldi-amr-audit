@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="520" viewBox="0 0 1100 520">
+<rect width="100%" height="100%" fill="white"/>
+<style>text{font-family:Arial,Helvetica,sans-serif;fill:#222} .small{font-size:12px}.label{font-size:11px}.title{font-size:17px;font-weight:700}.axis{stroke:#777;stroke-width:1}.tick{stroke:#ddd;stroke-width:1}</style>
+<text class="title" x="80" y="35">A. MALDI peak prediction within clone strata</text>
+<text class="title" x="630" y="35">B. Ciprofloxacin after WGS background controls</text>
+<line class="tick" x1="80.0" y1="55" x2="80.0" y2="465"/>
+<text class="small" x="70.0" y="495">0.3</text>
+<line class="tick" x1="188.6" y1="55" x2="188.6" y2="465"/>
+<text class="small" x="178.6" y="495">0.5</text>
+<line class="tick" x1="297.1" y1="55" x2="297.1" y2="465"/>
+<text class="small" x="287.1" y="495">0.7</text>
+<line class="tick" x1="405.7" y1="55" x2="405.7" y2="465"/>
+<text class="small" x="395.7" y="495">0.9</text>
+<line class="tick" x1="460.0" y1="55" x2="460.0" y2="465"/>
+<text class="small" x="450.0" y="495">1.0</text>
+<line class="axis" x1="188.6" y1="55" x2="188.6" y2="465" stroke-dasharray="4 4"/>
+<line class="tick" x1="630.0" y1="55" x2="630.0" y2="465"/>
+<text class="small" x="620.0" y="495">0.3</text>
+<line class="tick" x1="738.6" y1="55" x2="738.6" y2="465"/>
+<text class="small" x="728.6" y="495">0.5</text>
+<line class="tick" x1="847.1" y1="55" x2="847.1" y2="465"/>
+<text class="small" x="837.1" y="495">0.7</text>
+<line class="tick" x1="955.7" y1="55" x2="955.7" y2="465"/>
+<text class="small" x="945.7" y="495">0.9</text>
+<line class="tick" x1="1010.0" y1="55" x2="1010.0" y2="465"/>
+<text class="small" x="1000.0" y="495">1.0</text>
+<line class="axis" x1="738.6" y1="55" x2="738.6" y2="465" stroke-dasharray="4 4"/>
+<text class="label" x="80" y="66">is ST131 binary / overall</text>
+<rect x="80.0" y="70.0" width="343.0" height="24" fill="#4C78A8"/>
+<text class="small" x="428.0" y="87.0">0.932</text>
+<text class="label" x="80" y="104">ciprofloxacin R / overall</text>
+<rect x="80.0" y="108.0" width="246.9" height="24" fill="#4C78A8"/>
+<text class="small" x="331.9" y="125.0">0.755</text>
+<text class="label" x="80" y="142">ciprofloxacin R / ST131_only</text>
+<rect x="80.0" y="146.0" width="231.0" height="24" fill="#4C78A8"/>
+<text class="small" x="316.0" y="163.0">0.725</text>
+<text class="label" x="80" y="180">ciprofloxacin R / non_ST131_only</text>
+<rect x="80.0" y="184.0" width="187.0" height="24" fill="#4C78A8"/>
+<text class="small" x="272.0" y="201.0">0.644</text>
+<text class="label" x="80" y="218">ceftriaxone R / overall</text>
+<rect x="80.0" y="222.0" width="211.1" height="24" fill="#4C78A8"/>
+<text class="small" x="296.1" y="239.0">0.689</text>
+<text class="label" x="80" y="256">ceftriaxone R / ST131_only</text>
+<rect x="80.0" y="260.0" width="116.7" height="24" fill="#4C78A8"/>
+<text class="small" x="201.7" y="277.0">0.515</text>
+<text class="label" x="80" y="294">ceftriaxone R / non_ST131_only</text>
+<rect x="80.0" y="298.0" width="134.2" height="24" fill="#4C78A8"/>
+<text class="small" x="219.2" y="315.0">0.547</text>
+<text class="label" x="630" y="60">is_ST131_binary</text>
+<rect x="630.0" y="64.0" width="246.9" height="24" fill="#4C78A8"/>
+<text class="small" x="881.9" y="81.0">0.755</text>
+<rect x="630.0" y="90.0" width="218.1" height="24" fill="#F58518"/>
+<text class="small" x="853.1" y="107.0">0.702</text>
+<rect x="630.0" y="116.0" width="176.5" height="24" fill="#54A24B"/>
+<text class="small" x="811.5" y="133.0">0.625</text>
+<text class="label" x="630" y="148">ST</text>
+<rect x="630.0" y="152.0" width="246.9" height="24" fill="#4C78A8"/>
+<text class="small" x="881.9" y="169.0">0.755</text>
+<rect x="630.0" y="178.0" width="324.9" height="24" fill="#F58518"/>
+<text class="small" x="959.9" y="195.0">0.898</text>
+<rect x="630.0" y="204.0" width="143.2" height="24" fill="#54A24B"/>
+<text class="small" x="778.2" y="221.0">0.564</text>
+<text class="label" x="630" y="236">phylogroup_rough</text>
+<rect x="630.0" y="240.0" width="246.9" height="24" fill="#4C78A8"/>
+<text class="small" x="881.9" y="257.0">0.755</text>
+<rect x="630.0" y="266.0" width="116.9" height="24" fill="#F58518"/>
+<text class="small" x="751.9" y="283.0">0.515</text>
+<rect x="630.0" y="292.0" width="250.6" height="24" fill="#54A24B"/>
+<text class="small" x="885.6" y="309.0">0.762</text>
+<rect x="630" y="435" width="12" height="12" fill="#4C78A8"/>
+<text class="small" x="648" y="445">raw</text>
+<rect x="630" y="453" width="12" height="12" fill="#F58518"/>
+<text class="small" x="648" y="463">lineage only</text>
+<rect x="630" y="471" width="12" height="12" fill="#54A24B"/>
+<text class="small" x="648" y="481">lineage-centered</text>
+<text class="small" x="250.0" y="515">AUC</text>
+<text class="small" x="800.0" y="515">AUC</text>
+</svg>

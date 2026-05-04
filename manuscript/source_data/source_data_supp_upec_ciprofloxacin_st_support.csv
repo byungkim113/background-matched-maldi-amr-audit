@@ -1,0 +1,17 @@
+ST,n,susceptible,resistant,has_both_classes,resistant_fraction
+69,51,49,2,True,0.0392156862745098
+131,47,17,30,True,0.6382978723404256
+73,40,40,0,False,0.0
+95,28,28,0,False,0.0
+58,10,10,0,False,0.0
+127,9,9,0,False,0.0
+14,9,9,0,False,0.0
+10,8,7,1,True,0.125
+1193,8,0,8,False,1.0
+141,8,8,0,False,0.0
+38,8,6,2,True,0.25
+12,7,7,0,False,0.0
+404,6,6,0,False,0.0
+162,5,1,4,True,0.8
+62,4,4,0,False,0.0
+88,4,4,0,False,0.0

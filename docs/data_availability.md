@@ -8,6 +8,8 @@ This repository is organized so reviewers can inspect the framework code, run th
 - Mega/CNN training and export wrappers.
 - LightGBM baseline wrapper.
 - Public UPEC/Basel manifest tables and processed Bruker median-peak features used by the WGS-linked support analysis.
+- Derived MARISMa external stress-test outputs generated from the MARISMa
+  Kaggle snapshot and locked Mega/CNN predictions.
 - Derived audit outputs, final tables, and final figures under `outputs/`.
 - A locked Mega CNN checkpoint archive under `model_checkpoints/mega_cnn_archive_2026-04-22/`.
 
@@ -16,6 +18,7 @@ This repository is organized so reviewers can inspect the framework code, run th
 - Raw DRIAMS spectra, raw DRIAMS AST exports, or patient-level clinical records.
 - Raw ENA FASTQ files from PRJEB55855.
 - Raw Bruker FID archives or raw OSF spectrum archives.
+- Raw MARISMa Bruker spectra or the upstream MARISMa AMR label file.
 - Any private hospital metadata beyond the derived, de-identified analysis tables already committed.
 
 ## External Data Required For Full Reproduction
@@ -23,6 +26,11 @@ This repository is organized so reviewers can inspect the framework code, run th
 To reproduce the full DRIAMS experiments from raw spectra, download the DRIAMS data independently and pass the local root with `--data-root`. The expected structure is a directory containing `DRIAMS-A`, `DRIAMS-B`, `DRIAMS-C`, and `DRIAMS-D`.
 
 To reproduce the public UPEC support analysis from upstream files, download the Cuénod/Basel UPEC metadata and Bruker median-peak data from the upstream sources listed in [sources.md](sources.md). The repository includes the processed files used for the current result snapshot, but not the raw archives.
+
+To reproduce the MARISMa external stress test, use the upstream MARISMa Bruker
+spectra and `AMR.csv` from the dataset provider/Kaggle snapshot, then run
+`scripts/marisma_end_to_end_kaggle.py`. The repository includes only derived
+MARISMa prediction and audit outputs, not the raw spectra.
 
 ## Prediction CSVs Versus Checkpoints
 

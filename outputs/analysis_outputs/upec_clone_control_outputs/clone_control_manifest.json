@@ -1,0 +1,14 @@
+{
+  "metadata": "/Users/byungkim/Documents/Codex/2026-04-23/files-mentioned-by-the-user-multidrug/background-matched-maldi-amr-audit/data_manifests/upec_master_metadata.tsv",
+  "median_peaks": "/Users/byungkim/Documents/Codex/2026-04-23/files-mentioned-by-the-user-multidrug/background-matched-maldi-amr-audit/data_manifests/Bruker_csv_medianpeaks_df.csv",
+  "n_isolates_with_features": 407,
+  "n_features": 360,
+  "mz_min": 2000.0,
+  "mz_max": 20000.0,
+  "bin_width": 50.0,
+  "folds": 5,
+  "bootstrap_n": 1000,
+  "seed": 17,
+  "min_pos_per_group": 1,
+  "min_neg_per_group": 1
+}

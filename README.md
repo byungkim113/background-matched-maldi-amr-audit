@@ -30,6 +30,7 @@ scripts/
   make_paper_figures.py
   make_final_framework_tables_figures.py
   export_weis_predictions_for_audit.py
+  marisma_end_to_end_kaggle.py
   background_matched_contrastive_kaggle.py
   build_cross_resistance_network.py
 
@@ -56,6 +57,7 @@ manuscript/
 - `scripts/export_mega_predictions_for_audit.py` — **Mega/CNN locked-prediction exporter**. Use this after a completed Mega run to create `mega_predictions_long.csv`, the isolate-level prediction table required by the background-matched audit.
 - `run_background_audit_framework.py` — **model-agnostic audit engine**. Use this on any long prediction CSV from Mega/CNN, LGBM, Weis-style models, or external models.
 - `scripts/run_background_audit.py` — **thin audit wrapper** for the default prediction CSV format.
+- `scripts/marisma_end_to_end_kaggle.py` — **MARISMa external stress-test workflow**. Vectorizes MARISMa Bruker spectra, exports Mega/CNN predictions, and runs the same audit on the external MARISMa snapshot.
 
 ## Core Claim
 
@@ -145,6 +147,9 @@ The included outputs summarize:
 - Cross-resistance network structure in the E. coli expanded panel.
 - Public WGS-linked UPEC evidence that MALDI spectra encode ST131 lineage.
 - Published ST131 biomarker overlap/enrichment for discriminative MALDI peaks.
+- MARISMa external stress-test outputs showing that the DRIAMS-trained Mega/CNN
+  model does not transfer as-is to the current MARISMa E. coli snapshot; the
+  audit flags all six E. coli targets as weak raw signal.
 
 These outputs are analysis artifacts, not raw clinical data.
 

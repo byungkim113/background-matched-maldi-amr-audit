@@ -1,0 +1,54 @@
+{
+  "run_dir": "/kaggle/input/datasets/bfdf121/newruns/runs/exp_ecoli_mechanism6_drugid_mae30",
+  "pair_profile": "ecoli_mechanism6",
+  "n_prediction_rows": 9597,
+  "n_unique_vectors_scored": 1585,
+  "n_models": 5,
+  "temperature": 0.8466228169354396,
+  "tta_passes": 1,
+  "prediction_csv": "/kaggle/working/marisma_mega_predictions_long.csv",
+  "pairs": [
+    {
+      "organism": "Escherichia coli",
+      "drug": "Amoxicillin-Clavulanic acid",
+      "marisma_drug": "Amoxicillin/Clavulanic acid",
+      "n": 1848,
+      "resistant": 731
+    },
+    {
+      "organism": "Escherichia coli",
+      "drug": "Cefepime",
+      "marisma_drug": "Cefepime",
+      "n": 1880,
+      "resistant": 584
+    },
+    {
+      "organism": "Escherichia coli",
+      "drug": "Ceftazidime",
+      "marisma_drug": "Ceftazidime",
+      "n": 1881,
+      "resistant": 619
+    },
+    {
+      "organism": "Escherichia coli",
+      "drug": "Ceftriaxone",
+      "marisma_drug": "Cefotaxime",
+      "n": 1881,
+      "resistant": 619
+    },
+    {
+      "organism": "Escherichia coli",
+      "drug": "Ciprofloxacin",
+      "marisma_drug": "Ciprofloxacin",
+      "n": 1759,
+      "resistant": 807
+    },
+    {
+      "organism": "Escherichia coli",
+      "drug": "Norfloxacin",
+      "marisma_drug": "Norfloxacin",
+      "n": 348,
+      "resistant": 180
+    }
+  ]
+}

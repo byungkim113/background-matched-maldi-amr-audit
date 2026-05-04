@@ -53,9 +53,32 @@ Useful links:
 
 - Article DOI: <https://doi.org/10.1038/s41598-019-45051-z>
 
+## MARISMa External Bruker Snapshot
+
+- Dataset: MARISMa Bruker MALDI-TOF spectra and AMR labels.
+- Kaggle snapshot used in the current workflow: `bfdf121/marisma`.
+- Use in this repository: independent external stress test for a locked
+  DRIAMS-trained Mega/CNN checkpoint. The derived prediction table and audit
+  outputs are stored under
+  `outputs/analysis_outputs/marisma_external_validation/`.
+- Important limitation: the AMR file used for this snapshot contains 2018-2024
+  records overall, but the three target organisms evaluated here appear only in
+  2024. Treat the current result as an external dataset stress test, not a
+  longitudinal MARISMa deployment study.
+- Redistribution note: raw MARISMa spectra and raw AMR labels are not included
+  in this repository. Users should obtain them from the upstream provider or
+  Kaggle snapshot.
+
+Useful links:
+
+- Kaggle snapshot: <https://www.kaggle.com/datasets/bfdf121/marisma>
+- Zenodo record discussed for MARISMa v2: <https://zenodo.org/records/17201597>
+
 ## Citation And Licensing Checklist Before Public Release
 
 - Add any manuscript DOI for this repository when the paper is accepted.
 - Confirm whether processed UPEC median-peak tables can remain in a public repository or should be distributed by script-only download instructions.
+- Confirm MARISMa redistribution terms before releasing any raw spectra or raw
+  AMR tables; this repository currently includes only derived outputs.
 - Decide whether model checkpoints stay in GitHub, move to Zenodo/OSF, or are released only as prediction CSVs.
 - Cite this repository together with upstream data/code sources in any manuscript using these artifacts.
