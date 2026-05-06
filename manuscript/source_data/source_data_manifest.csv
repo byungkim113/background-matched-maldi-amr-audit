@@ -4,6 +4,3 @@ Figure 3,source_data_fig3_model_family_replication.csv,CNN and multi-task LGBM r
 Figure 4,source_data_fig4_cross_resistance_edges_all_sites.csv,All-sites E. coli cross-resistance edges used for the phi heatmap and strongest-edge annotations.
 Figure 5a,source_data_fig5a_public_wgs_maldi_auc.csv,Public UPEC WGS-linked MALDI peak-feature AUCs.
 Figure 5b,source_data_fig5b_proteomic_biomarker_enrichment.csv,Published ST131 biomarker enrichment results.
-Table 6,source_data_table6_upec_clone_control_subset_auc.csv,Public UPEC subset AUCs for lineage and resistance targets.
-Table 6,source_data_table6_upec_lineage_controlled_auc.csv,Public UPEC lineage-controlled centered AUCs by ST131 status sequence type and phylogroup.
-Supplementary,source_data_supp_upec_ciprofloxacin_st_support.csv,Sequence-type-level ciprofloxacin resistant and susceptible counts in the public UPEC cohort.

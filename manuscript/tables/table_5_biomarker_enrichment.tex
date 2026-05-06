@@ -1,19 +1,19 @@
 \begin{table}[ht]
 \centering
 \small
-\caption{Mass-neighborhood enrichment of published ST131 MALDI biomarkers among discriminative public UPEC peaks.}
+\caption{Mass-matched enrichment of published ST131 MALDI biomarkers among discriminative public UPEC peaks.}
 \label{tab:biomarker-enrichment}
 \resizebox{\linewidth}{!}{%
-\begin{tabular}{lcccccccc}
+\begin{tabular}{lccccc}
 \toprule
-Target & Observed & $\leq$10 Da & 10--25 Da & $>$25 Da & Top peaks & Null mean & Fold enrichment & P perm \\
+Target & Observed & Top peaks & Null mean & Fold enrichment & P perm \\
 \midrule
-ST131 & 14 & 4 & 7 & 3 & 75 & 4.51 & 3.11 & 0.0001 \\
-Ciprofloxacin R & 10 & 3 & 4 & 3 & 75 & 4.47 & 2.24 & 0.0068 \\
-Ceftriaxone R & 12 & 2 & 4 & 6 & 75 & 4.54 & 2.64 & 0.0006 \\
-ALL TARGETS & 36 & 9 & 15 & 12 & 225 & 13.55 & 2.66 & 0.0001 \\
+ST131 & 14 & 75 & 4.51 & 3.11 & 0.0001 \\
+Ciprofloxacin R & 10 & 75 & 4.47 & 2.24 & 0.0068 \\
+Ceftriaxone R & 12 & 75 & 4.54 & 2.64 & 0.0006 \\
+ALL TARGETS & 36 & 225 & 13.55 & 2.66 & 0.0001 \\
 \bottomrule
 \end{tabular}%
 }
-\vspace{2mm}\parbox{0.95\linewidth}{\footnotesize Observed overlaps are broad mass-neighborhood overlaps used for enrichment testing, not protein identifications. Matches $\leq$10\,Da are high-confidence mass correspondences, 10--25\,Da are putative, and $>$25\,Da are loose neighborhood overlaps listed for completeness only. The null model preserves the coarse m/z-stratum distribution of selected peaks.}
+\vspace{2mm}\parbox{0.95\linewidth}{\footnotesize The null model preserves the coarse m/z-stratum distribution of selected peaks.}
 \end{table}

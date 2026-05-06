@@ -33,6 +33,7 @@ RDKit is only required for Morgan-fingerprint drug conditioning. If you need tha
 ```bash
 python -m unittest tests.test_background_audit_framework
 python -m unittest tests.test_mega_model_regressions
+python -m unittest tests.test_export_weis_predictions_for_audit
 ```
 
 Syntax-check the main scripts:
@@ -208,7 +209,49 @@ The notebook:
 notebooks/weis_lightgbm_background_audit_kaggle.ipynb
 ```
 
-is a Kaggle-oriented compatibility workflow. It clones the Borgwardt/Weis code, exports Weis-style predictions with isolate IDs, then runs the same model-agnostic background audit. Treat this as supplementary unless rerun with final locked settings and all intended external rows.
+is a Kaggle-oriented compatibility workflow. It clones the Borgwardt/Weis code, exports predictions with isolate IDs, then runs the same model-agnostic background audit.
+
+For the closest current rerun of the original Weis/Borgwardt setup, use the upstream repository and the original organism/drug panel:
+
+```bash
+git clone https://github.com/BorgwardtLab/maldi_amr.git /kaggle/working/maldi_amr
+
+python scripts/export_weis_predictions_for_audit.py \
+  --weis-repo /kaggle/working/maldi_amr \
+  --driams-root /kaggle/input/datasets/drscarlat/driams \
+  --audit-script scripts/run_background_audit.py \
+  --panel weis-core \
+  --model lightgbm \
+  --external-row-policy all \
+  --seed 35 \
+  --n-folds 2 \
+  --bootstrap-n 500 \
+  --permutation-n 500 \
+  --output-dir outputs/weis_lightgbm_full_external_audit
+```
+
+Use `--external-row-policy all` for paper-facing background matching. The legacy `--external-row-policy stratified` option intentionally scores only the stratified external subset and can leave too few rows for matched strata, especially at DRIAMS-B.
+
+Use the custom E. coli six-drug panel with:
+
+```bash
+python scripts/export_weis_predictions_for_audit.py \
+  --weis-repo /kaggle/working/maldi_amr \
+  --driams-root /kaggle/input/datasets/drscarlat/driams \
+  --audit-script scripts/run_background_audit.py \
+  --panel custom \
+  --species "Escherichia coli" \
+  --drugs "Ciprofloxacin,Norfloxacin,Amoxicillin-Clavulanic acid,Ceftriaxone,Ceftazidime,Cefepime" \
+  --model lightgbm \
+  --external-row-policy all \
+  --seed 35 \
+  --n-folds 2 \
+  --output-dir outputs/weis_lightgbm_ecoli6_external_audit
+```
+
+Treat these as Weis-code reruns. Exact publication parity still requires comparing the raw metrics against the upstream Weis result JSONs and confirming the same preprocessing, splits, and hyperparameter search space.
+
+To audit multiple upstream model families, rerun the same command with different `--model` values such as `lr`, `rf`, `svm-linear`, `svm-rbf`, `lightgbm`, and `mlp`, writing each model to its own output directory.
 
 ## 11. MARISMa External Stress Test
 

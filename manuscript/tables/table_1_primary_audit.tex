@@ -4,20 +4,20 @@
 \caption{Primary background-matched audit for the E. coli ciprofloxacin and amoxicillin-clavulanic acid contrast.}
 \label{tab:primary-audit}
 \resizebox{\linewidth}{!}{%
-\begin{tabular}{lccccccccc}
+\begin{tabular}{lcccccccc}
 \toprule
-Pair & Site & Raw AUC & Centered AUC & Pairwise acc. & Retention (\%) & n matched & P perm & Adequacy & Interpretation \\
+Pair & Site & Raw AUC & Centered AUC & Retention (\%) & n matched & P perm & Adequacy & Interpretation \\
 \midrule
-E. coli / Cipro & A-2018 & 0.823 (0.799-0.849) & 0.703 (0.664-0.747) & 0.754 & 61.9 & 836 & 0.002 & interpretable & Retained residual signal \\
-E. coli / Cipro & DRIAMS-B & 0.774 (0.692-0.841) & 0.860 (0.636-1.000) & 0.860 & 11.8 & 25 & 0.010 & caution\_low\_n\_matched & Caution; low matched support \\
-E. coli / Cipro & DRIAMS-C & 0.750 (0.702-0.795) & 0.646 (0.576-0.719) & 0.675 & 47.6 & 422 & 0.002 & interpretable & Retained residual signal \\
-E. coli / Cipro & DRIAMS-D & 0.671 (0.640-0.700) & 0.596 (0.565-0.624) & 0.616 & 98.4 & 1908 & 0.002 & interpretable & Retained residual signal \\
-E. coli / Amox-Clav & A-2018 & 0.650 (0.619-0.685) & 0.541 (0.504-0.576) & 0.546 & 92.2 & 1261 & 0.038 & interpretable & Weak or uncertain residual signal \\
-E. coli / Amox-Clav & DRIAMS-B & 0.694 (0.611-0.765) & 0.576 (0.410-0.715) & 0.576 & 62.1 & 123 & 0.204 & interpretable & Weak or uncertain residual signal \\
-E. coli / Amox-Clav & DRIAMS-C & 0.535 (0.494-0.577) & 0.497 (0.449-0.547) & 0.484 & 89.2 & 805 & 0.675 & interpretable & Near chance after matching \\
-E. coli / Amox-Clav & DRIAMS-D & 0.557 (0.521-0.590) & 0.486 (0.450-0.521) & 0.471 & 97.4 & 1943 & 0.854 & interpretable & Near chance after matching \\
+E. coli / Cipro & A-2018 & 0.823 (0.799-0.849) & 0.703 (0.664-0.747) & 61.9 & 836 & 0.002 & interpretable & Retained residual signal \\
+E. coli / Cipro & DRIAMS-B & 0.774 (0.692-0.841) & 0.860 (0.636-1.000) & 11.8 & 25 & 0.010 & caution\_low\_n\_matched & Caution; low matched support \\
+E. coli / Cipro & DRIAMS-C & 0.750 (0.702-0.795) & 0.646 (0.576-0.719) & 47.6 & 422 & 0.002 & interpretable & Retained residual signal \\
+E. coli / Cipro & DRIAMS-D & 0.671 (0.640-0.700) & 0.596 (0.565-0.624) & 98.4 & 1908 & 0.002 & interpretable & Retained residual signal \\
+E. coli / Amox-Clav & A-2018 & 0.650 (0.619-0.685) & 0.541 (0.504-0.576) & 92.2 & 1261 & 0.038 & interpretable & Weak or uncertain residual signal \\
+E. coli / Amox-Clav & DRIAMS-B & 0.694 (0.611-0.765) & 0.576 (0.410-0.715) & 62.1 & 123 & 0.204 & interpretable & Weak or uncertain residual signal \\
+E. coli / Amox-Clav & DRIAMS-C & 0.535 (0.494-0.577) & 0.497 (0.449-0.547) & 89.2 & 805 & 0.675 & interpretable & Near chance after matching \\
+E. coli / Amox-Clav & DRIAMS-D & 0.557 (0.521-0.590) & 0.486 (0.450-0.521) & 97.4 & 1943 & 0.854 & interpretable & Near chance after matching \\
 \bottomrule
 \end{tabular}%
 }
-\vspace{2mm}\parbox{0.95\linewidth}{\footnotesize Centered AUC is computed after subtracting the mean model score within each co-resistance background stratum and then pooling retained isolates. Pairwise acc. counts only within-stratum resistant-susceptible comparisons and is the direct within-background statistic. Caution rows are reported but not used as the main evidence.}
+\vspace{2mm}\parbox{0.95\linewidth}{\footnotesize Centered AUC is computed after subtracting the mean model score within each co-resistance background stratum. Caution rows are reported but not used as the main evidence.}
 \end{table}

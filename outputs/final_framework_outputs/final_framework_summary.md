@@ -9,6 +9,7 @@ MALDI-TOF AMR models should be interpreted as background-sensitive predictors: r
 - In interpretable Amox-Clav rows, CNN mean raw-minus-centered drop is 0.084; LGBM multi mean drop is 0.116.
 - In interpretable Cipro rows, CNN mean background-centered AUC is 0.648; LGBM multi mean background-centered AUC is 0.618.
 - Low-retention cephalosporin rows are explicitly flagged rather than overclaimed.
+- Co-resistance stratification reports 907 strata, including 166 interpretable strata across burden bins and exact background signatures.
 - Public WGS-linked Bruker MALDI data show ST131 AUC=0.906, higher than Cipro-R and Ceftriaxone-R peak-only AUCs.
 - Published ST131 biomarker enrichment is strongest for ST131 itself (3.11x) and remains significant for Cipro-R and Ceftriaxone-R discriminative peaks.
 
@@ -19,7 +20,9 @@ MALDI-TOF AMR models should be interpreted as background-sensitive predictors: r
 - Table 3: ecology-aware interpretation, linking background sensitivity to co-resistance blocks.
 - Table 4: locked ecoli_mechanism6 transfer prediction assessment.
 - Table 5: top cross-resistance network edges.
-- Table 6 files: public WGS-linked lineage/resistance support and proteomic biomarker enrichment.
+- Table 6: block-level source and external transfer behavior.
+- Table 7-10 files: public WGS-linked lineage/resistance support and proteomic biomarker enrichment.
+- Table 11: co-resistance stratification showing where focal-drug signal lives inside burden/signature strata.
 
 ## Figure Captions
 
@@ -38,6 +41,7 @@ Figure 5. Framework schematic.
 ## Output Files
 
 - `table_10_top_published_st131_peak_overlaps.csv`
+- `table_11_co_resistance_stratification.csv`
 - `table_1_primary_background_matched_audit.csv`
 - `table_2_cnn_vs_lgbm_multi_background_audit.csv`
 - `table_3_ecology_interpretation.csv`

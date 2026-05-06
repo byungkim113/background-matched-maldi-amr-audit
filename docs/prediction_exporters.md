@@ -64,4 +64,29 @@ The Weis/Borgwardt compatibility script is:
 scripts/export_weis_predictions_for_audit.py
 ```
 
-That script is supplementary and Kaggle-oriented because the upstream Weis/Borgwardt workflow has its own dependencies and runtime assumptions.
+That script is supplementary and Kaggle-oriented because the upstream Weis/Borgwardt workflow has its own dependencies and runtime assumptions. It reruns the original BorgwardtLab `maldi_amr` model code and writes isolate-level predictions that the background audit can consume.
+
+Recommended full external-row audit command:
+
+```bash
+python scripts/export_weis_predictions_for_audit.py \
+  --weis-repo /kaggle/working/maldi_amr \
+  --driams-root /kaggle/input/datasets/drscarlat/driams \
+  --audit-script scripts/run_background_audit.py \
+  --panel weis-core \
+  --model lightgbm \
+  --external-row-policy all \
+  --seed 35 \
+  --n-folds 2 \
+  --output-dir outputs/weis_lightgbm_full_external_audit
+```
+
+Important options:
+
+- `--panel weis-core` uses the organism/drug panel from the original Weis/Borgwardt repository.
+- `--panel custom` uses the supplied `--species` and `--drugs` arguments, which is useful for the E. coli six-drug panel used in this project.
+- `--external-row-policy all` scores all eligible external rows and is the recommended setting for background matching.
+- `--external-row-policy stratified` reproduces the older small external subset diagnostic and should not be used for primary audit figures.
+- `--model` is passed directly into upstream `amr_maldi_ml.models.run_experiment`; original supported values include `lr`, `svm-rbf`, `svm-linear`, `rf`, `lightgbm`, and `mlp`. Run separate exports for separate model families.
+
+The output includes `weis_reproduction_report.md` and `weis_reproduction_report.json`. Treat these results as a Weis-code rerun until the raw AUCs are checked against the upstream Weis result JSONs for exact publication parity.

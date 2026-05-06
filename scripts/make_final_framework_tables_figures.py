@@ -27,6 +27,7 @@ INPUTS = {
     "prediction_assessment": ROOT / "outputs" / "analysis_outputs" / "ecoli_mechanism6_pair_prediction_assessment.csv",
     "block_site": ROOT / "outputs" / "analysis_outputs" / "ecoli_mechanism6_block_site_summary.csv",
     "cross_edges": ROOT / "outputs" / "analysis_outputs" / "cross_resistance_network" / "cross_resistance_edges.csv",
+    "co_resistance_stratification": ROOT / "outputs" / "analysis_outputs" / "co_resistance_stratification" / "co_resistance_stratification.csv",
     "wgs_auc": ROOT / "outputs" / "analysis_outputs" / "upec_wgs_validation_outputs" / "centroid_binary_cv_results.csv",
     "wgs_assoc": ROOT / "outputs" / "analysis_outputs" / "upec_wgs_validation_outputs" / "st131_resistance_associations.csv",
     "proteomic_enrichment": ROOT / "outputs" / "analysis_outputs" / "updated_proteomic_overlap_outputs" / "updated_proteomic_overlap_permutation_enrichment.csv",
@@ -400,6 +401,7 @@ def build_tables() -> dict[str, pd.DataFrame]:
     pred = pd.read_csv(INPUTS["prediction_assessment"])
     block_site = pd.read_csv(INPUTS["block_site"])
     edges = pd.read_csv(INPUTS["cross_edges"])
+    stratification = pd.read_csv(INPUTS["co_resistance_stratification"])
     wgs_auc = pd.read_csv(INPUTS["wgs_auc"])
     wgs_assoc = pd.read_csv(INPUTS["wgs_assoc"])
     enrich = pd.read_csv(INPUTS["proteomic_enrichment"])
@@ -511,6 +513,25 @@ def build_tables() -> dict[str, pd.DataFrame]:
     block_summary["auc_source_delta"] = block_summary["auc_source_delta"].round(3)
     block_summary["aupr_source_delta"] = block_summary["aupr_source_delta"].round(3)
 
+    strat_table = stratification.copy()
+    strat_table["drug"] = strat_table["drug"].map(short_drug)
+    strat_table = strat_table[
+        [
+            "site",
+            "drug",
+            "stratum_type",
+            "stratum_value",
+            "n",
+            "n_r",
+            "n_s",
+            "auc",
+            "mean_prob_r",
+            "mean_prob_s",
+            "adequacy_label",
+            "interpretation",
+        ]
+    ]
+
     return {
         "table1": table1,
         "table2": table2,
@@ -522,6 +543,7 @@ def build_tables() -> dict[str, pd.DataFrame]:
         "table6_proteomic_enrichment": enrich_table,
         "table6_top_overlaps": top_overlap,
         "block_site_summary": block_summary,
+        "co_resistance_stratification": strat_table,
         "cnn_lgbm_raw": cnn_lgbm,
         "cross_edges_raw": edges,
         "wgs_auc_raw": wgs_auc[wgs_auc["status"].eq("ok")].copy(),
@@ -536,6 +558,8 @@ def write_summary(tables: dict[str, pd.DataFrame], figure_paths: list[Path]) -> 
     cipro = interp[interp["drug"].eq("Cipro")]
     enrich = tables["table6_proteomic_enrichment"]
     wgs = tables["table6_wgs_auc"]
+    strat = tables["co_resistance_stratification"]
+    strat_interp = strat[strat["adequacy_label"].eq("interpretable")]
 
     def mean_or_nan(s: pd.Series) -> float:
         return float(pd.to_numeric(s, errors="coerce").mean())
@@ -552,6 +576,7 @@ def write_summary(tables: dict[str, pd.DataFrame], figure_paths: list[Path]) -> 
         f"- In interpretable Amox-Clav rows, CNN mean raw-minus-centered drop is {mean_or_nan(amox['cnn_raw_minus_centered']):.3f}; LGBM multi mean drop is {mean_or_nan(amox['lgbm_raw_minus_centered']):.3f}.",
         f"- In interpretable Cipro rows, CNN mean background-centered AUC is {mean_or_nan(cipro['cnn_centered_auc']):.3f}; LGBM multi mean background-centered AUC is {mean_or_nan(cipro['lgbm_centered_auc']):.3f}.",
         "- Low-retention cephalosporin rows are explicitly flagged rather than overclaimed.",
+        f"- Co-resistance stratification reports {len(strat)} strata, including {len(strat_interp)} interpretable strata across burden bins and exact background signatures.",
         f"- Public WGS-linked Bruker MALDI data show ST131 AUC={float(wgs.loc[wgs['target'].eq('ST131'), 'auc'].iloc[0]):.3f}, higher than Cipro-R and Ceftriaxone-R peak-only AUCs.",
         f"- Published ST131 biomarker enrichment is strongest for ST131 itself ({float(enrich.loc[enrich['target'].eq('ST131'), 'fold_enrichment'].iloc[0]):.2f}x) and remains significant for Cipro-R and Ceftriaxone-R discriminative peaks.",
         "",
@@ -562,7 +587,9 @@ def write_summary(tables: dict[str, pd.DataFrame], figure_paths: list[Path]) -> 
         "- Table 3: ecology-aware interpretation, linking background sensitivity to co-resistance blocks.",
         "- Table 4: locked ecoli_mechanism6 transfer prediction assessment.",
         "- Table 5: top cross-resistance network edges.",
-        "- Table 6 files: public WGS-linked lineage/resistance support and proteomic biomarker enrichment.",
+        "- Table 6: block-level source and external transfer behavior.",
+        "- Table 7-10 files: public WGS-linked lineage/resistance support and proteomic biomarker enrichment.",
+        "- Table 11: co-resistance stratification showing where focal-drug signal lives inside burden/signature strata.",
         "",
         "## Figure Captions",
         "",
@@ -653,6 +680,12 @@ def main() -> None:
         "table_10_top_published_st131_peak_overlaps",
         "Top Published ST131 Biomarker Overlaps",
         "Closest overlaps between discriminative MALDI bins and published ST131 marker peaks.",
+    )
+    save_table(
+        tables["co_resistance_stratification"],
+        "table_11_co_resistance_stratification",
+        "Co-Resistance Stratification",
+        "Focal-drug performance inside resistance-burden and exact co-resistance background strata.",
     )
 
     figure_paths = [

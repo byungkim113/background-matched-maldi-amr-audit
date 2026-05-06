@@ -46,7 +46,9 @@ The Weis repository is at:
 
 <https://github.com/BorgwardtLab/maldi_amr>
 
-After running a Weis-style model, export one row per isolate/drug prediction.
+The companion exporter in `scripts/export_weis_predictions_for_audit.py` can rerun the upstream Weis/Borgwardt model code and write one row per isolate/drug prediction. For a broad Weis-code rerun, use `--panel weis-core --external-row-policy all`. For the E. coli six-drug panel used in this project, use `--panel custom` with the relevant `--species` and `--drugs`.
+
+After running a Weis-style or Weis-code model, export one row per isolate/drug prediction.
 If the output columns are:
 
 ```text
