@@ -1,0 +1,24 @@
+site,organism,drug,period,n_periods_observed,n,n_r,n_s,prevalence,mean_prob,auc,brier,expected_calibration_error,mean_background_resistant_count,baseline_period,auc_delta_from_baseline,prevalence_delta_from_baseline,ece_delta_from_baseline,mean_background_resistant_delta,support_label,reliability_status,recommended_action
+A-2018,Escherichia coli,Amoxicillin-Clavulanic acid,2018,1,1367,383,984,0.280176,0.473589,0.650345,0.229865,0.194027,0.632772,2018,0,0,0,0,adequate,insufficient_periods,collect_future_periods
+A-2018,Escherichia coli,Cefepime,2018,1,1230,65,1165,0.0528455,0.174121,0.866636,0.0701507,0.121275,0.633333,2018,0,0,0,0,adequate,insufficient_periods,collect_future_periods
+A-2018,Escherichia coli,Ceftazidime,2018,1,1257,120,1137,0.0954654,0.222552,0.837782,0.101364,0.127086,0.696102,2018,0,0,0,0,adequate,insufficient_periods,collect_future_periods
+A-2018,Escherichia coli,Ceftriaxone,2018,1,1390,258,1132,0.185612,0.330014,0.863259,0.130287,0.144403,0.721583,2018,0,0,0,0,adequate,insufficient_periods,collect_future_periods
+A-2018,Escherichia coli,Ciprofloxacin,2018,1,1350,355,995,0.262963,0.417523,0.822524,0.170743,0.15456,0.642963,2018,0,0,0,0,adequate,insufficient_periods,collect_future_periods
+A-2018,Escherichia coli,Norfloxacin,2018,1,439,87,352,0.198178,0.36817,0.742588,0.193551,0.176794,0.587699,2018,0,0,0,0,adequate,insufficient_periods,collect_future_periods
+DRIAMS-B,Escherichia coli,Amoxicillin-Clavulanic acid,2018,1,198,61,137,0.308081,0.486145,0.694268,0.224354,0.178064,1.28788,2018,0,0,0,0,adequate,insufficient_periods,collect_future_periods
+DRIAMS-B,Escherichia coli,Cefepime,2018,1,213,43,170,0.201878,0.199141,0.753215,0.142801,0.0725795,1.30516,2018,0,0,0,0,adequate,insufficient_periods,collect_future_periods
+DRIAMS-B,Escherichia coli,Ceftazidime,2018,1,213,45,168,0.211268,0.237791,0.734921,0.148506,0.0758478,1.29577,2018,0,0,0,0,adequate,insufficient_periods,collect_future_periods
+DRIAMS-B,Escherichia coli,Ceftriaxone,2018,1,213,45,168,0.211268,0.321529,0.743122,0.166101,0.117021,1.29577,2018,0,0,0,0,adequate,insufficient_periods,collect_future_periods
+DRIAMS-B,Escherichia coli,Ciprofloxacin,2018,1,212,58,154,0.273585,0.431516,0.773735,0.192311,0.161604,1.21698,2018,0,0,0,0,adequate,insufficient_periods,collect_future_periods
+DRIAMS-B,Escherichia coli,Norfloxacin,2018,1,210,69,141,0.328571,0.436478,0.702642,0.227658,0.178222,1.2,2018,0,0,0,0,adequate,insufficient_periods,collect_future_periods
+DRIAMS-C,Escherichia coli,Amoxicillin-Clavulanic acid,2018,1,902,230,672,0.254989,0.498321,0.535443,0.264539,0.246496,0.782705,2018,0,0,0,0,adequate,insufficient_periods,collect_future_periods
+DRIAMS-C,Escherichia coli,Cefepime,2018,1,609,113,496,0.18555,0.243499,0.648248,0.174554,0.132302,1.03448,2018,0,0,0,0,adequate,insufficient_periods,collect_future_periods
+DRIAMS-C,Escherichia coli,Ceftazidime,2018,1,908,139,769,0.153084,0.265562,0.609256,0.180103,0.161441,0.859031,2018,0,0,0,0,adequate,insufficient_periods,collect_future_periods
+DRIAMS-C,Escherichia coli,Ceftriaxone,2018,1,913,148,765,0.162103,0.351964,0.6233,0.214529,0.228773,0.852136,2018,0,0,0,0,adequate,insufficient_periods,collect_future_periods
+DRIAMS-C,Escherichia coli,Ciprofloxacin,2018,1,886,188,698,0.21219,0.444754,0.749893,0.216062,0.232564,0.837472,2018,0,0,0,0,adequate,insufficient_periods,collect_future_periods
+DRIAMS-C,Escherichia coli,Norfloxacin,2018,1,442,118,324,0.266968,0.465985,0.778693,0.214624,0.213054,1.12896,2018,0,0,0,0,adequate,insufficient_periods,collect_future_periods
+DRIAMS-D,Escherichia coli,Amoxicillin-Clavulanic acid,2018,1,1994,332,1662,0.166499,0.499423,0.556721,0.25949,0.332923,0.414744,2018,0,0,0,0,adequate,insufficient_periods,collect_future_periods
+DRIAMS-D,Escherichia coli,Cefepime,2018,1,1923,80,1843,0.0416017,0.224468,0.768753,0.107226,0.182867,0.454498,2018,0,0,0,0,adequate,insufficient_periods,collect_future_periods
+DRIAMS-D,Escherichia coli,Ceftazidime,2018,1,1987,178,1809,0.0895823,0.260301,0.727374,0.13533,0.170718,0.48465,2018,0,0,0,0,adequate,insufficient_periods,collect_future_periods
+DRIAMS-D,Escherichia coli,Ceftriaxone,2018,1,1994,198,1796,0.0992979,0.333448,0.72581,0.173565,0.23415,0.47994,2018,0,0,0,0,adequate,insufficient_periods,collect_future_periods
+DRIAMS-D,Escherichia coli,Ciprofloxacin,2018,1,1939,371,1568,0.191336,0.448692,0.670566,0.24009,0.25987,0.380609,2018,0,0,0,0,adequate,insufficient_periods,collect_future_periods

@@ -10,6 +10,9 @@ MALDI-TOF AMR models should be interpreted as background-sensitive predictors: r
 - In interpretable Cipro rows, CNN mean background-centered AUC is 0.648; LGBM multi mean background-centered AUC is 0.618.
 - Low-retention cephalosporin rows are explicitly flagged rather than overclaimed.
 - Co-resistance stratification reports 907 strata, including 166 interpretable strata across burden bins and exact background signatures.
+- Deployment readiness assigns 5 action categories across 23 audited pair/site rows.
+- Temporal reliability monitoring reports 23/23 rows as single-period only; current DRIAMS export cannot estimate reliability duration without future periods.
+- Falsification controls report 0/23 pair/site rows exceeding both burden-only and within-background shuffle controls; 3/23 exceed the shuffle null, while burden-only controls remain competitive in 23/23 rows.
 - Public WGS-linked Bruker MALDI data show ST131 AUC=0.906, higher than Cipro-R and Ceftriaxone-R peak-only AUCs.
 - Published ST131 biomarker enrichment is strongest for ST131 itself (3.11x) and remains significant for Cipro-R and Ceftriaxone-R discriminative peaks.
 
@@ -23,6 +26,11 @@ MALDI-TOF AMR models should be interpreted as background-sensitive predictors: r
 - Table 6: block-level source and external transfer behavior.
 - Table 7-10 files: public WGS-linked lineage/resistance support and proteomic biomarker enrichment.
 - Table 11: co-resistance stratification showing where focal-drug signal lives inside burden/signature strata.
+- Table 12: deployment decision rules for pass/fail/underpowered/calibration cases.
+- Table 13: calibration, Brier score, ECE, and threshold metrics.
+- Table 14: temporal reliability and recalibration monitor.
+- Table 15: falsification controls against burden-only and within-background shuffled labels.
+- Table 16: pair-level deployment readiness actions.
 
 ## Figure Captions
 
@@ -42,6 +50,11 @@ Figure 5. Framework schematic.
 
 - `table_10_top_published_st131_peak_overlaps.csv`
 - `table_11_co_resistance_stratification.csv`
+- `table_12_deployment_decision_rules.csv`
+- `table_13_calibration_summary.csv`
+- `table_14_temporal_reliability_audit.csv`
+- `table_15_falsification_controls.csv`
+- `table_16_deployment_readiness_by_pair.csv`
 - `table_1_primary_background_matched_audit.csv`
 - `table_2_cnn_vs_lgbm_multi_background_audit.csv`
 - `table_3_ecology_interpretation.csv`

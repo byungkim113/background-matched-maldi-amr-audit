@@ -1,0 +1,24 @@
+site,organism,drug,n,n_r,n_s,observed_auc,background_burden_auc,observed_minus_burden_auc,score_background_burden_correlation,shuffle_null_mean_auc,shuffle_null_sd_auc,shuffle_empirical_p_ge_observed,observed_minus_shuffle_null_auc,permutations,adequacy_label,control_interpretation
+A-2018,Escherichia coli,Amoxicillin-Clavulanic acid,1367,383,984,0.650345,0.687527,-0.0371811,0.538958,0.629179,0.0117127,0.0299401,0.0211667,500,interpretable,background_control_competitive
+A-2018,Escherichia coli,Cefepime,1230,65,1165,0.866636,0.984979,-0.118343,0.487774,0.83629,0.0110952,0.00199601,0.0303462,500,interpretable,background_control_competitive
+A-2018,Escherichia coli,Ceftazidime,1257,120,1137,0.837782,0.938471,-0.100689,0.533418,0.842299,0.00596865,0.770459,-0.00451642,500,interpretable,background_control_competitive
+A-2018,Escherichia coli,Ceftriaxone,1390,258,1132,0.863259,0.87355,-0.0102908,0.470352,0.854241,0.00448149,0.0279441,0.00901813,500,interpretable,background_control_competitive
+A-2018,Escherichia coli,Ciprofloxacin,1350,355,995,0.822524,0.826067,-0.00354307,0.427355,0.727688,0.00994705,0.00199601,0.0948361,500,interpretable,score_exceeds_shuffle_but_burden_competitive
+A-2018,Escherichia coli,Norfloxacin,439,87,352,0.742588,0.956194,-0.213607,0.329834,0.742588,8.77076e-15,1,-8.77076e-15,500,interpretable,background_control_competitive
+DRIAMS-B,Escherichia coli,Amoxicillin-Clavulanic acid,198,61,137,0.694268,0.861912,-0.167644,0.44068,0.678175,0.0224174,0.245509,0.0160931,500,interpretable,background_control_competitive
+DRIAMS-B,Escherichia coli,Cefepime,213,43,170,0.753215,0.997127,-0.243912,0.433772,0.747393,0.0108556,0.313373,0.00582189,500,interpretable,background_control_competitive
+DRIAMS-B,Escherichia coli,Ceftazidime,213,45,168,0.734921,0.996693,-0.261772,0.44366,0.734921,4.21885e-15,1,4.21885e-15,500,interpretable,background_control_competitive
+DRIAMS-B,Escherichia coli,Ceftriaxone,213,45,168,0.743122,0.996693,-0.253571,0.450881,0.743122,8.65974e-15,1,8.65974e-15,500,interpretable,background_control_competitive
+DRIAMS-B,Escherichia coli,Ciprofloxacin,212,58,154,0.773735,0.944749,-0.171014,0.403259,0.736648,0.0170522,0.0179641,0.0370867,500,interpretable,background_control_competitive
+DRIAMS-B,Escherichia coli,Norfloxacin,210,69,141,0.702642,0.917874,-0.215233,0.388331,0.717306,0.0166638,0.788423,-0.014664,500,interpretable,background_control_competitive
+DRIAMS-C,Escherichia coli,Amoxicillin-Clavulanic acid,902,230,672,0.535443,0.687616,-0.152174,0.292804,0.543858,0.0178369,0.682635,-0.00841588,500,interpretable,background_control_competitive
+DRIAMS-C,Escherichia coli,Cefepime,609,113,496,0.648248,0.931353,-0.283106,0.255846,0.64811,0.00964328,0.506986,0.000137596,500,interpretable,background_control_competitive
+DRIAMS-C,Escherichia coli,Ceftazidime,908,139,769,0.609256,0.945393,-0.336137,0.299468,0.613608,0.00801582,0.708583,-0.00435137,500,interpretable,background_control_competitive
+DRIAMS-C,Escherichia coli,Ceftriaxone,913,148,765,0.6233,0.934036,-0.310736,0.284277,0.610634,0.00727397,0.0518962,0.0126661,500,interpretable,background_control_competitive
+DRIAMS-C,Escherichia coli,Ciprofloxacin,886,188,698,0.749893,0.847676,-0.0977832,0.248176,0.699779,0.0115198,0.00199601,0.0501141,500,interpretable,score_exceeds_shuffle_but_burden_competitive
+DRIAMS-C,Escherichia coli,Norfloxacin,442,118,324,0.778693,0.878832,-0.100139,0.289247,0.778693,6.21725e-15,1,6.21725e-15,500,interpretable,background_control_competitive
+DRIAMS-D,Escherichia coli,Amoxicillin-Clavulanic acid,1994,332,1662,0.556721,0.692509,-0.135788,0.301619,0.576391,0.0157132,0.906188,-0.01967,500,interpretable,background_control_competitive
+DRIAMS-D,Escherichia coli,Cefepime,1923,80,1843,0.768753,0.97988,-0.211127,0.241628,0.746937,0.0155011,0.0878244,0.0218168,500,interpretable,background_control_competitive
+DRIAMS-D,Escherichia coli,Ceftazidime,1987,178,1809,0.727374,0.957587,-0.230213,0.259331,0.699673,0.0106694,0.00598802,0.0277018,500,interpretable,background_control_competitive
+DRIAMS-D,Escherichia coli,Ceftriaxone,1994,198,1796,0.72581,0.927069,-0.201258,0.258837,0.707109,0.00850892,0.011976,0.0187016,500,interpretable,background_control_competitive
+DRIAMS-D,Escherichia coli,Ciprofloxacin,1939,371,1568,0.670566,0.725009,-0.054443,0.239049,0.585287,0.0135258,0.00199601,0.085279,500,interpretable,score_exceeds_shuffle_but_burden_competitive

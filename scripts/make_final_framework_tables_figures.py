@@ -28,6 +28,11 @@ INPUTS = {
     "block_site": ROOT / "outputs" / "analysis_outputs" / "ecoli_mechanism6_block_site_summary.csv",
     "cross_edges": ROOT / "outputs" / "analysis_outputs" / "cross_resistance_network" / "cross_resistance_edges.csv",
     "co_resistance_stratification": ROOT / "outputs" / "analysis_outputs" / "co_resistance_stratification" / "co_resistance_stratification.csv",
+    "deployment_rules": ROOT / "outputs" / "analysis_outputs" / "deployment_decision_framework" / "deployment_decision_rules.csv",
+    "deployment_readiness": ROOT / "outputs" / "analysis_outputs" / "deployment_decision_framework" / "deployment_readiness_by_pair.csv",
+    "calibration": ROOT / "outputs" / "analysis_outputs" / "calibration_analysis" / "calibration_summary.csv",
+    "temporal_reliability": ROOT / "outputs" / "analysis_outputs" / "temporal_reliability_audit" / "temporal_reliability.csv",
+    "falsification": ROOT / "outputs" / "analysis_outputs" / "falsification_controls" / "falsification_controls.csv",
     "wgs_auc": ROOT / "outputs" / "analysis_outputs" / "upec_wgs_validation_outputs" / "centroid_binary_cv_results.csv",
     "wgs_assoc": ROOT / "outputs" / "analysis_outputs" / "upec_wgs_validation_outputs" / "st131_resistance_associations.csv",
     "proteomic_enrichment": ROOT / "outputs" / "analysis_outputs" / "updated_proteomic_overlap_outputs" / "updated_proteomic_overlap_permutation_enrichment.csv",
@@ -402,6 +407,11 @@ def build_tables() -> dict[str, pd.DataFrame]:
     block_site = pd.read_csv(INPUTS["block_site"])
     edges = pd.read_csv(INPUTS["cross_edges"])
     stratification = pd.read_csv(INPUTS["co_resistance_stratification"])
+    deployment_rules = pd.read_csv(INPUTS["deployment_rules"])
+    deployment_readiness = pd.read_csv(INPUTS["deployment_readiness"])
+    calibration = pd.read_csv(INPUTS["calibration"])
+    temporal_reliability = pd.read_csv(INPUTS["temporal_reliability"])
+    falsification = pd.read_csv(INPUTS["falsification"])
     wgs_auc = pd.read_csv(INPUTS["wgs_auc"])
     wgs_assoc = pd.read_csv(INPUTS["wgs_assoc"])
     enrich = pd.read_csv(INPUTS["proteomic_enrichment"])
@@ -532,6 +542,69 @@ def build_tables() -> dict[str, pd.DataFrame]:
         ]
     ]
 
+    calibration_table = calibration.copy()
+    calibration_table["drug"] = calibration_table["drug"].map(short_drug)
+    calibration_table = calibration_table[
+        [
+            "site",
+            "drug",
+            "n",
+            "n_r",
+            "prevalence",
+            "auc",
+            "brier",
+            "expected_calibration_error",
+            "threshold",
+            "sensitivity",
+            "specificity",
+            "ppv",
+            "npv",
+            "balanced_accuracy",
+            "calibration_label",
+        ]
+    ]
+
+    temporal_table = temporal_reliability.copy()
+    temporal_table["drug"] = temporal_table["drug"].map(short_drug)
+    temporal_table = temporal_table[
+        [
+            "site",
+            "drug",
+            "period",
+            "n_periods_observed",
+            "n",
+            "n_r",
+            "prevalence",
+            "auc",
+            "brier",
+            "expected_calibration_error",
+            "mean_background_resistant_count",
+            "support_label",
+            "reliability_status",
+            "recommended_action",
+        ]
+    ]
+
+    falsification_table = falsification.copy()
+    falsification_table["drug"] = falsification_table["drug"].map(short_drug)
+    falsification_table = falsification_table[
+        [
+            "site",
+            "drug",
+            "n",
+            "n_r",
+            "observed_auc",
+            "background_burden_auc",
+            "observed_minus_burden_auc",
+            "score_background_burden_correlation",
+            "shuffle_null_mean_auc",
+            "observed_minus_shuffle_null_auc",
+            "shuffle_empirical_p_ge_observed",
+            "adequacy_label",
+            "control_interpretation",
+        ]
+    ]
+
     return {
         "table1": table1,
         "table2": table2,
@@ -544,6 +617,11 @@ def build_tables() -> dict[str, pd.DataFrame]:
         "table6_top_overlaps": top_overlap,
         "block_site_summary": block_summary,
         "co_resistance_stratification": strat_table,
+        "deployment_rules": deployment_rules,
+        "deployment_readiness": deployment_readiness,
+        "calibration_summary": calibration_table,
+        "temporal_reliability": temporal_table,
+        "falsification_controls": falsification_table,
         "cnn_lgbm_raw": cnn_lgbm,
         "cross_edges_raw": edges,
         "wgs_auc_raw": wgs_auc[wgs_auc["status"].eq("ok")].copy(),
@@ -560,6 +638,17 @@ def write_summary(tables: dict[str, pd.DataFrame], figure_paths: list[Path]) -> 
     wgs = tables["table6_wgs_auc"]
     strat = tables["co_resistance_stratification"]
     strat_interp = strat[strat["adequacy_label"].eq("interpretable")]
+    deployment = tables["deployment_readiness"]
+    temporal = tables["temporal_reliability"]
+    falsification = tables["falsification_controls"]
+    focal_control = falsification[falsification["control_interpretation"].eq("focal_score_exceeds_controls")]
+    shuffle_signal = falsification[
+        falsification["control_interpretation"].isin(
+            ["focal_score_exceeds_controls", "score_exceeds_shuffle_but_burden_competitive"]
+        )
+    ]
+    burden_competitive = falsification[pd.to_numeric(falsification["observed_minus_burden_auc"], errors="coerce").lt(0.05)]
+    single_period = temporal[temporal["reliability_status"].eq("insufficient_periods")]
 
     def mean_or_nan(s: pd.Series) -> float:
         return float(pd.to_numeric(s, errors="coerce").mean())
@@ -577,6 +666,9 @@ def write_summary(tables: dict[str, pd.DataFrame], figure_paths: list[Path]) -> 
         f"- In interpretable Cipro rows, CNN mean background-centered AUC is {mean_or_nan(cipro['cnn_centered_auc']):.3f}; LGBM multi mean background-centered AUC is {mean_or_nan(cipro['lgbm_centered_auc']):.3f}.",
         "- Low-retention cephalosporin rows are explicitly flagged rather than overclaimed.",
         f"- Co-resistance stratification reports {len(strat)} strata, including {len(strat_interp)} interpretable strata across burden bins and exact background signatures.",
+        f"- Deployment readiness assigns {deployment['decision_category'].nunique()} action categories across {len(deployment)} audited pair/site rows.",
+        f"- Temporal reliability monitoring reports {len(single_period)}/{len(temporal)} rows as single-period only; current DRIAMS export cannot estimate reliability duration without future periods.",
+        f"- Falsification controls report {len(focal_control)}/{len(falsification)} pair/site rows exceeding both burden-only and within-background shuffle controls; {len(shuffle_signal)}/{len(falsification)} exceed the shuffle null, while burden-only controls remain competitive in {len(burden_competitive)}/{len(falsification)} rows.",
         f"- Public WGS-linked Bruker MALDI data show ST131 AUC={float(wgs.loc[wgs['target'].eq('ST131'), 'auc'].iloc[0]):.3f}, higher than Cipro-R and Ceftriaxone-R peak-only AUCs.",
         f"- Published ST131 biomarker enrichment is strongest for ST131 itself ({float(enrich.loc[enrich['target'].eq('ST131'), 'fold_enrichment'].iloc[0]):.2f}x) and remains significant for Cipro-R and Ceftriaxone-R discriminative peaks.",
         "",
@@ -590,6 +682,11 @@ def write_summary(tables: dict[str, pd.DataFrame], figure_paths: list[Path]) -> 
         "- Table 6: block-level source and external transfer behavior.",
         "- Table 7-10 files: public WGS-linked lineage/resistance support and proteomic biomarker enrichment.",
         "- Table 11: co-resistance stratification showing where focal-drug signal lives inside burden/signature strata.",
+        "- Table 12: deployment decision rules for pass/fail/underpowered/calibration cases.",
+        "- Table 13: calibration, Brier score, ECE, and threshold metrics.",
+        "- Table 14: temporal reliability and recalibration monitor.",
+        "- Table 15: falsification controls against burden-only and within-background shuffled labels.",
+        "- Table 16: pair-level deployment readiness actions.",
         "",
         "## Figure Captions",
         "",
@@ -686,6 +783,36 @@ def main() -> None:
         "table_11_co_resistance_stratification",
         "Co-Resistance Stratification",
         "Focal-drug performance inside resistance-burden and exact co-resistance background strata.",
+    )
+    save_table(
+        tables["deployment_rules"],
+        "table_12_deployment_decision_rules",
+        "Deployment Decision Rules",
+        "How to interpret raw performance, background-matched performance, support, and calibration together.",
+    )
+    save_table(
+        tables["calibration_summary"],
+        "table_13_calibration_summary",
+        "Calibration Summary",
+        "Brier score, expected calibration error, and threshold metrics for each pair/site.",
+    )
+    save_table(
+        tables["temporal_reliability"],
+        "table_14_temporal_reliability_audit",
+        "Temporal Reliability Audit",
+        "Period-wise reliability monitor for deciding when recalibration or retraining should be reviewed.",
+    )
+    save_table(
+        tables["falsification_controls"],
+        "table_15_falsification_controls",
+        "Falsification Controls",
+        "Observed model AUC compared with background-burden-only and within-background label-shuffle controls.",
+    )
+    save_table(
+        tables["deployment_readiness"],
+        "table_16_deployment_readiness_by_pair",
+        "Deployment Readiness By Pair",
+        "Pair/site deployment actions produced from background-matched audit and calibration results.",
     )
 
     figure_paths = [
