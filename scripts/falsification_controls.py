@@ -19,9 +19,8 @@ if str(ROOT) not in sys.path:
 from scripts.calibration_analysis import mean, normalize_label, parse_float, safe_auc
 
 
-DEFAULT_PREDICTIONS = (
-    "/Users/byungkim/Downloads/results-2/background_matched_contrastive/"
-    "background_matched_predictions.csv"
+DEFAULT_PREDICTIONS = str(
+    ROOT / "outputs" / "analysis_outputs" / "background_matched_predictions.csv"
 )
 DEFAULT_OUTPUT_DIR = "outputs/analysis_outputs/falsification_controls"
 

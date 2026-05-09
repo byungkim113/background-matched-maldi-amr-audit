@@ -25,9 +25,8 @@ from scripts.calibration_analysis import (
 )
 
 
-DEFAULT_PREDICTIONS = (
-    "/Users/byungkim/Downloads/results-2/background_matched_contrastive/"
-    "background_matched_predictions.csv"
+DEFAULT_PREDICTIONS = str(
+    ROOT / "outputs" / "analysis_outputs" / "background_matched_predictions.csv"
 )
 DEFAULT_OUTPUT_DIR = "outputs/analysis_outputs/temporal_reliability_audit"
 

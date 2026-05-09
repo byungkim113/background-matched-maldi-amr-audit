@@ -11,7 +11,7 @@ CONTRASTIVE_PATH = ROOT / "scripts" / "background_matched_contrastive_kaggle.py"
 
 
 def read_source():
-    return MEGA_PATH.read_text()
+    return MEGA_PATH.read_text(encoding="utf-8")
 
 
 def parsed_tree():

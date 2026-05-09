@@ -233,6 +233,22 @@ def figure_2_primary_audit(primary: pd.DataFrame) -> Path:
             c.line(raw_x, y, cen_x, y)
             marker(c, raw_x, y, col if not caution else MID_GRAY, "circle", hollow=False)
             marker(c, cen_x, y, col if not caution else MID_GRAY, "square", hollow=caution)
+            # 95% CI whiskers around each point
+            bar_color = col if not caution else MID_GRAY
+            c.setStrokeColor(bar_color)
+            c.setLineWidth(0.45)
+            for lo_attr, hi_attr in [
+                ("raw_auc_95ci_low", "raw_auc_95ci_high"),
+                ("stratum_centered_auc_95ci_low", "stratum_centered_auc_95ci_high"),
+            ]:
+                lo_val = getattr(row, lo_attr)
+                hi_val = getattr(row, hi_attr)
+                if not math.isnan(lo_val) and not math.isnan(hi_val):
+                    lx = xmap(lo_val, x0, x1, xmin, xmax)
+                    hx = xmap(hi_val, x0, x1, xmin, xmax)
+                    c.line(lx, y, hx, y)
+                    for cx in [lx, hx]:
+                        c.line(cx, y - 2.5, cx, y + 2.5)
             delta = getattr(row, "raw_to_centered_delta")
             text(c, x1 + 0.12 * inch, y - 3, f"Delta={delta:+.3f}; ret={row.matched_retention_pct:.1f}%", 7.2, False, GRAY)
         marker(c, px + 0.10 * inch, y0 - 0.18 * inch, DARK, "circle")
