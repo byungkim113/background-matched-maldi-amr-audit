@@ -1,0 +1,9 @@
+model,train_site,test_site,species,drug,seed,n_train,n_test,auroc,auprc,accuracy,source_output_dir
+lr,DRIAMS-A,DRIAMS-B,Escherichia coli,Ceftriaxone,35,3460,43,0.7058823529411764,0.3812164973542682,0.6976744186046512,/kaggle/working/weis_lr_official_panel/ecoli_ceftriaxone
+lr,DRIAMS-A,DRIAMS-C,Escherichia coli,Ceftriaxone,35,3460,184,0.6935064935064935,0.3804359526400791,0.7880434782608695,/kaggle/working/weis_lr_official_panel/ecoli_ceftriaxone
+lr,DRIAMS-A,DRIAMS-D,Escherichia coli,Ceftriaxone,35,3460,399,0.6730501392757661,0.230853719515579,0.8847117794486216,/kaggle/working/weis_lr_official_panel/ecoli_ceftriaxone
+lr,DRIAMS-A,DRIAMS-B,Klebsiella pneumoniae,Ceftriaxone,35,2104,31,0.5092592592592593,0.15084586466165412,0.5483870967741935,/kaggle/working/weis_lr_official_panel/klebsiella_ceftriaxone
+lr,DRIAMS-A,DRIAMS-C,Klebsiella pneumoniae,Ceftriaxone,35,2104,74,0.6724386724386725,0.26598420646517074,0.8513513513513513,/kaggle/working/weis_lr_official_panel/klebsiella_ceftriaxone
+lr,DRIAMS-A,DRIAMS-D,Klebsiella pneumoniae,Ceftriaxone,35,2104,431,0.5962561576354679,0.08252030457908353,0.8747099767981439,/kaggle/working/weis_lr_official_panel/klebsiella_ceftriaxone
+lr,DRIAMS-A,DRIAMS-B,Staphylococcus aureus,Oxacillin,35,2735,70,0.6666666666666667,0.11330667093265077,0.8285714285714286,/kaggle/working/weis_lr_official_panel/saureus_oxacillin
+lr,DRIAMS-A,DRIAMS-C,Staphylococcus aureus,Oxacillin,35,2735,148,0.5428571428571429,0.07548693980151078,0.7635135135135135,/kaggle/working/weis_lr_official_panel/saureus_oxacillin

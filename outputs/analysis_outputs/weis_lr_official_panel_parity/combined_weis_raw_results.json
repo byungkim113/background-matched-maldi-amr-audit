@@ -1,0 +1,250 @@
+[
+  {
+    "source_url": "https://github.com/BorgwardtLab/maldi_amr",
+    "panel": "custom",
+    "external_row_policy": "stratified",
+    "train_site": "DRIAMS-A",
+    "test_site": "DRIAMS-B",
+    "train_years": [
+      "2015",
+      "2016",
+      "2017",
+      "2018"
+    ],
+    "test_years": [
+      "2018"
+    ],
+    "species": "Escherichia coli",
+    "drug": "Ceftriaxone",
+    "model": "lr",
+    "seed": 35,
+    "n_train": 3460,
+    "n_test": 43,
+    "auroc": 0.7058823529411764,
+    "auprc": 0.3812164973542682,
+    "accuracy": 0.6976744186046512,
+    "best_params": {
+      "lr__C": 0.001,
+      "lr__penalty": "l2",
+      "scaler": "StandardScaler"
+    },
+    "source_output_dir": "/kaggle/working/weis_lr_official_panel/ecoli_ceftriaxone"
+  },
+  {
+    "source_url": "https://github.com/BorgwardtLab/maldi_amr",
+    "panel": "custom",
+    "external_row_policy": "stratified",
+    "train_site": "DRIAMS-A",
+    "test_site": "DRIAMS-C",
+    "train_years": [
+      "2015",
+      "2016",
+      "2017",
+      "2018"
+    ],
+    "test_years": [
+      "2018"
+    ],
+    "species": "Escherichia coli",
+    "drug": "Ceftriaxone",
+    "model": "lr",
+    "seed": 35,
+    "n_train": 3460,
+    "n_test": 184,
+    "auroc": 0.6935064935064935,
+    "auprc": 0.3804359526400791,
+    "accuracy": 0.7880434782608695,
+    "best_params": {
+      "lr__C": 0.001,
+      "lr__penalty": "l2",
+      "scaler": "StandardScaler"
+    },
+    "source_output_dir": "/kaggle/working/weis_lr_official_panel/ecoli_ceftriaxone"
+  },
+  {
+    "source_url": "https://github.com/BorgwardtLab/maldi_amr",
+    "panel": "custom",
+    "external_row_policy": "stratified",
+    "train_site": "DRIAMS-A",
+    "test_site": "DRIAMS-D",
+    "train_years": [
+      "2015",
+      "2016",
+      "2017",
+      "2018"
+    ],
+    "test_years": [
+      "2018"
+    ],
+    "species": "Escherichia coli",
+    "drug": "Ceftriaxone",
+    "model": "lr",
+    "seed": 35,
+    "n_train": 3460,
+    "n_test": 399,
+    "auroc": 0.6730501392757661,
+    "auprc": 0.230853719515579,
+    "accuracy": 0.8847117794486216,
+    "best_params": {
+      "lr__C": 0.001,
+      "lr__penalty": "l2",
+      "scaler": "StandardScaler"
+    },
+    "source_output_dir": "/kaggle/working/weis_lr_official_panel/ecoli_ceftriaxone"
+  },
+  {
+    "source_url": "https://github.com/BorgwardtLab/maldi_amr",
+    "panel": "custom",
+    "external_row_policy": "stratified",
+    "train_site": "DRIAMS-A",
+    "test_site": "DRIAMS-B",
+    "train_years": [
+      "2015",
+      "2016",
+      "2017",
+      "2018"
+    ],
+    "test_years": [
+      "2018"
+    ],
+    "species": "Klebsiella pneumoniae",
+    "drug": "Ceftriaxone",
+    "model": "lr",
+    "seed": 35,
+    "n_train": 2104,
+    "n_test": 31,
+    "auroc": 0.5092592592592593,
+    "auprc": 0.15084586466165412,
+    "accuracy": 0.5483870967741935,
+    "best_params": {
+      "lr__C": 0.001,
+      "lr__penalty": "l2",
+      "scaler": "StandardScaler"
+    },
+    "source_output_dir": "/kaggle/working/weis_lr_official_panel/klebsiella_ceftriaxone"
+  },
+  {
+    "source_url": "https://github.com/BorgwardtLab/maldi_amr",
+    "panel": "custom",
+    "external_row_policy": "stratified",
+    "train_site": "DRIAMS-A",
+    "test_site": "DRIAMS-C",
+    "train_years": [
+      "2015",
+      "2016",
+      "2017",
+      "2018"
+    ],
+    "test_years": [
+      "2018"
+    ],
+    "species": "Klebsiella pneumoniae",
+    "drug": "Ceftriaxone",
+    "model": "lr",
+    "seed": 35,
+    "n_train": 2104,
+    "n_test": 74,
+    "auroc": 0.6724386724386725,
+    "auprc": 0.26598420646517074,
+    "accuracy": 0.8513513513513513,
+    "best_params": {
+      "lr__C": 0.001,
+      "lr__penalty": "l2",
+      "scaler": "StandardScaler"
+    },
+    "source_output_dir": "/kaggle/working/weis_lr_official_panel/klebsiella_ceftriaxone"
+  },
+  {
+    "source_url": "https://github.com/BorgwardtLab/maldi_amr",
+    "panel": "custom",
+    "external_row_policy": "stratified",
+    "train_site": "DRIAMS-A",
+    "test_site": "DRIAMS-D",
+    "train_years": [
+      "2015",
+      "2016",
+      "2017",
+      "2018"
+    ],
+    "test_years": [
+      "2018"
+    ],
+    "species": "Klebsiella pneumoniae",
+    "drug": "Ceftriaxone",
+    "model": "lr",
+    "seed": 35,
+    "n_train": 2104,
+    "n_test": 431,
+    "auroc": 0.5962561576354679,
+    "auprc": 0.08252030457908353,
+    "accuracy": 0.8747099767981439,
+    "best_params": {
+      "lr__C": 0.001,
+      "lr__penalty": "l2",
+      "scaler": "StandardScaler"
+    },
+    "source_output_dir": "/kaggle/working/weis_lr_official_panel/klebsiella_ceftriaxone"
+  },
+  {
+    "source_url": "https://github.com/BorgwardtLab/maldi_amr",
+    "panel": "custom",
+    "external_row_policy": "stratified",
+    "train_site": "DRIAMS-A",
+    "test_site": "DRIAMS-B",
+    "train_years": [
+      "2015",
+      "2016",
+      "2017",
+      "2018"
+    ],
+    "test_years": [
+      "2018"
+    ],
+    "species": "Staphylococcus aureus",
+    "drug": "Oxacillin",
+    "model": "lr",
+    "seed": 35,
+    "n_train": 2735,
+    "n_test": 70,
+    "auroc": 0.6666666666666667,
+    "auprc": 0.11330667093265077,
+    "accuracy": 0.8285714285714286,
+    "best_params": {
+      "lr__C": 0.001,
+      "lr__penalty": "l2",
+      "scaler": "StandardScaler"
+    },
+    "source_output_dir": "/kaggle/working/weis_lr_official_panel/saureus_oxacillin"
+  },
+  {
+    "source_url": "https://github.com/BorgwardtLab/maldi_amr",
+    "panel": "custom",
+    "external_row_policy": "stratified",
+    "train_site": "DRIAMS-A",
+    "test_site": "DRIAMS-C",
+    "train_years": [
+      "2015",
+      "2016",
+      "2017",
+      "2018"
+    ],
+    "test_years": [
+      "2018"
+    ],
+    "species": "Staphylococcus aureus",
+    "drug": "Oxacillin",
+    "model": "lr",
+    "seed": 35,
+    "n_train": 2735,
+    "n_test": 148,
+    "auroc": 0.5428571428571429,
+    "auprc": 0.07548693980151078,
+    "accuracy": 0.7635135135135135,
+    "best_params": {
+      "lr__C": 0.001,
+      "lr__penalty": "l2",
+      "scaler": "StandardScaler"
+    },
+    "source_output_dir": "/kaggle/working/weis_lr_official_panel/saureus_oxacillin"
+  }
+]
