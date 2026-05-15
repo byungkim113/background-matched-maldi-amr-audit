@@ -239,10 +239,10 @@ If you use this framework or any of its outputs, please cite:
 
 ```bibtex
 @software{background_matched_maldi_amr_audit,
-  author    = {Richard-Y-W},
+  author    = {Kim, Byung and Wang, Yucheng},
   title     = {Background-Matched MALDI-AMR Audit},
   year      = {2026},
-  url       = {https://github.com/Richard-Y-W/background-matched-maldi-amr-audit}
+  url       = {https://github.com/byungkim113/background-matched-maldi-amr-audit}
 }
 ```
 

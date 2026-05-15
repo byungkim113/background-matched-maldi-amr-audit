@@ -4,6 +4,8 @@ message: "If you use this research code, please cite the associated manuscript o
 authors:
   - family-names: "Kim"
     given-names: "Byung"
+  - family-names: "Wang"
+    given-names: "Yucheng"
 date-released: 2026-04-29
 version: "0.1.0"
 repository-code: "https://github.com/byungkim113/background-matched-maldi-amr-audit"
