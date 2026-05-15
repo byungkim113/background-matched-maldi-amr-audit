@@ -24,6 +24,7 @@ kaggle/
 # Local OS/editor files
 .idea/
 .vscode/
+.claude/
 
 # Nested repositories
 */.git/

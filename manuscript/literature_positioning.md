@@ -55,7 +55,7 @@ DRIAMS model. The current draft frames the contribution as:
 5. Public WGS-linked MALDI evidence that lineage is strongly encoded.
 6. A reusable software package for other MALDI-AMR models.
 
-## Remaining Weaknesses To Be Transparent About
+## Limitations And Open Questions
 
 - No WGS/MLST labels linked directly to the DRIAMS isolates.
 - No direct MS/MS or LC-MS/MS identification of discriminative peaks.
@@ -64,4 +64,3 @@ DRIAMS model. The current draft frames the contribution as:
   second deployment validation of the DRIAMS-trained model.
 - Weis-style model auditing is useful supplementary evidence but should not be
   overclaimed unless rerun as a locked full-row export.
-

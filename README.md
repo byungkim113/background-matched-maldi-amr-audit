@@ -164,8 +164,3 @@ The repository does include derived analysis outputs, public UPEC manifest
 tables, processed Bruker median-peak features for the public support analysis,
 and a locked Mega CNN checkpoint archive for the current snapshot.
 
-## Status
-
-This is a research snapshot prepared for organization and sharing. Before formal
-submission, the code should be further cleaned into installable modules and the
-main claims should be tied to final locked result files.
