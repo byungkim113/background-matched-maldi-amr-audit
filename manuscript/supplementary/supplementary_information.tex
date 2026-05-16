@@ -34,6 +34,24 @@ Low retention is not a model failure. It is an audit limitation. If a drug-site 
 
 This is why DRIAMS-B ciprofloxacin is not used as main evidence despite a high centered AUC. The estimate is based on only 25 matched isolates and one valid stratum. The method intentionally makes this visible.
 
+\section*{Supplementary Figure 1: Background sensitivity across model families}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\linewidth]{../figures/figure_3_model_family_replication.pdf}
+\caption{\textbf{Background sensitivity is not specific to the convolutional model.} The same background-matched audit is applied to CNN (top) and multi-task LightGBM (bottom) predictions. Both model families show attenuation from raw to centered AUC, with stronger residual signal for ciprofloxacin than amoxicillin-clavulanic acid across the primary interpretable sites. This indicates that background sensitivity is a property of the data structure, not the architecture.}
+\label{suppfig:model-replication}
+\end{figure}
+
+\section*{Supplementary Figure 2: Cross-resistance network}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\linewidth]{../figures/figure_4_cross_resistance_network.pdf}
+\caption{\textbf{Cross-resistance network in the expanded \textit{E.~coli} panel.} Edge width and shading encode pairwise phi correlation. Two strong blocks are evident: a fluoroquinolone block (ciprofloxacin/norfloxacin, $\phi = 0.976$) and an extended-spectrum cephalosporin block (ceftriaxone, ceftazidime and cefepime, $\phi = 0.804$--$0.884$). These co-resistance structures provide exploitable background signal for any model predicting drugs within either block. Source data: \texttt{source\_data\_fig4\_cross\_resistance\_edges\_all\_sites.csv}.}
+\label{suppfig:cross-resistance}
+\end{figure}
+
 \section*{Supplementary Table 1: Claim guardrails}
 
 \input{../tables/table_6_claim_guardrails.tex}
@@ -49,10 +67,10 @@ This is why DRIAMS-B ciprofloxacin is not used as main evidence despite a high c
 Display item & File & Description \\
 \midrule
 Figure 2 & \texttt{source\_data\_fig2\_primary\_background\_audit.csv} & Primary raw and background-centered AUC rows. \\
-Figure 3 & \texttt{source\_data\_fig3\_model\_family\_replication.csv} & CNN and LGBM model-family audit rows. \\
-Figure 4 & \texttt{source\_data\_fig4\_cross\_resistance\_edges\_all\_sites.csv} & Cross-resistance edges used for the phi heatmap. \\
-Figure 5a & \texttt{source\_data\_fig5a\_public\_wgs\_maldi\_auc.csv} & Public WGS-linked MALDI AUC values. \\
-Figure 5b & \texttt{source\_data\_fig5b\_proteomic\_biomarker\_enrichment.csv} & ST131 biomarker enrichment values. \\
+Figure 3 & \texttt{source\_data\_fig5a\_public\_wgs\_maldi\_auc.csv} & Public WGS-linked MALDI AUC values. \\
+Figure 3 & \texttt{source\_data\_fig5b\_proteomic\_biomarker\_enrichment.csv} & ST131 biomarker enrichment values. \\
+Supp.\ Fig.\ 1 & \texttt{source\_data\_fig3\_model\_family\_replication.csv} & CNN and LGBM model-family audit rows. \\
+Supp.\ Fig.\ 2 & \texttt{source\_data\_fig4\_cross\_resistance\_edges\_all\_sites.csv} & Cross-resistance edges used for the phi heatmap. \\
 \bottomrule
 \end{tabular}
 \end{table}

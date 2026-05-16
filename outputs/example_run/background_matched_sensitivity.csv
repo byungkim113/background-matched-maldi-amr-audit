@@ -1,0 +1,25 @@
+sensitivity_threshold,site,organism,drug,raw_auc,raw_auc_ci_low,raw_auc_ci_high,raw_aupr,matched_auc,matched_auc_ci_low,matched_auc_ci_high,matched_aupr,stratum_centered_auc,stratum_centered_auc_ci_low,stratum_centered_auc_ci_high,pairwise_accuracy,pairwise_comparisons,permutation_p,permutation_null_mean,permutation_null_std,matched_retention,adequacy_label,interpretation_category,n_total,n_r,n_matched,n_matched_r,n_valid_strata,min_pos_per_stratum,min_neg_per_stratum,match_year
+2,Hospital-A,Escherichia coli,Amoxicillin-Clavulanic acid,0.519511,,,0.182675,0.576708,,,0.302969,0.405375,,,0.275449,334,,,,0.753333,interpretable,weak_raw_signal,150,24,113,19,3,2,2,False
+2,Hospital-A,Escherichia coli,Ceftriaxone,0.623414,,,0.289759,0.554873,,,0.20251,0.502457,,,0.545151,598,,,,0.886667,interpretable,background_driven_collapse,150,33,133,22,3,2,2,False
+2,Hospital-A,Escherichia coli,Ciprofloxacin,1,,,1,1,,,1,0.838942,,,1,286,,,,0.82,interpretable,focal_signal_retained,150,40,123,32,3,2,2,False
+2,Hospital-A,Escherichia coli,Norfloxacin,0.998928,,,0.997354,0.999053,,,0.997243,0.799874,,,1,426,,,,0.86,interpretable,focal_signal_retained,150,44,129,33,3,2,2,False
+2,Hospital-B,Escherichia coli,Amoxicillin-Clavulanic acid,0.565867,,,0.245554,0.341615,,,0.705542,0.416149,,,0.402597,77,,,,0.2,caution_low_n_matched_and_low_pairwise,caution_low_matched_support,150,28,30,23,2,2,2,False
+2,Hospital-B,Escherichia coli,Ceftriaxone,0.521171,,,0.261729,0.623377,,,0.12772,0.425685,,,0.377358,318,,,,0.706667,interpretable,weak_raw_signal,150,34,106,7,2,2,2,False
+2,Hospital-B,Escherichia coli,Ciprofloxacin,1,,,1,1,,,1,0.97547,,,1,510,,,,0.833333,interpretable,focal_signal_retained,150,37,125,32,3,2,2,False
+2,Hospital-B,Escherichia coli,Norfloxacin,0.998384,,,0.996739,0.998264,,,0.995568,0.895544,,,0.999042,1044,,,,0.88,interpretable,focal_signal_retained,150,49,132,36,3,2,2,False
+3,Hospital-A,Escherichia coli,Amoxicillin-Clavulanic acid,0.519511,,,0.182675,0.576708,,,0.302969,0.405375,,,0.275449,334,,,,0.753333,interpretable,weak_raw_signal,150,24,113,19,3,3,3,False
+3,Hospital-A,Escherichia coli,Ceftriaxone,0.623414,,,0.289759,0.554873,,,0.20251,0.502457,,,0.545151,598,,,,0.886667,interpretable,background_driven_collapse,150,33,133,22,3,3,3,False
+3,Hospital-A,Escherichia coli,Ciprofloxacin,1,,,1,1,,,1,1,,,1,120,,,,0.253333,caution_low_n_matched,caution_low_matched_support,150,40,38,30,2,3,3,False
+3,Hospital-A,Escherichia coli,Norfloxacin,0.998928,,,0.997354,1,,,1,0.99867,,,1,376,,,,0.68,interpretable,focal_signal_retained,150,44,102,8,2,3,3,False
+3,Hospital-B,Escherichia coli,Amoxicillin-Clavulanic acid,0.565867,,,0.245554,0.341615,,,0.705542,0.416149,,,0.402597,77,,,,0.2,caution_low_n_matched_and_low_pairwise,caution_low_matched_support,150,28,30,23,2,3,3,False
+3,Hospital-B,Escherichia coli,Ceftriaxone,0.521171,,,0.261729,0.623377,,,0.12772,0.425685,,,0.377358,318,,,,0.706667,interpretable,weak_raw_signal,150,34,106,7,2,3,3,False
+3,Hospital-B,Escherichia coli,Ciprofloxacin,1,,,1,1,,,1,0.97547,,,1,510,,,,0.833333,interpretable,focal_signal_retained,150,37,125,32,3,3,3,False
+3,Hospital-B,Escherichia coli,Norfloxacin,0.998384,,,0.996739,0.998264,,,0.995568,0.895544,,,0.999042,1044,,,,0.88,interpretable,focal_signal_retained,150,49,132,36,3,3,3,False
+5,Hospital-A,Escherichia coli,Amoxicillin-Clavulanic acid,0.519511,,,0.182675,0.301136,,,0.539352,0.329545,,,0.329412,85,,,,0.18,caution_low_n_matched_and_low_pairwise,caution_low_matched_support,150,24,27,16,2,5,5,False
+5,Hospital-A,Escherichia coli,Ceftriaxone,0.623414,,,0.289759,0.684343,,,0.197881,0.577441,,,0.557522,565,,,,0.793333,interpretable,partially_retained_or_uncertain,150,33,119,11,2,5,5,False
+5,Hospital-A,Escherichia coli,Ciprofloxacin,1,,,1,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,150,40,0,0,0,5,5,False
+5,Hospital-A,Escherichia coli,Norfloxacin,0.998928,,,0.997354,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,150,44,0,0,0,5,5,False
+5,Hospital-B,Escherichia coli,Amoxicillin-Clavulanic acid,0.565867,,,0.245554,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,150,28,0,0,0,5,5,False
+5,Hospital-B,Escherichia coli,Ceftriaxone,0.521171,,,0.261729,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,150,34,0,0,0,5,5,False
+5,Hospital-B,Escherichia coli,Ciprofloxacin,1,,,1,1,,,1,1,,,1,252,,,,0.22,caution_low_n_matched,caution_low_matched_support,150,37,33,21,1,5,5,False
+5,Hospital-B,Escherichia coli,Norfloxacin,0.998384,,,0.996739,0.998932,,,0.99359,0.998932,,,0.998932,936,,,,0.6,caution_low_n_matched,caution_low_matched_support,150,49,90,12,1,5,5,False

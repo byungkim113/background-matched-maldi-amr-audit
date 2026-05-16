@@ -8,6 +8,37 @@ This repository provides a model-agnostic audit framework that separates *focal-
 
 ---
 
+## Quick Start — No DRIAMS Access Required
+
+The audit engine is model-agnostic. Run it on the included synthetic example data in under a minute:
+
+```bash
+# 1. Set up the environment
+pip install -r requirements.txt          # or: mamba env create -f environment.yml
+
+# 2. (Optional) regenerate the example CSV
+python scripts/generate_example_data.py
+
+# 3. Run the audit
+python run_background_audit_framework.py \
+    --predictions-csv example_predictions.csv \
+    --output-dir outputs/example_run
+```
+
+`example_predictions.csv` contains 300 synthetic *E. coli* isolates across two sites.
+It is constructed so that the audit recovers two archetypal outcomes:
+
+| Drug | Expected outcome |
+|---|---|
+| Ciprofloxacin | **Survives** — drug-specific signal retained after matching |
+| Norfloxacin | **Survives** — same chromosomal fluoroquinolone mechanism |
+| Ceftriaxone | **Collapses** — score tracks co-resistance background, not label |
+| Amoxicillin-Clavulanic acid | **Collapses** — background-driven |
+
+To run the audit on your own model's predictions, see [Input/Output Schema](#inputoutput-schema) below.
+
+---
+
 ## The Problem
 
 Standard susceptibility testing (AST) takes 2–4 days. MALDI-TOF already identifies bacterial species in minutes from the same sample. A growing body of work claims MALDI models can *also* predict resistance, potentially collapsing the wait to under an hour.
@@ -193,15 +224,35 @@ python scripts/make_paper_figures.py
 python scripts/make_final_framework_tables_figures.py
 ```
 
-### Prediction CSV Format
+### Input/Output Schema
 
-The audit engine accepts any model's output as a long CSV with one row per isolate/drug:
+**Input** — one long CSV with one row per isolate/drug prediction:
 
-```
-isolate_id, site, year, organism, drug, label, prob
-```
+| Column | Type | Description |
+|---|---|---|
+| `isolate_id` | string | Unique isolate identifier |
+| `site` | string | Hospital or laboratory site |
+| `year` | string | Collection year |
+| `organism` | string | Species name (e.g. `Escherichia coli`) |
+| `drug` | string | Antibiotic name (e.g. `Ciprofloxacin`) |
+| `label` | 0 / 1 | Susceptible (0) or Resistant (1) |
+| `prob` | float [0,1] | Model predicted probability of resistance |
+| `model_name` | string | *(optional)* model label for multi-model runs |
 
-The framework builds co-resistance background signatures internally from the other drug labels available for the same isolate. An optional `model_name` column enables multi-model comparisons in a single run.
+Column names are configurable via `--id-col`, `--drug-col`, etc. — see `--help`.
+Background signatures are derived automatically from the other drug labels for each isolate.
+
+**Key outputs** in `--output-dir`:
+
+| File | Contents |
+|---|---|
+| `background_matched_audit_summary.csv` | Per site/drug: raw AUC, stratum-centered AUC, CI, permutation p, adequacy label |
+| `background_matched_sensitivity.csv` | Same metrics repeated under n≥2, n≥3, n≥5 stratum-size thresholds |
+| `background_matched_retained_rows.csv` | Matched isolate rows with background signatures and stratum assignments |
+| `cross_resistance_edges.csv` | Pairwise phi and lift co-resistance statistics |
+| `background_audit_report.md` | Human-readable summary with interpretation categories |
+
+Sensitivity to the minimum-stratum-size threshold is reported automatically. The default thresholds are n≥2, n≥3, n≥5; adjust with `--sensitivity-thresholds`.
 
 ---
 
@@ -230,6 +281,20 @@ Pre-computed outputs are provided so the audit results can be inspected without 
 - `model_checkpoints/mega_cnn_archive_2026-04-22/` — five-seed locked CNN checkpoint archive
 
 These are analysis artifacts derived from the DRIAMS and public UPEC datasets. Raw spectra and AST tables are not included.
+
+---
+
+## Relationship to Prior Work
+
+This audit builds on and responds to several lines of MALDI-AMR research.
+
+**Weis et al. (2022) / Borgwardt lab** introduced multi-task LightGBM for MALDI-AMR prediction across DRIAMS sites and reported external-site AUC in the 0.6–0.8 range for *E. coli* and *S. aureus* targets. We apply the background-matched audit to their exported predictions (see `scripts/export_weis_predictions_for_audit.py`) and show that the *E. coli* performance gap between drugs is largely explained by co-resistance structure rather than drug-specific biology.
+
+**Yu et al. and subsequent deep-learning approaches** train CNN or transformer models on raw spectra and report similar or higher raw AUC values. The background-matched framework is model-agnostic and applies identically: any model producing a `(isolate_id, drug, label, prob)` CSV can be audited.
+
+**TRIPOD+AI / PROBAST+AI** checklist frameworks flag confounding and spectrum bias as key risks in diagnostic AI. Our background-matching step is a concrete statistical operationalization of the confounding check: it estimates how much reported AUC is attributable to the resistant-population background rather than the focal drug signal. A model that passes background matching also satisfies the PROBAST+AI discrimination domain for background confounding.
+
+The key distinction from stratified subgroup analyses (e.g. stratifying by site or year) is that background matching stratifies on *co-resistance phenotype*, directly isolating the source of the confound rather than a proxy for it.
 
 ---
 
