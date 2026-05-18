@@ -1,31 +1,21 @@
 \begin{table}[ht]
 \centering
 \small
-\caption{Model-family audit of raw-to-background-centered attenuation.}
+\caption{Model-family replication of raw-to-background-centered attenuation.}
 \label{tab:model-replication}
 \resizebox{\linewidth}{!}{%
 \begin{tabular}{lcccccc}
 \toprule
-Model & Site & Drug & Raw AUC & Centered AUC & Retention & Adequacy \\
+Site & Drug & CNN raw & CNN centered & LGBM raw & LGBM centered & Consensus \\
 \midrule
-Mega CNN & A-2018 & Amox-Clav & 0.650 & 0.541 & 0.922 & interpretable \\
-LGBM multi & A-2018 & Amox-Clav & 0.635 & 0.482 & 0.922 & interpretable \\
-Mega CNN & A-2018 & Cipro & 0.823 & 0.703 & 0.619 & interpretable \\
-LGBM multi & A-2018 & Cipro & 0.828 & 0.640 & 0.619 & interpretable \\
-Mega CNN & DRIAMS-C & Amox-Clav & 0.535 & 0.497 & 0.892 & interpretable \\
-LGBM multi & DRIAMS-C & Amox-Clav & 0.593 & 0.518 & 0.892 & interpretable \\
-Mega CNN & DRIAMS-C & Cipro & 0.750 & 0.646 & 0.476 & interpretable \\
-LGBM multi & DRIAMS-C & Cipro & 0.814 & 0.637 & 0.476 & interpretable \\
-Mega CNN & DRIAMS-D & Amox-Clav & 0.557 & 0.486 & 0.974 & interpretable \\
-LGBM multi & DRIAMS-D & Amox-Clav & 0.580 & 0.449 & 0.974 & interpretable \\
-Mega CNN & DRIAMS-D & Cipro & 0.671 & 0.596 & 0.984 & interpretable \\
-LGBM multi & DRIAMS-D & Cipro & 0.723 & 0.576 & 0.984 & interpretable \\
-Weis/Borgwardt-style logistic regression & DRIAMS-C & Amox-Clav & 0.626 & 0.578 & 0.746 & interpretable \\
-Weis/Borgwardt-style logistic regression & DRIAMS-C & Cipro & 0.625 & 0.816 & 0.438 & caution\_low\_n\_matched \\
-Weis/Borgwardt-style logistic regression & DRIAMS-D & Amox-Clav & 0.652 & 0.524 & 0.925 & interpretable \\
-Weis/Borgwardt-style logistic regression & DRIAMS-D & Cipro & 0.667 & 0.620 & 0.915 & interpretable \\
+A-2018 & Amox-Clav & 0.650 & 0.541 & 0.635 & 0.482 & collapses after matching \\
+A-2018 & Cipro & 0.823 & 0.703 & 0.828 & 0.640 & survives background matching \\
+DRIAMS-C & Amox-Clav & 0.535 & 0.497 & 0.593 & 0.518 & collapses after matching \\
+DRIAMS-C & Cipro & 0.750 & 0.646 & 0.814 & 0.637 & survives background matching \\
+DRIAMS-D & Amox-Clav & 0.557 & 0.486 & 0.580 & 0.449 & collapses after matching \\
+DRIAMS-D & Cipro & 0.671 & 0.596 & 0.723 & 0.576 & partial/weak residual signal \\
 \bottomrule
 \end{tabular}%
 }
-\vspace{2mm}\parbox{0.95\linewidth}{\footnotesize The same audit is applied to Mega/CNN, multi-task LGBM and a Weis/Borgwardt-style compatibility export. Weis rows are supplementary and are not claimed as an exact replication of Weis et al.}
+\vspace{2mm}\parbox{0.95\linewidth}{\footnotesize The same audit is applied to CNN and multi-task LGBM predictions.}
 \end{table}

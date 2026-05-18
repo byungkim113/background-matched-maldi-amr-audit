@@ -11,7 +11,7 @@ CONTRASTIVE_PATH = ROOT / "scripts" / "background_matched_contrastive_kaggle.py"
 
 
 def read_source():
-    return MEGA_PATH.read_text()
+    return MEGA_PATH.read_text(encoding="utf-8")
 
 
 def parsed_tree():
@@ -253,11 +253,11 @@ class MegaModelRegressionTests(unittest.TestCase):
         self.assertIn("Cefepime", source)
         self.assertIn("ecoli_mechanism6", source)
 
-    def test_notebook_defaults_run_ecoli_mechanism6_diagnostic(self):
-        self.assertEqual(get_constant_assignment("NOTEBOOK_PAIR_PROFILE"), "ecoli_mechanism6")
+    def test_notebook_defaults_saureus_panel_oxa_background(self):
+        self.assertEqual(get_constant_assignment("NOTEBOOK_PAIR_PROFILE"), "saureus_panel")
         self.assertEqual(
             get_constant_assignment("NOTEBOOK_EXPERIMENT"),
-            "exp_ecoli_mechanism6_drugid_mae30",
+            "exp_saureus_panel_oxa_background_mae30",
         )
         self.assertIs(get_constant_assignment("NOTEBOOK_NO_BN_ADAPT"), True)
         self.assertEqual(get_constant_assignment("NOTEBOOK_EARLY_STOP"), "macro")
@@ -265,6 +265,8 @@ class MegaModelRegressionTests(unittest.TestCase):
         self.assertEqual(get_constant_assignment("NOTEBOOK_PREVALENCE_SHIFT"), "none")
         self.assertEqual(get_constant_assignment("MAE_EPOCHS"), 30)
         self.assertEqual(get_constant_assignment("NOTEBOOK_MAE_EPOCHS"), 30)
+        self.assertIs(get_constant_assignment("NOTEBOOK_NO_LGBM"), True)
+        self.assertIs(get_constant_assignment("NOTEBOOK_NO_SALIENCY"), True)
 
     def test_cli_defaults_match_clinical4_diagnostic(self):
         source = read_source()

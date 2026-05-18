@@ -78,6 +78,25 @@ PUBLISHED_ST131_PEAKS = [
 ]
 LITERATURE_SOURCE = "Scientific Reports 2019; DOI 10.1038/s41598-019-45051-z"
 
+# Confidence tiers for mass-matching based on MALDI-TOF linear-mode accuracy.
+# At 4–12 kDa, linear mode is typically ±0.1–0.3% (~5–25 Da worst case).
+# ≤10 Da: within tight accuracy window — confirmed match.
+# 10–20 Da: borderline, within worst-case linear accuracy — putative.
+# >20 Da: exceeds typical accuracy; enrichment test remains valid but individual
+#          protein identities should not be claimed.
+CONFIDENCE_THRESHOLDS = [
+    (10.0, "high_confidence"),
+    (20.0, "putative"),
+    (float("inf"), "loose"),
+]
+
+
+def assign_confidence_tier(delta_da: float) -> str:
+    for threshold, label in CONFIDENCE_THRESHOLDS:
+        if delta_da <= threshold:
+            return label
+    return "loose"
+
 
 def read_tsv(path: Path) -> list[dict[str, str]]:
     with path.open(newline="") as handle:
@@ -177,6 +196,7 @@ def match_published_peak(mz: float, tolerance_da: float) -> dict[str, object]:
         "protein": best["protein"],
         "annotation": best["annotation"],
         "delta_da": round(delta, 4),
+        "confidence_tier": assign_confidence_tier(delta),
         "source": LITERATURE_SOURCE,
     }
 
@@ -337,6 +357,7 @@ def run(args: argparse.Namespace) -> None:
                         "effect_pos_minus_neg": row["effect_pos_minus_neg"],
                         "published_mz": match["published_mz"],
                         "delta_da": match["delta_da"],
+                        "confidence_tier": match["confidence_tier"],
                         "protein": match["protein"],
                         "annotation": match["annotation"],
                         "source": match["source"],
@@ -398,6 +419,7 @@ def run(args: argparse.Namespace) -> None:
             "effect_pos_minus_neg",
             "published_mz",
             "delta_da",
+            "confidence_tier",
             "protein",
             "annotation",
             "source",
@@ -435,24 +457,47 @@ def run(args: argparse.Namespace) -> None:
     }
     (args.output_dir / "updated_proteomic_overlap_summary.json").write_text(json.dumps(summary, indent=2) + "\n")
 
+    tier_order = ["high_confidence", "putative", "loose"]
+    tier_labels = {
+        "high_confidence": "High confidence (≤10 Da): within typical MALDI-TOF linear-mode accuracy",
+        "putative": "Putative (10–20 Da): borderline, individual protein identity uncertain",
+        "loose": "Loose (>20 Da): exceeds typical accuracy — enrichment result valid but protein identity not claimed",
+    }
+    rows_by_tier: dict[str, list] = {t: [] for t in tier_order}
+    for row in overlap_rows:
+        rows_by_tier[row["confidence_tier"]].append(row)
+
+    n_high = len(rows_by_tier["high_confidence"])
+    n_putative = len(rows_by_tier["putative"])
+    n_loose = len(rows_by_tier["loose"])
+
     lines = [
         "# Updated Proteomic Overlap Analysis",
         "",
         f"Bruker MALDI rows: {len(bruker_rows)}",
         f"TGNRs with peak features: {len(tgnrs)}",
-        f"Published ST131 peak overlaps: {len(overlap_rows)}",
+        f"Published ST131 peak overlaps: {len(overlap_rows)} "
+        f"({n_high} high-confidence, {n_putative} putative, {n_loose} loose)",
         "",
-        "## Matches",
+        "## Matches by Confidence Tier",
+        "",
+        "Mass-matching tolerance is 40 Da (=bin width). Confidence tiers reflect MALDI-TOF",
+        "linear-mode accuracy at 4–12 kDa. Individual protein identities should only be",
+        "claimed for high-confidence matches; the permutation enrichment result holds for all tiers.",
         "",
     ]
-    if overlap_rows:
-        for row in overlap_rows:
+    for tier in tier_order:
+        tier_rows = rows_by_tier[tier]
+        if not tier_rows:
+            continue
+        lines.append(f"### {tier_labels[tier]}")
+        lines.append("")
+        for row in tier_rows:
             lines.append(
                 f"- {row['target']} {row['feature']} center={row['mz_center']} matched "
                 f"published m/z {row['published_mz']} ({row['protein']}, delta={row['delta_da']} Da)"
             )
-    else:
-        lines.append("- No top bins matched published ST131 proteomic peaks within tolerance.")
+        lines.append("")
     lines += [
         "",
         "## Mass-Matched Permutation Enrichment",

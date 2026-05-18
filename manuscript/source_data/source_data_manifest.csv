@@ -4,5 +4,4 @@ Figure 3,source_data_fig3_model_family_replication.csv,"Completed CNN/Mega, Ligh
 Figure 4,source_data_fig4_cross_resistance_edges_all_sites.csv,All-sites E. coli cross-resistance edges used for the phi heatmap and strongest-edge annotations.
 Figure 5a,source_data_fig5a_public_wgs_maldi_auc.csv,Public UPEC WGS-linked MALDI peak-feature AUCs.
 Figure 5b,source_data_fig5b_proteomic_biomarker_enrichment.csv,Published ST131 biomarker enrichment results.
-Figure 6,source_data_fig6_falsification_controls.csv,"Observed model AUC, background-burden control AUC and within-background shuffle null."
-Figure 7,source_data_fig7_deployment_decision_flow.csv,Deployment interpretation rules for audited model outputs.
+Figure 6,source_data_fig6_saureus_oxa_audit.csv,S. aureus / Oxacillin background-matched audit (second organism validation).

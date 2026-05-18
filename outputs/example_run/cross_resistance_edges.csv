@@ -1,0 +1,19 @@
+site,drug_a,drug_b,n_both_known,n_ss,n_sr,n_rs,n_rr,prevalence_a,prevalence_b,p_rr_observed,p_rr_expected_independent,rr_lift,phi,resistant_jaccard
+ALL,Ciprofloxacin,Norfloxacin,300,199,24,8,69,0.256667,0.31,0.23,0.0795667,2.89066,0.744667,0.683168
+ALL,Ciprofloxacin,Ceftriaxone,300,182,41,51,26,0.256667,0.223333,0.0866667,0.0573222,1.51192,0.161308,0.220339
+ALL,Ciprofloxacin,Amoxicillin-Clavulanic acid,300,185,38,63,14,0.256667,0.173333,0.0466667,0.0444889,1.04895,0.0131714,0.121739
+ALL,Norfloxacin,Ceftriaxone,300,170,37,63,30,0.31,0.223333,0.1,0.0692333,1.44439,0.159728,0.230769
+ALL,Norfloxacin,Amoxicillin-Clavulanic acid,300,176,31,72,21,0.31,0.173333,0.07,0.0537333,1.30273,0.0929152,0.169355
+ALL,Ceftriaxone,Amoxicillin-Clavulanic acid,300,228,5,20,47,0.223333,0.173333,0.156667,0.0387111,4.04707,0.748201,0.652778
+Hospital-A,Ciprofloxacin,Norfloxacin,150,102,8,4,36,0.266667,0.293333,0.24,0.0782222,3.06818,0.803518,0.75
+Hospital-A,Ciprofloxacin,Ceftriaxone,150,90,20,27,13,0.266667,0.22,0.0866667,0.0586667,1.47727,0.15285,0.216667
+Hospital-A,Ciprofloxacin,Amoxicillin-Clavulanic acid,150,92,18,34,6,0.266667,0.16,0.04,0.0426667,0.9375,-0.0164488,0.103448
+Hospital-A,Norfloxacin,Ceftriaxone,150,88,18,29,15,0.293333,0.22,0.1,0.0645333,1.54959,0.18805,0.241935
+Hospital-A,Norfloxacin,Amoxicillin-Clavulanic acid,150,91,15,35,9,0.293333,0.16,0.06,0.0469333,1.27841,0.0782847,0.152542
+Hospital-A,Ceftriaxone,Amoxicillin-Clavulanic acid,150,114,3,12,21,0.22,0.16,0.14,0.0352,3.97727,0.690086,0.583333
+Hospital-B,Ciprofloxacin,Norfloxacin,150,97,16,4,33,0.246667,0.326667,0.22,0.0805778,2.73028,0.689629,0.622642
+Hospital-B,Ciprofloxacin,Ceftriaxone,150,92,21,24,13,0.246667,0.226667,0.0866667,0.0559111,1.55008,0.170411,0.224138
+Hospital-B,Ciprofloxacin,Amoxicillin-Clavulanic acid,150,93,20,29,8,0.246667,0.186667,0.0533333,0.0460444,1.1583,0.0433955,0.140351
+Hospital-B,Norfloxacin,Ceftriaxone,150,82,19,34,15,0.326667,0.226667,0.1,0.0740444,1.35054,0.132186,0.220588
+Hospital-B,Norfloxacin,Amoxicillin-Clavulanic acid,150,85,16,37,12,0.326667,0.186667,0.08,0.0609778,1.31195,0.104094,0.184615
+Hospital-B,Ceftriaxone,Amoxicillin-Clavulanic acid,150,114,2,8,26,0.226667,0.186667,0.173333,0.0423111,4.09664,0.803156,0.722222

@@ -11,9 +11,9 @@ from pathlib import Path
 from typing import Iterable, Sequence
 
 
-DEFAULT_PREDICTIONS = (
-    "/Users/byungkim/Downloads/results-2/background_matched_contrastive/"
-    "background_matched_predictions.csv"
+DEFAULT_PREDICTIONS = str(
+    Path(__file__).resolve().parents[1]
+    / "outputs" / "analysis_outputs" / "background_matched_predictions.csv"
 )
 DEFAULT_OUTPUT_DIR = "outputs/analysis_outputs/calibration_analysis"
 

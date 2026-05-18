@@ -1,0 +1,9 @@
+site,min_stratum,n_pairs,n_adequate,macro_raw_auc,macro_centered_auc
+Hospital-A,2,8,8,0.8426,0.7661
+Hospital-A,3,8,8,0.8426,0.8107
+Hospital-A,5,8,6,0.8426,0.7477
+Hospital-A,10,8,4,0.8426,0.8952
+Hospital-B,2,8,8,0.8329,0.6966
+Hospital-B,3,8,8,0.8329,0.6966
+Hospital-B,5,8,4,0.8329,0.9022
+Hospital-B,10,8,3,0.8329,0.8830

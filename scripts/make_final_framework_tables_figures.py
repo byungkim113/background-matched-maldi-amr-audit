@@ -17,6 +17,12 @@ import numpy as np
 import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
 
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+from matplotlib.lines import Line2D
+
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "outputs" / "final_framework_outputs"
@@ -61,12 +67,55 @@ COLORS = {
     "muted": (92, 99, 112),
 }
 
+# Matplotlib publication-quality defaults (Nature Communications style)
+matplotlib.rcParams.update({
+    "font.family": "sans-serif",
+    "font.sans-serif": ["Arial", "DejaVu Sans", "Liberation Sans", "Helvetica"],
+    "font.size": 8,
+    "axes.titlesize": 9,
+    "axes.labelsize": 8,
+    "xtick.labelsize": 7,
+    "ytick.labelsize": 7,
+    "legend.fontsize": 7,
+    "savefig.dpi": 300,
+    "savefig.facecolor": "white",
+    "axes.spines.top": False,
+    "axes.spines.right": False,
+    "axes.linewidth": 0.8,
+    "xtick.major.width": 0.8,
+    "ytick.major.width": 0.8,
+    "xtick.major.size": 3,
+    "ytick.major.size": 3,
+    "lines.linewidth": 1.2,
+    "grid.linewidth": 0.4,
+    "grid.alpha": 0.5,
+    "grid.color": "#cccccc",
+    "axes.axisbelow": True,
+})
+
+MPL_COLORS = {
+    "quinolone": "#2970B1",
+    "ceph": "#BA4C4C",
+    "mixed": "#DA8E38",
+    "other": "#5C5C5C",
+}
+
 
 def font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
+    b = "bd" if bold else ""
+    B = " Bold" if bold else ""
     candidates = [
-        "/System/Library/Fonts/Supplemental/Arial Bold.ttf" if bold else "/System/Library/Fonts/Supplemental/Arial.ttf",
-        "/Library/Fonts/Arial Bold.ttf" if bold else "/Library/Fonts/Arial.ttf",
+        # Windows
+        f"C:/Windows/Fonts/arial{b}.ttf",
+        f"C:/Windows/Fonts/Arial{B}.ttf",
+        # macOS
+        f"/System/Library/Fonts/Supplemental/Arial{B}.ttf",
+        f"/Library/Fonts/Arial{B}.ttf",
         "/System/Library/Fonts/Helvetica.ttc",
+        # Linux
+        f"/usr/share/fonts/truetype/liberation/LiberationSans-{'Bold' if bold else 'Regular'}.ttf",
+        f"/usr/share/fonts/truetype/dejavu/DejaVuSans{'-Bold' if bold else ''}.ttf",
+        f"/usr/share/fonts/truetype/freefont/FreeSans{'Bold' if bold else ''}.ttf",
     ]
     for candidate in candidates:
         try:
@@ -219,189 +268,255 @@ def figure_raw_to_centered(df: pd.DataFrame) -> Path:
                     "model": model,
                     "site": row["site"],
                     "drug": row["drug"],
-                    "raw": row[raw_col],
-                    "centered": row[centered_col],
-                    "retention": row[retention_col],
-                    "adequacy": row[adequacy_col],
+                    "raw": float(row[raw_col]),
+                    "centered": float(row[centered_col]),
+                    "retention": float(row[retention_col]) if not pd.isna(row[retention_col]) else 0.0,
+                    "adequacy": str(row[adequacy_col]),
                     "block": block_for_drug(row["drug"]),
                 }
             )
     plot = pd.DataFrame(long_rows)
+    if plot.empty:
+        fig, _ = plt.subplots(figsize=(6.69, 3.0))
+        path = OUT / "figure_1_raw_to_background_centered_auc.png"
+        fig.savefig(path)
+        plt.close(fig)
+        return path
+
     order_drugs = ["Ciprofloxacin", "Norfloxacin", "Amoxicillin-Clavulanic acid", "Ceftriaxone", "Ceftazidime", "Cefepime"]
     order_sites = ["A-2018", "DRIAMS-B", "DRIAMS-C", "DRIAMS-D"]
-    plot["drug_order"] = plot["drug"].map({d: i for i, d in enumerate(order_drugs)})
-    plot["site_order"] = plot["site"].map({s: i for i, s in enumerate(order_sites)})
-    plot = plot.sort_values(["drug_order", "site_order"])
+    plot["drug_order"] = plot["drug"].map({d: i for i, d in enumerate(order_drugs)}).fillna(99)
+    plot["site_order"] = plot["site"].map({s: i for i, s in enumerate(order_sites)}).fillna(99)
+    plot = plot.sort_values(["drug_order", "site_order"]).reset_index(drop=True)
 
-    width, height = 1800, 1080
-    img = Image.new("RGB", (width, height), "white")
-    draw = ImageDraw.Draw(img)
-    draw.text((60, 35), "Raw external AUC vs background-centered AUC", font=FONT["title"], fill=COLORS["text"])
-    draw.text(
-        (60, 75),
-        "Circle = raw external AUC; square = after matching/centering by co-resistance background.",
-        font=FONT["subtitle"],
-        fill=COLORS["muted"],
-    )
-    draw_legend(draw, 60, 110)
+    models = ["CNN", "LGBM multi"]
+    n_max = max((len(plot[plot["model"] == m]) for m in models), default=1)
+    fig_h = max(3.5, min(10.0, n_max * 0.32 + 1.6))
 
-    panel_w = 790
-    panel_h = 820
-    xmins, xmaxs = 0.30, 0.92
-    panels = [("CNN", 70, 185), ("LGBM multi", 930, 185)]
-    for model, px, py in panels:
-        sub = plot[plot["model"] == model].copy()
-        draw.text((px + 260, py - 45), model, font=FONT["title"], fill=COLORS["text"])
-        left, right = px + 170, px + panel_w - 30
-        top, bottom = py, py + panel_h
-        for tick in np.arange(0.3, 1.0, 0.1):
-            xx = xscale(tick, left, right, xmins, xmaxs)
-            draw.line((xx, top, xx, bottom), fill=COLORS["grid"], width=1)
-            draw.text((xx - 12, bottom + 12), f"{tick:.1f}", font=FONT["small"], fill=COLORS["muted"])
-        draw.line((xscale(0.5, left, right, xmins, xmaxs), top, xscale(0.5, left, right, xmins, xmaxs), bottom), fill=(150, 150, 150), width=2)
+    fig, axes = plt.subplots(1, 2, figsize=(6.69, fig_h), constrained_layout=True)
+
+    legend_handles = [
+        Line2D([0], [0], marker="o", color="#444", ms=6.5, lw=0, label="Raw AUC"),
+        Line2D([0], [0], marker="s", color="#444", ms=5.5, lw=0, mfc="white", mew=1.4, label="Background-centered AUC"),
+    ]
+    for bkey, blabel in [("quinolone", "Fluoroquinolone"), ("ceph", "Cephalosporin/ESBL"), ("mixed", "Mixed β-lactam")]:
+        legend_handles.append(mpatches.Patch(facecolor=MPL_COLORS[bkey], label=blabel))
+
+    for ax, model in zip(axes, models):
+        sub = plot[plot["model"] == model].reset_index(drop=True)
         n = len(sub)
-        for i, (_, row) in enumerate(sub.iterrows()):
-            y = int(top + 18 + i * ((panel_h - 35) / max(1, n - 1)))
-            label = f"{row['site']} | {short_drug(row['drug'])}"
-            draw.text((px, y - 8), label, font=FONT["tiny"], fill=COLORS["text"])
-            color = COLORS[row["block"]]
-            x1 = xscale(row["centered"], left, right, xmins, xmaxs)
-            x2 = xscale(row["raw"], left, right, xmins, xmaxs)
-            if "low" in str(row["adequacy"]) or row["retention"] < 0.15:
-                line_color = tuple(int(c * 0.65 + 255 * 0.35) for c in color)
-            else:
-                line_color = color
-            draw.line((x1, y, x2, y), fill=line_color, width=4)
-            draw.rectangle((x1 - 6, y - 6, x1 + 6, y + 6), fill=color)
-            draw.ellipse((x2 - 7, y - 7, x2 + 7, y + 7), fill=color)
-        draw.text((left + 205, bottom + 48), "AUC", font=FONT["label"], fill=COLORS["text"])
+        yticks, ylabels = [], []
+
+        for i, row in sub.iterrows():
+            color = MPL_COLORS[row["block"]]
+            faded = "low" in row["adequacy"] or row["retention"] < 0.15
+            alpha = 0.28 if faded else 1.0
+            y = n - 1 - i
+            ax.plot([row["raw"], row["centered"]], [y, y], "-",
+                    color=color, alpha=alpha, lw=1.8, solid_capstyle="round", zorder=2)
+            ax.plot(row["raw"], y, "o", color=color, alpha=alpha, ms=6.5, zorder=3, clip_on=False)
+            ax.plot(row["centered"], y, "s", color=color, alpha=alpha,
+                    ms=5.5, mec=color, mfc="white" if not faded else color, mew=1.4, zorder=3, clip_on=False)
+            yticks.append(y)
+            ylabels.append(f"{row['site']}  {short_drug(row['drug'])}")
+
+        ax.set_yticks(yticks)
+        ax.set_yticklabels(ylabels, fontsize=6.5)
+        ax.axvline(0.5, color="#888", lw=0.8, ls="--", alpha=0.55, zorder=1)
+        ax.set_xlim(0.30, 0.96)
+        ax.set_ylim(-0.8, max(0, n - 0.2))
+        ax.set_xlabel("AUC", fontsize=8)
+        ax.set_title(model, fontsize=9, fontweight="bold", pad=6)
+        ax.grid(axis="x")
+        ax.spines["left"].set_visible(False)
+        ax.tick_params(axis="y", length=0)
+
+    fig.legend(handles=legend_handles, loc="lower center", bbox_to_anchor=(0.5, -0.04),
+               ncol=3, fontsize=6.5, frameon=False, columnspacing=1.0)
+    fig.suptitle("Raw vs background-centered AUC", fontsize=9.5, fontweight="bold")
+
     path = OUT / "figure_1_raw_to_background_centered_auc.png"
-    img.save(path)
+    fig.savefig(path, dpi=300, facecolor="white")
+    plt.close(fig)
     return path
 
 
 def figure_drop_retention(df: pd.DataFrame) -> Path:
-    width, height = 1500, 850
-    img = Image.new("RGB", (width, height), "white")
-    draw = ImageDraw.Draw(img)
-    draw.text((60, 35), "Background sensitivity: signal drop vs matched retention", font=FONT["title"], fill=COLORS["text"])
-    draw.text((60, 76), "Large positive drop means raw AUC was higher than background-centered AUC.", font=FONT["subtitle"], fill=COLORS["muted"])
-    draw_legend(draw, 60, 112)
+    fig, axes = plt.subplots(1, 2, figsize=(6.69, 3.4), sharey=True, constrained_layout=True)
 
-    panels = [
-        ("CNN", "cnn_raw_minus_centered", "cnn_retention", 80, 180),
-        ("LGBM multi", "lgbm_raw_minus_centered", "lgbm_retention", 790, 180),
-    ]
-    for title, drop_col, ret_col, px, py in panels:
-        left, right = px + 80, px + 610
-        top, bottom = py, py + 560
-        draw.text((px + 245, py - 45), title, font=FONT["title"], fill=COLORS["text"])
-        for tick in np.linspace(0, 1, 6):
-            xx = xscale(tick, left, right, 0, 1)
-            draw.line((xx, top, xx, bottom), fill=COLORS["grid"], width=1)
-            draw.text((xx - 12, bottom + 10), f"{tick:.1f}", font=FONT["small"], fill=COLORS["muted"])
-        ymin, ymax = -0.12, 0.52
-        for tick in np.arange(-0.1, 0.55, 0.1):
-            yy = int(bottom - (tick - ymin) / (ymax - ymin) * (bottom - top))
-            draw.line((left, yy, right, yy), fill=COLORS["grid"], width=1)
-            draw.text((px + 20, yy - 7), f"{tick:.1f}", font=FONT["small"], fill=COLORS["muted"])
-        draw.line((left, bottom, right, bottom), fill=(120, 120, 120), width=2)
-        draw.line((left, top, left, bottom), fill=(120, 120, 120), width=2)
-        for _, row in df.iterrows():
-            if pd.isna(row[drop_col]) or pd.isna(row[ret_col]):
+    for ax, (model, drop_col, ret_col) in zip(
+        axes,
+        [
+            ("CNN", "cnn_raw_minus_centered", "cnn_retention"),
+            ("LGBM multi", "lgbm_raw_minus_centered", "lgbm_retention"),
+        ],
+    ):
+        for bkey in ["quinolone", "ceph", "mixed", "other"]:
+            mask = df["drug"].map(block_for_drug) == bkey
+            sub = df[mask & df[drop_col].notna() & df[ret_col].notna()]
+            if sub.empty:
                 continue
-            xx = xscale(float(row[ret_col]), left, right, 0, 1)
-            yy = int(bottom - (float(row[drop_col]) - ymin) / (ymax - ymin) * (bottom - top))
-            block = block_for_drug(row["drug"])
-            color = COLORS[block]
-            r = 9 if block == "quinolone" else 8
-            draw.ellipse((xx - r, yy - r, xx + r, yy + r), fill=color, outline=(255, 255, 255), width=2)
-        draw.text((left + 155, bottom + 45), "Matched retention", font=FONT["label"], fill=COLORS["text"])
-        draw.text((px, py + 235), "raw - centered", font=FONT["label"], fill=COLORS["text"])
+            ax.scatter(
+                sub[ret_col].astype(float),
+                sub[drop_col].astype(float),
+                c=MPL_COLORS[bkey],
+                s=52,
+                alpha=0.85,
+                edgecolors="white",
+                linewidths=0.7,
+                zorder=3,
+            )
+
+        ax.axhline(0, color="#888", lw=0.8, alpha=0.55, zorder=1)
+        ax.axvline(0.5, color="#888", lw=0.8, ls="--", alpha=0.45, zorder=1)
+        ax.set_title(model, fontsize=9, fontweight="bold")
+        ax.set_xlabel("Matched retention", fontsize=8)
+        ax.set_xlim(-0.05, 1.05)
+        ax.grid()
+
+    axes[0].set_ylabel("Raw AUC − Background-centered AUC", fontsize=8)
+
+    legend_handles = [
+        mpatches.Patch(facecolor=MPL_COLORS[b], label=block_label(b))
+        for b in ["quinolone", "ceph", "mixed"]
+    ]
+    fig.legend(handles=legend_handles, loc="lower center", bbox_to_anchor=(0.5, -0.06),
+               ncol=3, fontsize=7, frameon=False)
+    fig.suptitle("Background sensitivity: signal drop vs matched retention", fontsize=9.5, fontweight="bold")
+
     path = OUT / "figure_2_drop_vs_matched_retention.png"
-    img.save(path)
+    fig.savefig(path, dpi=300, facecolor="white")
+    plt.close(fig)
     return path
 
 
 def figure_cross_resistance_heatmap(edges: pd.DataFrame) -> Path:
     site = "ALL" if "ALL" in set(edges["site"]) else "A-2018"
     data = edges[edges["site"] == site].copy()
-    drugs = sorted(set(data["drug_a"]).union(set(data["drug_b"])), key=lambda d: ["Ciprofloxacin", "Norfloxacin", "Amoxicillin-Clavulanic acid", "Ceftriaxone", "Ceftazidime", "Cefepime"].index(d) if d in ["Ciprofloxacin", "Norfloxacin", "Amoxicillin-Clavulanic acid", "Ceftriaxone", "Ceftazidime", "Cefepime"] else 99)
+    drug_order_full = [
+        "Ciprofloxacin", "Norfloxacin", "Amoxicillin-Clavulanic acid",
+        "Ceftriaxone", "Ceftazidime", "Cefepime",
+    ]
+    all_seen = set(data["drug_a"]).union(set(data["drug_b"]))
+    drugs = [d for d in drug_order_full if d in all_seen]
+    if not drugs:
+        drugs = sorted(all_seen)
+
     mat = pd.DataFrame(np.nan, index=drugs, columns=drugs)
     for d in drugs:
         mat.loc[d, d] = 1.0
     for _, row in data.iterrows():
-        mat.loc[row["drug_a"], row["drug_b"]] = row["phi"]
-        mat.loc[row["drug_b"], row["drug_a"]] = row["phi"]
+        if row["drug_a"] in drugs and row["drug_b"] in drugs:
+            mat.loc[row["drug_a"], row["drug_b"]] = row["phi"]
+            mat.loc[row["drug_b"], row["drug_a"]] = row["phi"]
 
-    cell = 105
-    left, top = 280, 180
-    width = left + cell * len(drugs) + 100
-    height = top + cell * len(drugs) + 120
-    img = Image.new("RGB", (width, height), "white")
-    draw = ImageDraw.Draw(img)
-    draw.text((50, 40), f"Cross-resistance network: phi correlation ({site})", font=FONT["title"], fill=COLORS["text"])
-    draw.text((50, 80), "High values show drug labels occurring in the same resistant ecology block.", font=FONT["subtitle"], fill=COLORS["muted"])
-    for i, d in enumerate(drugs):
-        draw.text((left + i * cell + 8, top - 55), short_drug(d), font=FONT["small"], fill=COLORS["text"])
-        draw.text((55, top + i * cell + 38), short_drug(d), font=FONT["small"], fill=COLORS["text"])
-    for i, da in enumerate(drugs):
-        for j, db in enumerate(drugs):
-            v = mat.loc[da, db]
-            if pd.isna(v):
-                fill = (245, 246, 248)
-                txt = ""
-            else:
-                intensity = int(245 - 175 * max(0, min(1, float(v))))
-                fill = (intensity, int(245 - 120 * max(0, min(1, float(v)))), 255)
-                txt = f"{v:.2f}"
-            x0, y0 = left + j * cell, top + i * cell
-            draw.rectangle((x0, y0, x0 + cell - 3, y0 + cell - 3), fill=fill, outline="white")
-            if txt:
-                draw.text((x0 + 33, y0 + 40), txt, font=FONT["small"], fill=COLORS["text"])
+    drug_labels = [short_drug(d) for d in drugs]
+    n = len(drugs)
+    cell_in = 0.65
+    fig, ax = plt.subplots(figsize=(n * cell_in + 1.6, n * cell_in + 1.0), constrained_layout=True)
+
+    arr = mat.values.astype(float)
+    cmap = plt.cm.Blues.copy()
+    cmap.set_bad("#F2F3F5")
+    masked = np.ma.masked_invalid(arr)
+    im = ax.imshow(masked, cmap=cmap, vmin=0, vmax=1, aspect="equal")
+
+    for i in range(n):
+        for j in range(n):
+            v = arr[i, j]
+            if not np.isnan(v):
+                txt_color = "white" if v > 0.60 else "#1a1a2e"
+                ax.text(j, i, f"{v:.2f}", ha="center", va="center",
+                        fontsize=7, color=txt_color,
+                        fontweight="bold" if i == j else "normal")
+
+    ax.set_xticks(range(n))
+    ax.set_yticks(range(n))
+    ax.set_xticklabels(drug_labels, rotation=40, ha="right", fontsize=7.5)
+    ax.set_yticklabels(drug_labels, fontsize=7.5)
+    ax.tick_params(length=0)
+    for spine in ax.spines.values():
+        spine.set_visible(False)
+
+    for k in np.arange(-0.5, n, 1):
+        ax.axvline(k, color="white", lw=1.5, zorder=3)
+        ax.axhline(k, color="white", lw=1.5, zorder=3)
+
+    cb = fig.colorbar(im, ax=ax, shrink=0.70, pad=0.02, aspect=18)
+    cb.set_label("Phi (φ) correlation", fontsize=7.5)
+    cb.ax.tick_params(labelsize=7, length=2)
+    cb.outline.set_linewidth(0.5)
+
+    ax.set_title(f"Co-resistance phi matrix — {site}", fontsize=9, fontweight="bold", pad=8)
+
     path = OUT / "figure_3_cross_resistance_phi_heatmap.png"
-    img.save(path)
+    fig.savefig(path, dpi=300, facecolor="white")
+    plt.close(fig)
     return path
 
 
 def figure_wgs_proteomic(wgs: pd.DataFrame, enrichment: pd.DataFrame) -> Path:
-    width, height = 1500, 900
-    img = Image.new("RGB", (width, height), "white")
-    draw = ImageDraw.Draw(img)
-    draw.text((60, 35), "Public WGS-linked MALDI support", font=FONT["title"], fill=COLORS["text"])
-    draw.text((60, 76), "Lineage is strongly encoded in Bruker MALDI peaks; resistance-associated peaks overlap published ST131 markers.", font=FONT["subtitle"], fill=COLORS["muted"])
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(5.5, 5.2), constrained_layout=True)
 
-    # WGS AUC bars
-    draw.text((80, 145), "A. MALDI peak AUC in public Basel UPEC dataset", font=FONT["bold"], fill=COLORS["text"])
-    bar_left, bar_top, bar_w, bar_h = 110, 205, 500, 44
-    for i, row in wgs.iterrows():
-        y = bar_top + i * 75
-        auc = float(row["auc"])
-        label = str(row["target"]).replace("_", " ")
-        draw.text((bar_left, y - 2), label, font=FONT["label"], fill=COLORS["text"])
-        x0 = bar_left + 230
-        draw.rectangle((x0, y, x0 + bar_w, y + bar_h), outline=COLORS["grid"], width=1)
-        draw.rectangle((x0, y, x0 + int(bar_w * auc), y + bar_h), fill=COLORS["quinolone"] if "Cipro" in label else COLORS["ceph"] if "Cef" in label else COLORS["mixed"])
-        draw.text((x0 + int(bar_w * auc) + 12, y + 10), f"{auc:.3f}", font=FONT["label"], fill=COLORS["text"])
+    # ── Panel A: MALDI peak AUC horizontal bars ───────────────────────────
+    targets = wgs["target"].tolist()
+    aucs = wgs["auc"].astype(float).tolist()
+    bar_colors = [
+        MPL_COLORS["quinolone"] if "Cipro" in str(t) or "cipro" in str(t).lower()
+        else MPL_COLORS["ceph"] if "Cef" in str(t)
+        else MPL_COLORS["mixed"]
+        for t in targets
+    ]
+    y_pos = list(range(len(targets)))
+    ax1.barh(y_pos, [a - 0.5 for a in aucs], left=0.5,
+             color=bar_colors, height=0.55, zorder=3, clip_on=False)
+    for i, auc in enumerate(aucs):
+        ax1.text(auc + 0.013, i, f"{auc:.3f}", va="center", fontsize=7.5, fontweight="bold")
+    ax1.set_yticks(y_pos)
+    ax1.set_yticklabels([str(t).replace("_", " ") for t in targets], fontsize=8)
+    ax1.axvline(0.5, color="#888", lw=0.8, ls="--", alpha=0.6, zorder=1)
+    ax1.set_xlim(0.45, 1.09)
+    ax1.set_xlabel("AUC", fontsize=8)
+    ax1.invert_yaxis()
+    ax1.grid(axis="x")
+    ax1.set_title("A   MALDI peak-feature AUC · public Basel UPEC", fontsize=8.5, fontweight="bold", loc="left", pad=5)
 
-    # Proteomic enrichment bars
-    draw.text((80, 490), "B. Enrichment for published ST131 MALDI biomarkers", font=FONT["bold"], fill=COLORS["text"])
-    enrich = enrichment.copy()
-    enrich["target_label"] = enrich["target"].replace({"Ciprofloxacin_R": "Cipro-R", "Ceftriaxone_R": "Ceftriaxone-R", "ALL_TARGETS": "All targets"})
-    max_fold = max(3.5, float(enrich["fold_enrichment"].max()))
-    for i, row in enrich.iterrows():
-        y = 555 + i * 65
-        fold = float(row["fold_enrichment"])
-        label = row["target_label"]
-        draw.text((bar_left, y + 7), label, font=FONT["label"], fill=COLORS["text"])
-        x0 = bar_left + 230
-        draw.rectangle((x0, y, x0 + bar_w, y + bar_h), outline=COLORS["grid"], width=1)
-        color = COLORS["mixed"] if label == "ST131" else COLORS["quinolone"] if "Cipro" in label else COLORS["ceph"]
-        draw.rectangle((x0, y, x0 + int(bar_w * fold / max_fold), y + bar_h), fill=color)
-        p = float(row["empirical_p_ge_observed"])
-        draw.text((x0 + int(bar_w * fold / max_fold) + 12, y + 10), f"{fold:.2f}x, p={p:.4f}", font=FONT["label"], fill=COLORS["text"])
+    # ── Panel B: Published ST131 biomarker enrichment bars ────────────────
+    show = enrichment[enrichment["target"].isin(["ST131", "Ciprofloxacin_R", "Ceftriaxone_R", "ALL_TARGETS"])].copy()
+    label_map = {
+        "Ciprofloxacin_R": "Cipro-R",
+        "Ceftriaxone_R": "CRO-R",
+        "ALL_TARGETS": "All targets",
+        "ST131": "ST131",
+    }
+    show = show.copy()
+    show["label"] = show["target"].map(label_map).fillna(show["target"])
+    fold_colors = [
+        MPL_COLORS["mixed"] if t == "ST131"
+        else MPL_COLORS["quinolone"] if "Cipro" in t
+        else MPL_COLORS["other"] if t == "ALL_TARGETS"
+        else MPL_COLORS["ceph"]
+        for t in show["target"].tolist()
+    ]
+    folds = show["fold_enrichment"].astype(float).tolist()
+    y_pos2 = list(range(len(show)))
+    ax2.barh(y_pos2, folds, color=fold_colors, height=0.55, zorder=3, clip_on=False)
+    ax2.axvline(1.0, color="#888", lw=0.8, ls="--", alpha=0.6, zorder=1)
+    for i, (fold, row) in enumerate(zip(folds, show.itertuples())):
+        p = float(row.empirical_p_ge_observed)
+        ax2.text(fold + 0.07, i, f"{fold:.2f}×  p={p:.4f}", va="center", fontsize=7)
+    ax2.set_yticks(y_pos2)
+    ax2.set_yticklabels(show["label"].tolist(), fontsize=8)
+    ax2.set_xlabel("Fold enrichment", fontsize=8)
+    ax2.invert_yaxis()
+    ax2.grid(axis="x")
+    max_fold = max(folds) if folds else 3.5
+    ax2.set_xlim(0, max_fold * 1.40)
+    ax2.set_title("B   Enrichment for published ST131 MALDI biomarkers", fontsize=8.5, fontweight="bold", loc="left", pad=5)
+
     path = OUT / "figure_4_public_wgs_proteomic_support.png"
-    img.save(path)
+    fig.savefig(path, dpi=300, facecolor="white")
+    plt.close(fig)
     return path
 
 

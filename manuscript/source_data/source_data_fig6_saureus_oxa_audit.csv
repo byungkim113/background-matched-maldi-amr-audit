@@ -1,0 +1,8 @@
+pair,site,cnn_auc,background_only_auc,cnn_minus_bg,interpretation,adequacy,n,n_r
+S. aureus / Oxacillin,A-2018,0.8382,0.7625,0.0757,maldi_exceeds_exact_background,interpretable,1225,178
+S. aureus / Oxacillin,DRIAMS-B,0.7752,0.7945,-0.0193,exact_background_competitive,interpretable,346,21
+S. aureus / Oxacillin,DRIAMS-C,0.7252,0.6274,0.0978,maldi_exceeds_exact_background,interpretable,738,41
+E. coli / Ciprofloxacin,A-2018,0.8225,0.8601,-0.0376,exact_background_competitive,interpretable,1350,355
+E. coli / Ciprofloxacin,DRIAMS-B,0.7737,0.973,-0.1993,exact_background_competitive,interpretable,212,58
+E. coli / Ciprofloxacin,DRIAMS-C,0.7499,0.9183,-0.1684,exact_background_competitive,interpretable,886,188
+E. coli / Ciprofloxacin,DRIAMS-D,0.6706,0.5222,0.1484,maldi_exceeds_exact_background,interpretable,1939,371

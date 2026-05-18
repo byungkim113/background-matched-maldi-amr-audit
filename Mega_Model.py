@@ -135,6 +135,18 @@ PAIR_PROFILES = {
         ("Staphylococcus aureus", "Penicillin"),
         ("Staphylococcus epidermidis", "Erythromycin"),
     ],
+    "saureus_panel": [
+        # Main second-organism panel for background-matched Oxacillin audit.
+        # The audit interprets Oxacillin against same-organism non-focal AST labels.
+        # Pairs with insufficient source resistant isolates are dropped automatically.
+        ("Staphylococcus aureus", "Oxacillin"),
+        ("Staphylococcus aureus", "Penicillin"),
+        ("Staphylococcus aureus", "Ciprofloxacin"),
+        ("Staphylococcus aureus", "Erythromycin"),
+        ("Staphylococcus aureus", "Clindamycin"),
+        ("Staphylococcus aureus", "Gentamicin"),
+        ("Staphylococcus aureus", "Fusidic acid"),
+    ],
     "clinical4": [
         ("Escherichia coli", "Ciprofloxacin"),
         ("Escherichia coli", "Amoxicillin-Clavulanic acid"),
@@ -399,15 +411,15 @@ PRIMARY_PAIR_IDX:    int  = 0
 # NOTEBOOK / KAGGLE CONFIG — edit these when running as a notebook cell
 # (ignored when running as a CLI script)
 # ═══════════════════════════════════════════════════════════════════════════════
-NOTEBOOK_PAIR_PROFILE = "ecoli_mechanism6"     # run14, clinical4, clinical5, gram_negative6, ecoli_mechanism6
+NOTEBOOK_PAIR_PROFILE = "saureus_panel"        # run14, clinical4, clinical5, saureus_panel, gram_negative6, ecoli_mechanism6
 NOTEBOOK_MODE        = None                    # optional legacy alias: run14 or multidrug
-NOTEBOOK_EXPERIMENT  = "exp_ecoli_mechanism6_drugid_mae30"
+NOTEBOOK_EXPERIMENT  = "exp_saureus_panel_oxa_background_mae30"
 NOTEBOOK_CKPT_DIR    = None                    # None = auto (output/experiment/models)
 NOTEBOOK_CALIB_JSON  = None                    # path to saved calibration JSON, or None
 NOTEBOOK_DATA_ROOT   = None                    # None = use DATA_ROOT above
 NOTEBOOK_OUTPUT_DIR  = "/kaggle/working/runs"
 NOTEBOOK_WITH_ABLATION = False                 # True = train no_mae/no_dann/no_film (slow)
-NOTEBOOK_NO_LGBM     = False                   # True = skip LightGBM baselines
+NOTEBOOK_NO_LGBM     = True                    # True = skip LightGBM baselines; keep Sa/Oxa audit run faster
 NOTEBOOK_NO_BN_ADAPT = True                    # True = disable BN adaptation on ext sites
 NOTEBOOK_EARLY_STOP  = "macro"                 # "macro" or "primary"
 NOTEBOOK_SEED_POLICY = "all"                   # "all", "threshold", or "topk"
@@ -415,9 +427,9 @@ NOTEBOOK_TOP_K_SEEDS = TOP_K_SEEDS
 NOTEBOOK_MIN_SEED_MACRO_AUC = MIN_SEED_MACRO_AUC
 NOTEBOOK_PREVALENCE_SHIFT = "none"             # "capped" or "none"
 NOTEBOOK_STRICT_MAE_SOURCE_ONLY = False        # True = MAE sees source train/val only
-NOTEBOOK_NO_SALIENCY = False                   # True = skip occlusion saliency export
+NOTEBOOK_NO_SALIENCY = True                    # True = skip occlusion saliency export; audit does not need saliency
 NOTEBOOK_MAE_EPOCHS = 30                       # MAE-30 performance run default
-NOTEBOOK_WITH_RANDOM_CV = True                 # True = run LightGBM random-CV inflation diagnostic
+NOTEBOOK_WITH_RANDOM_CV = False                # True = run LightGBM random-CV inflation diagnostic
 NOTEBOOK_DRUG_CONDITIONING = "task_id"         # task_id, drug_id, morgan, drug_id+morgan
 NOTEBOOK_WITH_LEAVE_ONE_DRUG_OUT = False       # E.coli panel zero-shot drug transfer diagnostic
 

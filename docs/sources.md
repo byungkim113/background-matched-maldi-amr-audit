@@ -74,11 +74,8 @@ Useful links:
 - Kaggle snapshot: <https://www.kaggle.com/datasets/bfdf121/marisma>
 - Zenodo record discussed for MARISMa v2: <https://zenodo.org/records/17201597>
 
-## Citation And Licensing Checklist Before Public Release
+## Notes Before Public Release
 
-- Add any manuscript DOI for this repository when the paper is accepted.
-- Confirm whether processed UPEC median-peak tables can remain in a public repository or should be distributed by script-only download instructions.
-- Confirm MARISMa redistribution terms before releasing any raw spectra or raw
-  AMR tables; this repository currently includes only derived outputs.
-- Decide whether model checkpoints stay in GitHub, move to Zenodo/OSF, or are released only as prediction CSVs.
-- Cite this repository together with upstream data/code sources in any manuscript using these artifacts.
+When preparing this repository for public release alongside the manuscript,
+confirm upstream redistribution terms for each data source listed above and
+add the manuscript DOI to CITATION.cff once the paper is accepted.

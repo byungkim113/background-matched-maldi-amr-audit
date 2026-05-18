@@ -38,3 +38,27 @@ jobs:
 
       - name: Run Mega/source regression tests
         run: python -m unittest tests.test_mega_model_regressions
+
+      - name: Run calibration analysis tests
+        run: python -m unittest tests.test_calibration_analysis
+
+      - name: Run co-resistance stratification tests
+        run: python -m unittest tests.test_co_resistance_stratification
+
+      - name: Run deployment decision framework tests
+        run: python -m unittest tests.test_deployment_decision_framework
+
+      - name: Run Weis predictions export tests
+        run: python -m unittest tests.test_export_weis_predictions_for_audit
+
+      - name: Run falsification controls tests
+        run: python -m unittest tests.test_falsification_controls
+
+      - name: Run MARISMa end-to-end tests
+        run: python -m unittest tests.test_marisma_end_to_end_kaggle
+
+      - name: Run MARISMa metadata feasibility tests
+        run: python -m unittest tests.test_marisma_metadata_feasibility
+
+      - name: Run temporal reliability audit tests
+        run: python -m unittest tests.test_temporal_reliability_audit

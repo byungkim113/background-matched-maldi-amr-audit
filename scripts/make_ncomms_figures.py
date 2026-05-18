@@ -47,11 +47,15 @@ DRUG_SHORT = {
     "Ceftazidime": "CAZ",
     "Cefepime": "FEP",
     "Oxacillin": "Oxa",
+    "Penicillin": "Pen",
+    "Erythromycin": "Ery",
     "E. coli / Cipro": "E. coli / Cipro",
     "E. coli / Amox-Clav": "E. coli / Amox-Clav",
+    "S. aureus / Oxacillin": "S. aureus / Oxacillin",
 }
 
 DRUG_ORDER = ["Cipro", "Norflox", "Amox-Clav", "CRO", "CAZ", "FEP"]
+SAUREUS_DRUG_ORDER = ["Oxa", "Pen", "Cipro", "Ery"]
 
 
 def ensure_dirs() -> None:
@@ -119,9 +123,11 @@ def axis_auc(c: canvas.Canvas, x0: float, x1: float, y: float, xmin: float = 0.4
     c.setStrokeColor(MID_GRAY)
     c.setLineWidth(1.0)
     c.line(xmap(0.5, x0, x1, xmin, xmax), y, xmap(0.5, x0, x1, xmin, xmax), y + 205)
+    text(c, x0, y - 28, "AUC", size=8, fill=GRAY)
 
 
 def auc_fill(value: float):
+    """Color scale for centered AUC in the model-class matrix."""
     if pd.isna(value):
         return colors.white
     value = max(0.45, min(0.90, float(value)))
@@ -138,8 +144,11 @@ def auc_fill(value: float):
         r1, g1, b1 = 43, 108, 176
         t = (value - 0.68) / 0.22
     t = max(0.0, min(1.0, t))
-    return colors.Color((r0 + (r1 - r0) * t) / 255, (g0 + (g1 - g0) * t) / 255, (b0 + (b1 - b0) * t) / 255)
-    text(c, x0, y - 28, "AUC", size=8, fill=GRAY)
+    return colors.Color(
+        (r0 + (r1 - r0) * t) / 255,
+        (g0 + (g1 - g0) * t) / 255,
+        (b0 + (b1 - b0) * t) / 255,
+    )
 
 
 def marker(c: canvas.Canvas, x: float, y: float, color, shape: str, hollow: bool = False, size: float = 5) -> None:
@@ -219,47 +228,15 @@ def figure_2_primary_audit(primary: pd.DataFrame) -> Path:
     text(c, 0.55 * inch, h - 0.45 * inch, "Fig. 2 | Focal-drug signal after background matching", 14, True)
     text(c, 0.55 * inch, h - 0.70 * inch, "Raw external AUC is compared with stratum-centered AUC. Centering removes score shifts shared by co-resistance strata.", 9, False, GRAY)
 
-    data = primary.copy()
-    for col in ["raw_auc_95ci", "stratum_centered_auc_95ci"]:
-        values = data[col].map(parse_auc_ci)
-        data[col + "_mid"] = values.map(lambda t: t[0])
-        data[col + "_low"] = values.map(lambda t: t[1])
-        data[col + "_high"] = values.map(lambda t: t[2])
-
+    data = _prep_auc_ci(primary)
     panels = [
-        ("E. coli / Cipro", BLUE, 0.55 * inch, "Ciprofloxacin retains residual within-background ranking."),
-        ("E. coli / Amox-Clav", ORANGE, 5.65 * inch, "Amox-Clav weakens or collapses after background control."),
+        ("E. coli / Cipro", BLUE, 0.55 * inch,
+         "Ciprofloxacin retains residual within-background ranking."),
+        ("E. coli / Amox-Clav", ORANGE, 5.65 * inch,
+         "Amox-Clav weakens or collapses after background control."),
     ]
-    xmin, xmax = 0.45, 0.90
     for pair, col, px, subtitle in panels:
-        panel_label(c, px, h - 1.15 * inch, pair)
-        text(c, px, h - 1.38 * inch, subtitle, 8, False, GRAY)
-        x0, x1 = px + 1.15 * inch, px + 4.55 * inch
-        y0 = 1.55 * inch
-        axis_auc(c, x0, x1, y0, xmin, xmax)
-        sub = data[data["pair"].eq(pair)].copy()
-        sub["site_order"] = sub["site"].map({"A-2018": 0, "DRIAMS-B": 1, "DRIAMS-C": 2, "DRIAMS-D": 3})
-        sub = sub.sort_values("site_order")
-        for i, row in enumerate(sub.itertuples(index=False)):
-            y = h - 1.88 * inch - i * 0.47 * inch
-            site = row.site
-            caution = "caution" in str(row.adequacy)
-            right_text(c, x0 - 0.18 * inch, y - 3, site, 8, False, GRAY if caution else DARK)
-            raw = getattr(row, "raw_auc_95ci_mid")
-            cen = getattr(row, "stratum_centered_auc_95ci_mid")
-            raw_x = xmap(raw, x0, x1, xmin, xmax)
-            cen_x = xmap(cen, x0, x1, xmin, xmax)
-            c.setStrokeColor(col if not caution else MID_GRAY)
-            c.setLineWidth(1.2)
-            c.line(raw_x, y, cen_x, y)
-            marker(c, raw_x, y, col if not caution else MID_GRAY, "circle", hollow=False)
-            marker(c, cen_x, y, col if not caution else MID_GRAY, "square", hollow=caution)
-            delta = getattr(row, "raw_to_centered_delta")
-            text(c, x1 + 0.12 * inch, y - 3, f"Delta={delta:+.3f}; ret={row.matched_retention_pct:.1f}%", 7.2, False, GRAY)
-        marker(c, px + 0.10 * inch, y0 - 0.18 * inch, DARK, "circle")
-        text(c, px + 0.25 * inch, y0 - 0.22 * inch, "raw", 7.5, False, GRAY)
-        marker(c, px + 0.75 * inch, y0 - 0.18 * inch, DARK, "square")
-        text(c, px + 0.90 * inch, y0 - 0.22 * inch, "background-centered", 7.5, False, GRAY)
+        _pair_panel(c, pair, subtitle, col, px, h, data)
     c.showPage()
     c.save()
     return path
@@ -314,11 +291,7 @@ def figure_3_matrix_rows(matrix_df: pd.DataFrame) -> pd.DataFrame:
     return matrix.sort_values(["target_order", "model_column"])
 
 
-def figure_3_model_replication(
-    model_df: pd.DataFrame,
-    published_df: pd.DataFrame | None = None,
-    matrix_df: pd.DataFrame | None = None,
-) -> Path:
+def figure_3_model_replication(model_df: pd.DataFrame, matrix_df: pd.DataFrame | None = None) -> Path:
     path = FIG_DIR / "figure_3_model_family_replication.pdf"
     if matrix_df is not None and not matrix_df.empty:
         focus = figure_3_matrix_rows(matrix_df)
@@ -375,7 +348,15 @@ def figure_3_model_replication(
                     c.rect(x, y, cell_w - 0.04 * inch, cell_h - 0.04 * inch, stroke=1, fill=1)
                     centered_text(c, x + (cell_w - 0.04 * inch) / 2, y + 0.10 * inch, "not run", 7.0, False, GRAY)
 
-        text(c, 0.70 * inch, 0.86 * inch, "Cells show raw AUC -> background-centered AUC; color encodes centered AUC. * denotes low matched support.", 7.2, False, GRAY)
+        text(
+            c,
+            0.70 * inch,
+            0.86 * inch,
+            "Cells show raw AUC -> background-centered AUC; color encodes centered AUC. * denotes low matched support.",
+            7.2,
+            False,
+            GRAY,
+        )
         c.setFillColor(auc_fill(0.50))
         c.rect(7.45 * inch, 0.80 * inch, 0.25 * inch, 0.13 * inch, stroke=0, fill=1)
         text(c, 7.76 * inch, 0.80 * inch, "chance/weak", 6.8, False, GRAY)
@@ -393,48 +374,31 @@ def figure_3_model_replication(
     w, h = landscape(letter)
     white_page(c, w, h)
     text(c, 0.55 * inch, h - 0.45 * inch, "Fig. 3 | Background sensitivity across model families", 14, True)
-    text(c, 0.55 * inch, h - 0.70 * inch, "Mega/CNN, LGBM and a Weis/Borgwardt-style compatibility export are audited using the same co-resistance framework.", 9, False, GRAY)
+    text(c, 0.55 * inch, h - 0.70 * inch, "CNN and multi-task LGBM outputs are audited using the same co-resistance strata.", 9, False, GRAY)
 
     keep = model_df[model_df["drug"].isin(["Cipro", "Amox-Clav"]) & model_df["site"].isin(["A-2018", "DRIAMS-C", "DRIAMS-D"])].copy()
     keep["drug_order"] = keep["drug"].map({"Cipro": 0, "Amox-Clav": 1})
     keep["site_order"] = keep["site"].map({"A-2018": 0, "DRIAMS-C": 1, "DRIAMS-D": 2})
     keep = keep.sort_values(["drug_order", "site_order"])
 
-    panels = [
-        ("Mega CNN", keep, "cnn_raw_auc", "cnn_centered_auc", 0.55 * inch),
-        ("LGBM multi", keep, "lgbm_raw_auc", "lgbm_centered_auc", 3.95 * inch),
-    ]
-    if published_df is not None and not published_df.empty:
-        pub = published_df[
-            published_df["drug"].isin(["Cipro", "Amox-Clav"])
-            & published_df["site"].isin(["DRIAMS-C", "DRIAMS-D"])
-        ].copy()
-        pub["drug_order"] = pub["drug"].map({"Cipro": 0, "Amox-Clav": 1})
-        pub["site_order"] = pub["site"].map({"DRIAMS-C": 0, "DRIAMS-D": 1})
-        pub = pub.sort_values(["drug_order", "site_order"])
-        panels.append(("Weis/Borgwardt style", pub, "raw_auc", "stratum_centered_auc", 7.35 * inch))
-
+    panels = [("CNN", "cnn_raw_auc", "cnn_centered_auc", 0.75 * inch), ("LGBM multi", "lgbm_raw_auc", "lgbm_centered_auc", 5.70 * inch)]
     xmin, xmax = 0.45, 0.90
-    for model, panel_df, raw_col, cen_col, px in panels:
+    for model, raw_col, cen_col, px in panels:
         panel_label(c, px, h - 1.15 * inch, model)
-        x0, x1 = px + 1.00 * inch, px + 2.95 * inch
+        x0, x1 = px + 1.05 * inch, px + 4.05 * inch
         y0 = 1.55 * inch
         axis_auc(c, x0, x1, y0, xmin, xmax)
-        for i, row in enumerate(panel_df.itertuples(index=False)):
+        for i, row in enumerate(keep.itertuples(index=False)):
             y = h - 1.75 * inch - i * 0.37 * inch
             color = BLUE if row.drug == "Cipro" else ORANGE
             right_text(c, x0 - 0.18 * inch, y - 3, f"{row.drug} {row.site}", 7.2, False, DARK)
             raw = float(getattr(row, raw_col))
-            cen = getattr(row, cen_col)
-            if not pd.isna(cen):
-                cen = float(cen)
-                c.setStrokeColor(color)
-                c.setLineWidth(1.1)
-                c.line(xmap(raw, x0, x1, xmin, xmax), y, xmap(cen, x0, x1, xmin, xmax), y)
-                marker(c, xmap(cen, x0, x1, xmin, xmax), y, color, "square", size=4.4)
+            cen = float(getattr(row, cen_col))
+            c.setStrokeColor(color)
+            c.setLineWidth(1.1)
+            c.line(xmap(raw, x0, x1, xmin, xmax), y, xmap(cen, x0, x1, xmin, xmax), y)
             marker(c, xmap(raw, x0, x1, xmin, xmax), y, color, "circle", size=4.4)
-            if pd.isna(getattr(row, cen_col)):
-                text(c, x1 + 0.04 * inch, y - 3, "no valid strata", 6.2, False, GRAY)
+            marker(c, xmap(cen, x0, x1, xmin, xmax), y, color, "square", size=4.4)
     c.showPage()
     c.save()
     return path
@@ -501,6 +465,230 @@ def figure_4_cross_resistance() -> Path:
     return path
 
 
+def _pair_panel(c: canvas.Canvas, pair_label: str, subtitle: str, col,
+                px: float, h: float, data: pd.DataFrame,
+                xmin: float = 0.45, xmax: float = 0.90) -> None:
+    """Draw a single pair panel (raw vs centered AUC per site) at position px."""
+    panel_label(c, px, h - 1.15 * inch, pair_label)
+    text(c, px, h - 1.38 * inch, subtitle, 8, False, GRAY)
+    x0, x1 = px + 1.15 * inch, px + 4.55 * inch
+    y0 = 1.55 * inch
+    axis_auc(c, x0, x1, y0, xmin, xmax)
+    sub = data[data["pair"].eq(pair_label)].copy()
+    sub["site_order"] = sub["site"].map({"A-2018": 0, "DRIAMS-B": 1, "DRIAMS-C": 2, "DRIAMS-D": 3})
+    sub = sub.sort_values("site_order")
+    for i, row in enumerate(sub.itertuples(index=False)):
+        y = h - 1.88 * inch - i * 0.47 * inch
+        caution = "caution" in str(row.adequacy)
+        right_text(c, x0 - 0.18 * inch, y - 3, row.site, 8, False, GRAY if caution else DARK)
+        raw = getattr(row, "raw_auc_95ci_mid")
+        cen = getattr(row, "stratum_centered_auc_95ci_mid")
+        raw_x = xmap(raw, x0, x1, xmin, xmax)
+        cen_x = xmap(cen, x0, x1, xmin, xmax)
+        bar_col = col if not caution else MID_GRAY
+        c.setStrokeColor(bar_col)
+        c.setLineWidth(1.2)
+        c.line(raw_x, y, cen_x, y)
+        marker(c, raw_x, y, bar_col, "circle", hollow=False)
+        marker(c, cen_x, y, bar_col, "square", hollow=caution)
+        c.setStrokeColor(bar_col)
+        c.setLineWidth(0.45)
+        for lo_attr, hi_attr in [
+            ("raw_auc_95ci_low", "raw_auc_95ci_high"),
+            ("stratum_centered_auc_95ci_low", "stratum_centered_auc_95ci_high"),
+        ]:
+            lo_val = getattr(row, lo_attr)
+            hi_val = getattr(row, hi_attr)
+            if not math.isnan(lo_val) and not math.isnan(hi_val):
+                lx = xmap(lo_val, x0, x1, xmin, xmax)
+                hx = xmap(hi_val, x0, x1, xmin, xmax)
+                c.line(lx, y, hx, y)
+                for cx in [lx, hx]:
+                    c.line(cx, y - 2.5, cx, y + 2.5)
+        delta = getattr(row, "raw_to_centered_delta")
+        text(c, x1 + 0.12 * inch, y - 3,
+             f"Δ={delta:+.3f}; ret={row.matched_retention_pct:.1f}%", 7.2, False, GRAY)
+    marker(c, px + 0.10 * inch, y0 - 0.18 * inch, DARK, "circle")
+    text(c, px + 0.25 * inch, y0 - 0.22 * inch, "raw", 7.5, False, GRAY)
+    marker(c, px + 0.75 * inch, y0 - 0.18 * inch, DARK, "square")
+    text(c, px + 0.90 * inch, y0 - 0.22 * inch, "background-centered", 7.5, False, GRAY)
+
+
+def _prep_auc_ci(data: pd.DataFrame) -> pd.DataFrame:
+    data = data.copy()
+    for col in ["raw_auc_95ci", "stratum_centered_auc_95ci"]:
+        values = data[col].map(parse_auc_ci)
+        data[col + "_mid"]  = values.map(lambda t: t[0])
+        data[col + "_low"]  = values.map(lambda t: t[1])
+        data[col + "_high"] = values.map(lambda t: t[2])
+    return data
+
+
+def figure_6_saureus_oxa(sa_df: pd.DataFrame) -> Path:
+    """CNN AUC vs background-only AUC for Sa/Oxa and E.coli/Cipro.
+
+    sa_df columns: pair, site, cnn_auc, background_only_auc, cnn_minus_bg,
+                   interpretation, adequacy, n, n_r.
+
+    Left panel:  S. aureus / Oxacillin  — CNN exceeds background at 2/3 sites.
+    Right panel: E. coli / Ciprofloxacin — background competitive at most sites.
+    """
+    path = FIG_DIR / "figure_6_saureus_oxacillin_audit.pdf"
+    c = canvas.Canvas(str(path), pagesize=landscape(letter))
+    w, h = landscape(letter)
+    white_page(c, w, h)
+    text(c, 0.55 * inch, h - 0.45 * inch,
+         "Fig. 6 | CNN vs. background-only AUC: second organism validation", 14, True)
+    text(c, 0.55 * inch, h - 0.70 * inch,
+         "Filled circle = CNN AUC; hollow square = background-only (exact co-resistance signature) AUC. "
+         "Positive delta = CNN exceeds background.", 9, False, GRAY)
+
+    GREEN_SA = colors.HexColor("#2F855A")
+    xmin, xmax = 0.45, 1.05
+
+    panels_cfg = [
+        ("S. aureus / Oxacillin",   GREEN_SA, 0.55 * inch,
+         "CNN exceeds background at source and DRIAMS-C (mecA/PBP2a structural phenotype)."),
+        ("E. coli / Ciprofloxacin", BLUE,     5.65 * inch,
+         "Background is competitive at external sites; CNN exceeds only at DRIAMS-D."),
+    ]
+
+    site_order_map = {"A-2018": 0, "DRIAMS-B": 1, "DRIAMS-C": 2, "DRIAMS-D": 3}
+
+    for pair_label, col, px, subtitle in panels_cfg:
+        panel_label(c, px, h - 1.15 * inch, pair_label)
+        text(c, px, h - 1.38 * inch, subtitle, 8, False, GRAY)
+
+        x0, x1 = px + 1.30 * inch, px + 4.55 * inch
+        y0 = 1.55 * inch
+
+        # Extended axis for values potentially > 1.0 (background can exceed 1.0 as raw AUC)
+        c.setStrokeColor(LIGHT_GRAY)
+        c.setLineWidth(0.6)
+        for tick in [0.5, 0.6, 0.7, 0.8, 0.9, 1.0]:
+            x = xmap(tick, x0, x1, xmin, xmax)
+            c.line(x, y0, x, y0 + 200)
+            centered_text(c, x, y0 - 13, f"{tick:.1f}", size=7, fill=GRAY)
+        c.setStrokeColor(MID_GRAY)
+        c.setLineWidth(1.0)
+        x_chance = xmap(0.5, x0, x1, xmin, xmax)
+        c.line(x_chance, y0, x_chance, y0 + 200)
+        text(c, x0, y0 - 28, "AUC", size=8, fill=GRAY)
+
+        sub = sa_df[sa_df["pair"].eq(pair_label)].copy()
+        sub["site_order"] = sub["site"].map(site_order_map)
+        sub = sub.sort_values("site_order")
+
+        for i, row in enumerate(sub.itertuples(index=False)):
+            y = h - 1.88 * inch - i * 0.50 * inch
+            caution = "caution" in str(row.adequacy)
+            bar_col = col if not caution else MID_GRAY
+            right_text(c, x0 - 0.18 * inch, y - 3, row.site, 8, False,
+                       GRAY if caution else DARK)
+
+            cnn_x = xmap(min(float(row.cnn_auc), xmax), x0, x1, xmin, xmax)
+            bg_x  = xmap(min(float(row.background_only_auc), xmax), x0, x1, xmin, xmax)
+
+            # Connector line
+            c.setStrokeColor(bar_col)
+            c.setLineWidth(1.2)
+            c.line(cnn_x, y, bg_x, y)
+
+            # CNN AUC — filled circle
+            marker(c, cnn_x, y, bar_col, "circle", hollow=False)
+            # Background-only AUC — hollow square
+            marker(c, bg_x, y, bar_col, "square", hollow=True)
+
+            # Interpretation badge
+            interp = str(row.interpretation)
+            delta  = float(row.cnn_minus_bg)
+            badge_col = GREEN if delta > 0 else ORANGE
+            badge_txt = f"Δ={delta:+.3f} {('CNN>bg' if delta > 0 else 'bg≥CNN')}"
+            text(c, x1 + 0.12 * inch, y - 3, badge_txt, 7.2, False,
+                 badge_col if not caution else GRAY)
+
+        # Legend
+        marker(c, px + 0.10 * inch, y0 - 0.18 * inch, DARK, "circle")
+        text(c, px + 0.25 * inch, y0 - 0.22 * inch, "CNN AUC", 7.5, False, GRAY)
+        marker(c, px + 0.95 * inch, y0 - 0.18 * inch, DARK, "square", hollow=True)
+        text(c, px + 1.10 * inch, y0 - 0.22 * inch, "background-only AUC", 7.5, False, GRAY)
+
+    # Interpretation note
+    note_y = 1.00 * inch
+    text(c, 0.55 * inch, note_y,
+         "Background-only AUC: predicts focal drug from co-resistance signature without MALDI spectra "
+         "(exact-background smoothed prevalence).", 7.5, False, GRAY)
+
+    c.showPage()
+    c.save()
+    return path
+
+
+COMPARISON_ROWS = [
+    # (dimension, prior_maldi_amr, tripod_ai, this_framework, note)
+    ("Reports external-site AUC",               "Yes",  "Required",    "Yes",  ""),
+    ("Controls for co-resistance background",   "No",   "Not required","Yes",  "Core audit metric"),
+    ("Quantifies signal collapse vs. retention","No",   "No",          "Yes",  "raw − centered delta"),
+    ("Site-specific evaluation",                "Yes",  "Recommended", "Yes",  ""),
+    ("Multi-drug panel (> 2 pairs)",            "Some", "N/A",         "Yes",  "saureus_panel, ecoli_mechanism6"),
+    ("Second organism validation",              "No",   "N/A",         "Yes",  "E. coli + S. aureus"),
+    ("Sensitivity analysis (stratum threshold)","No",   "No",          "Yes",  "2, 3, 5, 10 isolates per stratum"),
+    ("Model-agnostic (accepts any CSV)",        "No",   "N/A",         "Yes",  "No DRIAMS/PyTorch dependency"),
+    ("Open code + reproducible example data",   "Partial","N/A",       "Yes",  "github + SCHEMA.md"),
+]
+
+
+def figure_7_framework_comparison() -> Path:
+    """Comparison table of this framework vs prior MALDI-AMR work and TRIPOD+AI."""
+    path = FIG_DIR / "figure_7_framework_comparison.pdf"
+    w, h = 7.8 * inch, 4.20 * inch
+    c = canvas.Canvas(str(path), pagesize=(w, h))
+    white_page(c, w, h)
+    text(c, 0.18 * inch, h - 0.32 * inch,
+         "Fig. 7 | Framework comparison", 12, True)
+    text(c, 0.18 * inch, h - 0.52 * inch,
+         "What the background-matched audit adds relative to prior MALDI-AMR publications and TRIPOD+AI.",
+         7.8, False, GRAY)
+
+    col_xs = [0.18 * inch, 3.10 * inch, 4.65 * inch, 5.88 * inch]
+    col_ws = [2.88 * inch, 1.52 * inch, 1.20 * inch, 1.80 * inch]
+    headers = ["Evaluation dimension", "Prior MALDI-AMR", "TRIPOD+AI", "This framework"]
+
+    y_header = h - 0.82 * inch
+    for i, (hdr, cx) in enumerate(zip(headers, col_xs)):
+        text(c, cx, y_header, hdr, 7.5, True, DARK)
+
+    c.setStrokeColor(MID_GRAY)
+    c.setLineWidth(0.5)
+    c.line(0.18 * inch, y_header - 5, w - 0.18 * inch, y_header - 5)
+
+    for row_idx, (dim, prior, tripod, ours, note) in enumerate(COMPARISON_ROWS):
+        y = y_header - 0.34 * inch - row_idx * 0.34 * inch
+        bg = PALE if row_idx % 2 == 0 else colors.white
+        c.setFillColor(bg)
+        c.rect(0.12 * inch, y - 0.09 * inch, w - 0.24 * inch, 0.30 * inch, stroke=0, fill=1)
+
+        text(c, col_xs[0], y, dim, 7.2, False, DARK)
+        for val, cx in [(prior, col_xs[1]), (tripod, col_xs[2]), (ours, col_xs[3])]:
+            is_yes = val.lower().startswith("yes")
+            is_no  = val.lower().startswith("no")
+            fill_col = GREEN if is_yes else (RED if is_no else GRAY)
+            text(c, cx, y, val, 7.2, is_yes, fill_col)
+
+    c.setStrokeColor(LIGHT_GRAY)
+    c.setLineWidth(0.4)
+    c.line(0.18 * inch, h - 0.82 * inch - len(COMPARISON_ROWS) * 0.34 * inch - 0.08 * inch,
+           w - 0.18 * inch,
+           h - 0.82 * inch - len(COMPARISON_ROWS) * 0.34 * inch - 0.08 * inch)
+    text(c, 0.18 * inch, 0.25 * inch,
+         "Prior MALDI-AMR: Weis et al. 2022 (Nat. Med.) and comparable publications. "
+         "TRIPOD+AI: transparent reporting guideline (2024).",
+         6.5, False, GRAY)
+    c.showPage()
+    c.save()
+    return path
+
+
 def figure_5_public_support(wgs: pd.DataFrame, enrichment: pd.DataFrame) -> Path:
     path = FIG_DIR / "figure_5_public_wgs_proteomic_support.pdf"
     c = canvas.Canvas(str(path), pagesize=landscape(letter))
@@ -559,82 +747,6 @@ def figure_5_public_support(wgs: pd.DataFrame, enrichment: pd.DataFrame) -> Path
     return path
 
 
-def figure_6_falsification_controls(falsification: pd.DataFrame) -> Path:
-    path = FIG_DIR / "figure_6_falsification_controls.pdf"
-    c = canvas.Canvas(str(path), pagesize=landscape(letter))
-    w, h = landscape(letter)
-    white_page(c, w, h)
-    text(c, 0.55 * inch, h - 0.45 * inch, "Fig. 6 | Falsification controls for background-aware interpretation", 14, True)
-    text(c, 0.55 * inch, h - 0.70 * inch, "Observed AUC is compared with a resistance-burden-only score and a within-background shuffled-label null.", 9, False, GRAY)
-
-    keep = falsification[
-        falsification["drug"].isin(["Cipro", "Amox-Clav", "CRO", "CAZ", "FEP"])
-        & falsification["site"].isin(["A-2018", "DRIAMS-C", "DRIAMS-D"])
-    ].copy()
-    keep["drug_order"] = keep["drug"].map({"Cipro": 0, "Amox-Clav": 1, "CRO": 2, "CAZ": 3, "FEP": 4})
-    keep["site_order"] = keep["site"].map({"A-2018": 0, "DRIAMS-C": 1, "DRIAMS-D": 2})
-    keep = keep.sort_values(["drug_order", "site_order"]).head(15)
-
-    x0, x1 = 2.55 * inch, 8.95 * inch
-    y_top = h - 1.30 * inch
-    xmin, xmax = 0.30, 1.00
-    for tick in [0.3, 0.5, 0.7, 0.9, 1.0]:
-        x = xmap(tick, x0, x1, xmin, xmax)
-        c.setStrokeColor(LIGHT_GRAY)
-        c.line(x, y_top + 0.10 * inch, x, 1.10 * inch)
-        centered_text(c, x, 0.88 * inch, f"{tick:.1f}", 7, False, GRAY)
-    for i, row in enumerate(keep.itertuples(index=False)):
-        y = y_top - i * 0.29 * inch
-        right_text(c, x0 - 0.15 * inch, y - 3, f"{row.drug} {row.site}", 7.2, False, DARK)
-        obs = xmap(row.observed_auc, x0, x1, xmin, xmax)
-        burden = xmap(row.background_burden_auc, x0, x1, xmin, xmax)
-        shuffle = xmap(row.shuffle_null_mean_auc, x0, x1, xmin, xmax)
-        c.setStrokeColor(LIGHT_GRAY)
-        c.line(min(obs, burden, shuffle), y, max(obs, burden, shuffle), y)
-        marker(c, obs, y, BLUE, "circle", size=4.4)
-        marker(c, burden, y, ORANGE, "square", size=4.2)
-        c.setFillColor(RED)
-        c.setStrokeColor(RED)
-        c.line(shuffle - 4, y - 4, shuffle + 4, y + 4)
-        c.line(shuffle - 4, y + 4, shuffle + 4, y - 4)
-
-    marker(c, 0.65 * inch, 0.70 * inch, BLUE, "circle", size=4.5)
-    text(c, 0.80 * inch, 0.66 * inch, "observed model", 7.5, False, GRAY)
-    marker(c, 2.20 * inch, 0.70 * inch, ORANGE, "square", size=4.5)
-    text(c, 2.35 * inch, 0.66 * inch, "background-burden score", 7.5, False, GRAY)
-    c.setStrokeColor(RED)
-    c.line(4.30 * inch - 4, 0.70 * inch - 4, 4.30 * inch + 4, 0.70 * inch + 4)
-    c.line(4.30 * inch - 4, 0.70 * inch + 4, 4.30 * inch + 4, 0.70 * inch - 4)
-    text(c, 4.45 * inch, 0.66 * inch, "within-background shuffle null", 7.5, False, GRAY)
-    c.showPage()
-    c.save()
-    return path
-
-
-def figure_7_deployment_flow(rules: pd.DataFrame) -> Path:
-    path = FIG_DIR / "figure_7_deployment_decision_flow.pdf"
-    c = canvas.Canvas(str(path), pagesize=landscape(letter))
-    w, h = landscape(letter)
-    white_page(c, w, h)
-    text(c, 0.55 * inch, h - 0.45 * inch, "Fig. 7 | Deployment interpretation framework", 14, True)
-    text(c, 0.55 * inch, h - 0.70 * inch, "Audit outcomes are mapped to validation, recalibration, retraining or no-deployment actions.", 9, False, GRAY)
-
-    colors_for = [GREEN, BLUE, ORANGE, GRAY, RED]
-    y = h - 1.35 * inch
-    for i, row in enumerate(rules.itertuples(index=False)):
-        yy = y - i * 0.78 * inch
-        color = colors_for[min(i, len(colors_for) - 1)]
-        c.setStrokeColor(color)
-        c.setFillColor(PALE)
-        c.roundRect(0.62 * inch, yy - 0.45 * inch, 9.85 * inch, 0.55 * inch, 6, stroke=1, fill=1)
-        text(c, 0.78 * inch, yy - 0.02 * inch, row.scenario, 7.8, True, DARK)
-        text(c, 4.75 * inch, yy - 0.02 * inch, row.decision_category, 7.6, True, color)
-        text(c, 7.05 * inch, yy - 0.02 * inch, str(row.recommended_action)[:88], 6.4, False, GRAY)
-    c.showPage()
-    c.save()
-    return path
-
-
 def latex_escape(value: object) -> str:
     text_value = "" if value is None or (isinstance(value, float) and math.isnan(value)) else str(value)
     replacements = {
@@ -678,13 +790,7 @@ def write_latex_table(path: Path, caption: str, label: str, df: pd.DataFrame, no
     path.write_text("\n".join(lines) + "\n")
 
 
-def make_tables(
-    primary: pd.DataFrame,
-    model_df: pd.DataFrame,
-    wgs: pd.DataFrame,
-    enrichment: pd.DataFrame,
-    published_df: pd.DataFrame | None = None,
-) -> None:
+def make_tables(primary: pd.DataFrame, model_df: pd.DataFrame, wgs: pd.DataFrame, enrichment: pd.DataFrame) -> None:
     def manuscript_interpretation(row: pd.Series) -> str:
         pair = str(row["pair"])
         site = str(row["site"])
@@ -714,25 +820,18 @@ def make_tables(
         "Centered AUC is computed after subtracting the mean model score within each co-resistance background stratum. Caution rows are reported but not used as the main evidence.",
     )
 
-    base = model_df[model_df["drug"].isin(["Cipro", "Amox-Clav"]) & model_df["site"].isin(["A-2018", "DRIAMS-C", "DRIAMS-D"])].copy()
-    rows = []
-    for _, row in base.iterrows():
-        rows.append(["Mega CNN", row["site"], row["drug"], row["cnn_raw_auc"], row["cnn_centered_auc"], row["cnn_retention"], row["cnn_adequacy"]])
-        rows.append(["LGBM multi", row["site"], row["drug"], row["lgbm_raw_auc"], row["lgbm_centered_auc"], row["lgbm_retention"], row["lgbm_adequacy"]])
-    if published_df is not None and not published_df.empty:
-        pub = published_df[published_df["drug"].isin(["Cipro", "Amox-Clav"]) & published_df["site"].isin(["DRIAMS-C", "DRIAMS-D"])].copy()
-        for _, row in pub.iterrows():
-            model_label = row.get("model_family", "Weis/Borgwardt style")
-            rows.append([model_label, row["site"], row["drug"], row["raw_auc"], row["stratum_centered_auc"], row["matched_retention"], row["adequacy_label"]])
-    t2 = pd.DataFrame(rows, columns=["Model", "Site", "Drug", "Raw AUC", "Centered AUC", "Retention", "Adequacy"])
-    for col in ["Raw AUC", "Centered AUC", "Retention"]:
+    t2 = model_df[model_df["drug"].isin(["Cipro", "Amox-Clav"]) & model_df["site"].isin(["A-2018", "DRIAMS-C", "DRIAMS-D"])][
+        ["site", "drug", "cnn_raw_auc", "cnn_centered_auc", "lgbm_raw_auc", "lgbm_centered_auc", "model_family_consensus"]
+    ].copy()
+    t2.columns = ["Site", "Drug", "CNN raw", "CNN centered", "LGBM raw", "LGBM centered", "Consensus"]
+    for col in ["CNN raw", "CNN centered", "LGBM raw", "LGBM centered"]:
         t2[col] = t2[col].map(lambda x: "" if pd.isna(x) else f"{float(x):.3f}")
     write_latex_table(
         TABLE_DIR / "table_2_model_replication.tex",
-        "Model-family audit of raw-to-background-centered attenuation.",
+        "Model-family replication of raw-to-background-centered attenuation.",
         "tab:model-replication",
         t2,
-        "The same audit is applied to Mega/CNN, multi-task LGBM and a Weis/Borgwardt-style compatibility export. Weis rows are supplementary and are not claimed as an exact replication of Weis et al.",
+        "The same audit is applied to CNN and multi-task LGBM predictions.",
     )
 
     edges = pd.read_csv(FINAL / "table_5_top_cross_resistance_edges.csv").head(6).copy()
@@ -795,17 +894,24 @@ def make_tables(
         "These guardrails distinguish the evaluation-framework claim from direct clone or protein-identification claims.",
     )
 
+    comparison = pd.DataFrame(
+        [(dim, prior, tripod, ours) for dim, prior, tripod, ours, _ in COMPARISON_ROWS],
+        columns=["Dimension", "Prior MALDI-AMR", "TRIPOD+AI", "This framework"],
+    )
+    write_latex_table(
+        TABLE_DIR / "table_7_framework_comparison.tex",
+        "What the background-matched audit adds relative to prior work and TRIPOD+AI.",
+        "tab:framework-comparison",
+        comparison,
+        r"Prior MALDI-AMR refers to Weis et al.\ 2022 (\textit{Nature Medicine}) and comparable publications. "
+        r"TRIPOD+AI refers to the transparent reporting guideline (2024). "
+        r"N/A denotes dimensions not applicable to a reporting standard.",
+    )
 
-def write_source_data(
-    primary: pd.DataFrame,
-    model_df: pd.DataFrame,
-    wgs: pd.DataFrame,
-    enrichment: pd.DataFrame,
-    published_df: pd.DataFrame | None = None,
-    matrix_df: pd.DataFrame | None = None,
-    falsification: pd.DataFrame | None = None,
-    deployment_rules: pd.DataFrame | None = None,
-) -> None:
+
+def write_source_data(primary: pd.DataFrame, model_df: pd.DataFrame, wgs: pd.DataFrame,
+                      enrichment: pd.DataFrame, matrix_df: pd.DataFrame | None = None,
+                      sa_df: pd.DataFrame | None = None) -> None:
     """Write figure source-data CSVs in a Nature-style layout."""
     primary.copy().to_csv(SOURCE_DIR / "source_data_fig2_primary_background_audit.csv", index=False)
 
@@ -830,19 +936,12 @@ def write_source_data(
                 "interpretation",
                 "source_path",
             ]
-        ]
+        ].copy()
     else:
         fig3 = model_df[
             model_df["drug"].isin(["Cipro", "Amox-Clav"])
             & model_df["site"].isin(["A-2018", "DRIAMS-C", "DRIAMS-D"])
         ].copy()
-        if published_df is not None and not published_df.empty:
-            pub = published_df[
-                published_df["drug"].isin(["Cipro", "Amox-Clav"])
-                & published_df["site"].isin(["DRIAMS-C", "DRIAMS-D"])
-            ].copy()
-            pub = pub.add_prefix("published_")
-            fig3 = pd.concat([fig3.reset_index(drop=True), pub.reset_index(drop=True)], axis=0, ignore_index=True, sort=False)
     fig3.to_csv(SOURCE_DIR / "source_data_fig3_model_family_replication.csv", index=False)
 
     edges = pd.read_csv(ANALYSIS / "cross_resistance_network" / "cross_resistance_edges.csv")
@@ -850,10 +949,6 @@ def write_source_data(
 
     wgs.copy().to_csv(SOURCE_DIR / "source_data_fig5a_public_wgs_maldi_auc.csv", index=False)
     enrichment.copy().to_csv(SOURCE_DIR / "source_data_fig5b_proteomic_biomarker_enrichment.csv", index=False)
-    if falsification is not None:
-        falsification.copy().to_csv(SOURCE_DIR / "source_data_fig6_falsification_controls.csv", index=False)
-    if deployment_rules is not None:
-        deployment_rules.copy().to_csv(SOURCE_DIR / "source_data_fig7_deployment_decision_flow.csv", index=False)
 
     manifest = [
         ["Figure 2", "source_data_fig2_primary_background_audit.csv", "Raw, matched and background-centered AUC values for the primary E. coli contrast."],
@@ -861,36 +956,49 @@ def write_source_data(
         ["Figure 4", "source_data_fig4_cross_resistance_edges_all_sites.csv", "All-sites E. coli cross-resistance edges used for the phi heatmap and strongest-edge annotations."],
         ["Figure 5a", "source_data_fig5a_public_wgs_maldi_auc.csv", "Public UPEC WGS-linked MALDI peak-feature AUCs."],
         ["Figure 5b", "source_data_fig5b_proteomic_biomarker_enrichment.csv", "Published ST131 biomarker enrichment results."],
-        ["Figure 6", "source_data_fig6_falsification_controls.csv", "Observed model AUC, background-burden control AUC and within-background shuffle null."],
-        ["Figure 7", "source_data_fig7_deployment_decision_flow.csv", "Deployment interpretation rules for audited model outputs."],
     ]
+    if sa_df is not None:
+        sa_df.to_csv(SOURCE_DIR / "source_data_fig6_saureus_oxa_audit.csv", index=False)
+        manifest.append(["Figure 6", "source_data_fig6_saureus_oxa_audit.csv",
+                         "S. aureus / Oxacillin background-matched audit (second organism validation)."])
+
     pd.DataFrame(manifest, columns=["display_item", "file", "description"]).to_csv(SOURCE_DIR / "source_data_manifest.csv", index=False)
 
 
 def main() -> None:
     ensure_dirs()
-    primary = pd.read_csv(FINAL / "table_1_primary_background_matched_audit.csv")
+    primary  = pd.read_csv(FINAL / "table_1_primary_background_matched_audit.csv")
     model_df = pd.read_csv(FINAL / "table_2_cnn_vs_lgbm_multi_background_audit.csv")
+    wgs      = pd.read_csv(FINAL / "table_7_public_wgs_maldi_auc.csv")
+    enrichment = pd.read_csv(FINAL / "table_9_published_st131_biomarker_enrichment.csv")
     matrix_path = ANALYSIS / "model_class_matrix" / "model_class_matrix.csv"
     matrix_df = pd.read_csv(matrix_path) if matrix_path.exists() else pd.DataFrame()
-    wgs = pd.read_csv(FINAL / "table_7_public_wgs_maldi_auc.csv")
-    enrichment = pd.read_csv(FINAL / "table_9_published_st131_biomarker_enrichment.csv")
-    published_path = FINAL / "table_17_published_style_model_audit.csv"
-    published_df = pd.read_csv(published_path) if published_path.exists() else pd.DataFrame()
-    falsification = pd.read_csv(FINAL / "table_15_falsification_controls.csv")
-    deployment_rules = pd.read_csv(FINAL / "table_12_deployment_decision_rules.csv")
+
+    # S. aureus / Oxacillin result — CNN vs background-only AUC.
+    # Built from co_resistance_only_baseline_saureus and co_resistance_only_baseline_ecoli.
+    sa_path = FINAL / "table_6_saureus_oxa_background_audit.csv"
+    sa_df: pd.DataFrame | None = (
+        pd.read_csv(sa_path)
+        if sa_path.exists()
+        else None
+    )
 
     created = [
         figure_1_framework(),
         figure_2_primary_audit(primary),
-        figure_3_model_replication(model_df, published_df, matrix_df),
+        figure_3_model_replication(model_df, matrix_df),
         figure_4_cross_resistance(),
         figure_5_public_support(wgs, enrichment),
-        figure_6_falsification_controls(falsification),
-        figure_7_deployment_flow(deployment_rules),
+        figure_7_framework_comparison(),
     ]
-    make_tables(primary, model_df, wgs, enrichment, published_df)
-    write_source_data(primary, model_df, wgs, enrichment, published_df, matrix_df, falsification, deployment_rules)
+    if sa_df is not None:
+        created.append(figure_6_saureus_oxa(sa_df))
+    else:
+        print("  [figure_6] table_6_saureus_oxa_background_audit.csv not found — "
+              "run the Kaggle saureus_panel notebook first.")
+
+    make_tables(primary, model_df, wgs, enrichment)
+    write_source_data(primary, model_df, wgs, enrichment, matrix_df, sa_df)
 
     print("Created figures:")
     for path in created:
