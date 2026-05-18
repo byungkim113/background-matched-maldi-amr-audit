@@ -1,0 +1,12 @@
+threshold,site,valid_strata,n_matched,strata_norfloxacin_S,strata_norfloxacin_R,strata_norfloxacin_U,strata_norfloxacin_absent,pct_strata_norfloxacin_S,pct_strata_norfloxacin_R,rows_norfloxacin_S,rows_norfloxacin_R,rows_norfloxacin_U,rows_norfloxacin_absent,pct_rows_norfloxacin_S,pct_rows_norfloxacin_R
+3,A-2018,9,836,0,0,9,0,0.0,0.0,0,0,836,0,0.0,0.0
+3,DRIAMS-B,1,25,0,1,0,0,0.0,1.0,0,25,0,0,0.0,1.0
+3,DRIAMS-C,4,422,0,0,4,0,0.0,0.0,0,0,422,0,0.0,0.0
+3,DRIAMS-D,10,1908,0,0,10,0,0.0,0.0,0,0,1908,0,0.0,0.0
+5,A-2018,8,830,0,0,8,0,0.0,0.0,0,0,830,0,0.0,0.0
+5,DRIAMS-B,1,25,0,1,0,0,0.0,1.0,0,25,0,0,0.0,1.0
+5,DRIAMS-C,2,388,0,0,2,0,0.0,0.0,0,0,388,0,0.0,0.0
+5,DRIAMS-D,7,1867,0,0,7,0,0.0,0.0,0,0,1867,0,0.0,0.0
+10,A-2018,2,661,0,0,2,0,0.0,0.0,0,0,661,0,0.0,0.0
+10,DRIAMS-C,2,388,0,0,2,0,0.0,0.0,0,0,388,0,0.0,0.0
+10,DRIAMS-D,2,1732,0,0,2,0,0.0,0.0,0,0,1732,0,0.0,0.0

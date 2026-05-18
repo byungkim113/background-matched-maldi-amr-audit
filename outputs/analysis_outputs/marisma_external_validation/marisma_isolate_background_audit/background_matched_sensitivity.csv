@@ -1,0 +1,19 @@
+sensitivity_threshold,site,organism,drug,raw_auc,raw_auc_ci_low,raw_auc_ci_high,raw_aupr,matched_auc,matched_auc_ci_low,matched_auc_ci_high,matched_aupr,stratum_centered_auc,stratum_centered_auc_ci_low,stratum_centered_auc_ci_high,pairwise_accuracy,pairwise_comparisons,permutation_p,permutation_null_mean,permutation_null_std,matched_retention,adequacy_label,interpretation_category,n_total,n_r,n_matched,n_matched_r,n_valid_strata,min_pos_per_stratum,min_neg_per_stratum,match_year
+2,MARISMa,Escherichia coli,Amoxicillin-Clavulanic acid,0.50355,,,0.331284,0.502573,,,0.325719,0.526842,,,0.536015,65015,,,,0.961739,interpretable,weak_raw_signal,1150,386,1106,366,9,2,2,False
+2,MARISMa,Escherichia coli,Cefepime,0.465519,,,0.169743,0.404386,,,0.854707,0.430702,,,0.380556,720,,,,0.0920826,caution_low_retention,caution_low_matched_support,1162,210,107,95,2,2,2,False
+2,MARISMa,Escherichia coli,Ceftazidime,0.468164,,,0.18334,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,1165,226,0,0,0,2,2,False
+2,MARISMa,Escherichia coli,Ceftriaxone,0.46709,,,0.183824,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,1165,226,0,0,0,2,2,False
+2,MARISMa,Escherichia coli,Ciprofloxacin,0.54469,,,0.399018,0.575043,,,0.462954,0.534923,,,0.548427,40649,,,,0.811989,interpretable,weak_raw_signal,1101,407,894,368,6,2,2,False
+2,MARISMa,Escherichia coli,Norfloxacin,0.54161,,,0.512941,0.496528,,,0.167751,0.465712,,,0.413828,998,,,,0.573477,interpretable,weak_raw_signal,279,125,160,16,3,2,2,False
+3,MARISMa,Escherichia coli,Amoxicillin-Clavulanic acid,0.50355,,,0.331284,0.502573,,,0.325719,0.526842,,,0.536015,65015,,,,0.961739,interpretable,weak_raw_signal,1150,386,1106,366,9,3,3,False
+3,MARISMa,Escherichia coli,Cefepime,0.465519,,,0.169743,0.404386,,,0.854707,0.430702,,,0.380556,720,,,,0.0920826,caution_low_retention,caution_low_matched_support,1162,210,107,95,2,3,3,False
+3,MARISMa,Escherichia coli,Ceftazidime,0.468164,,,0.18334,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,1165,226,0,0,0,3,3,False
+3,MARISMa,Escherichia coli,Ceftriaxone,0.46709,,,0.183824,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,1165,226,0,0,0,3,3,False
+3,MARISMa,Escherichia coli,Ciprofloxacin,0.54469,,,0.399018,0.566324,,,0.438045,0.537698,,,0.548457,40603,,,,0.789282,interpretable,weak_raw_signal,1101,407,869,345,5,3,3,False
+3,MARISMa,Escherichia coli,Norfloxacin,0.54161,,,0.512941,0.468813,,,0.163688,0.458753,,,0.413481,994,,,,0.55914,interpretable,weak_raw_signal,279,125,156,14,2,3,3,False
+5,MARISMa,Escherichia coli,Amoxicillin-Clavulanic acid,0.50355,,,0.331284,0.502573,,,0.325719,0.526842,,,0.536015,65015,,,,0.961739,interpretable,weak_raw_signal,1150,386,1106,366,9,5,5,False
+5,MARISMa,Escherichia coli,Cefepime,0.465519,,,0.169743,0.373529,,,0.878482,0.373529,,,0.373529,680,,,,0.0800344,caution_low_n_matched_and_low_retention,caution_low_matched_support,1162,210,93,85,1,5,5,False
+5,MARISMa,Escherichia coli,Ceftazidime,0.468164,,,0.18334,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,1165,226,0,0,0,5,5,False
+5,MARISMa,Escherichia coli,Ceftriaxone,0.46709,,,0.183824,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,1165,226,0,0,0,5,5,False
+5,MARISMa,Escherichia coli,Ciprofloxacin,0.54469,,,0.399018,0.566324,,,0.438045,0.537698,,,0.548457,40603,,,,0.789282,interpretable,weak_raw_signal,1101,407,869,345,5,5,5,False
+5,MARISMa,Escherichia coli,Norfloxacin,0.54161,,,0.512941,0.409044,,,0.0547737,0.409044,,,0.409044,973,,,,0.523297,interpretable,weak_raw_signal,279,125,146,7,1,5,5,False

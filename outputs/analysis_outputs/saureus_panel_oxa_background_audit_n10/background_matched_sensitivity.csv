@@ -1,0 +1,76 @@
+sensitivity_threshold,site,organism,drug,raw_auc,raw_auc_ci_low,raw_auc_ci_high,raw_aupr,matched_auc,matched_auc_ci_low,matched_auc_ci_high,matched_aupr,stratum_centered_auc,stratum_centered_auc_ci_low,stratum_centered_auc_ci_high,pairwise_accuracy,pairwise_comparisons,permutation_p,permutation_null_mean,permutation_null_std,matched_retention,adequacy_label,interpretation_category,n_total,n_r,n_matched,n_matched_r,n_valid_strata,min_pos_per_stratum,min_neg_per_stratum,match_year
+2,A-2018,Staphylococcus aureus,Ciprofloxacin,0.760738,,,0.512681,0.756239,,,0.510983,0.67672,,,0.664367,11742,,,,0.89011,interpretable,focal_signal_retained,1183,155,1053,137,17,2,2,False
+2,A-2018,Staphylococcus aureus,Clindamycin,0.625962,,,0.23682,0.63699,,,0.278389,0.527101,,,0.424221,7093,,,,0.77972,interpretable,background_driven_collapse,1144,149,892,129,11,2,2,False
+2,A-2018,Staphylococcus aureus,Erythromycin,0.630668,,,0.285524,0.592849,,,0.188502,0.539459,,,0.485616,8447,,,,0.867596,interpretable,background_driven_collapse,1148,181,996,116,13,2,2,False
+2,A-2018,Staphylococcus aureus,Fusidic acid,0.646576,,,0.10192,0.648335,,,0.114886,0.605544,,,0.63936,13562,,,,0.822131,interpretable,focal_signal_retained,1220,71,1003,65,12,2,2,False
+2,A-2018,Staphylococcus aureus,Gentamicin,0.765831,,,0.115957,0.762492,,,0.124615,0.640366,,,0.56701,1843,,,,0.525322,interpretable,focal_signal_retained,1165,28,612,19,6,2,2,False
+2,A-2018,Staphylococcus aureus,Oxacillin,0.838238,,,0.665199,0.828967,,,0.708615,0.762005,,,0.769358,32132,,,,0.613061,interpretable,focal_signal_retained,1225,178,751,159,11,2,2,False
+2,A-2018,Staphylococcus aureus,Penicillin,0.626836,,,0.82444,0.563736,,,0.714878,0.565084,,,0.556398,110660,,,,0.794533,interpretable,partially_retained_or_uncertain,1134,812,901,591,11,2,2,False
+2,DRIAMS-B,Staphylococcus aureus,Ciprofloxacin,0.710736,,,0.24778,0.702652,,,0.0426758,0.702652,,,0.702652,528,,,,0.532738,interpretable,focal_signal_retained,336,14,179,3,1,2,2,False
+2,DRIAMS-B,Staphylococcus aureus,Clindamycin,0.585904,,,0.169651,0.363636,,,0.867248,0.363636,,,0.363636,22,,,,0.0373563,caution_low_n_matched_and_low_retention_and_low_pairwise,caution_low_matched_support,348,37,13,11,1,2,2,False
+2,DRIAMS-B,Staphylococcus aureus,Erythromycin,0.605093,,,0.18753,0.835165,,,0.10989,0.835165,,,0.835165,182,,,,0.268012,caution_low_n_matched,caution_low_matched_support,347,38,93,2,1,2,2,False
+2,DRIAMS-B,Staphylococcus aureus,Fusidic acid,0.660429,,,0.103019,0.614659,,,0.0969896,0.540754,,,0.561611,1266,,,,0.82659,interpretable,background_driven_collapse,346,20,286,12,3,2,2,False
+2,DRIAMS-B,Staphylococcus aureus,Gentamicin,0.580147,,,0.0676256,0.56701,,,0.18322,0.498969,,,0.333333,285,,,,0.293103,interpretable,weak_raw_signal,348,8,102,5,2,2,2,False
+2,DRIAMS-B,Staphylococcus aureus,Oxacillin,0.775238,,,0.260976,0.863636,,,0.27763,0.863636,,,0.863636,1056,,,,0.526012,interpretable,focal_signal_retained,346,21,182,6,1,2,2,False
+2,DRIAMS-B,Staphylococcus aureus,Penicillin,0.531911,,,0.668417,0.52811,,,0.660659,0.529974,,,0.532876,16182,,,,0.862069,interpretable,weak_raw_signal,348,227,300,196,3,2,2,False
+2,DRIAMS-C,Staphylococcus aureus,Ciprofloxacin,0.576531,,,0.083435,0.610594,,,0.11637,0.583774,,,0.499751,4010,,,,0.861789,interpretable,weak_raw_signal,738,33,636,27,6,2,2,False
+2,DRIAMS-C,Staphylococcus aureus,Clindamycin,0.529565,,,0.145691,0.517098,,,0.122941,0.513483,,,0.539042,17238,,,,0.938556,interpretable,weak_raw_signal,651,79,611,66,4,2,2,False
+2,DRIAMS-C,Staphylococcus aureus,Fusidic acid,0.459733,,,0.024279,0.479825,,,0.0267398,0.475313,,,0.50493,3448,,,,0.840246,interpretable,weak_raw_signal,651,17,547,15,4,2,2,False
+2,DRIAMS-C,Staphylococcus aureus,Gentamicin,0.488704,,,0.0200927,0.562988,,,0.0276747,0.457214,,,0.443647,1393,,,,0.661247,interpretable,weak_raw_signal,738,15,488,11,4,2,2,False
+2,DRIAMS-C,Staphylococcus aureus,Oxacillin,0.725199,,,0.132116,0.703499,,,0.141011,0.699471,,,0.719428,8807,,,,0.596206,interpretable,focal_signal_retained,738,41,440,29,2,2,2,False
+2,DRIAMS-C,Staphylococcus aureus,Penicillin,0.552208,,,0.776848,0.535862,,,0.745753,0.540624,,,0.533211,56201,,,,0.926829,interpretable,weak_raw_signal,738,547,684,494,6,2,2,False
+2,DRIAMS-D,Staphylococcus aureus,Ciprofloxacin,0.656042,,,0.191893,0.659682,,,0.201803,0.63281,,,0.666756,44985,,,,0.905137,interpretable,focal_signal_retained,2161,138,1956,127,12,2,2,False
+2,DRIAMS-D,Staphylococcus aureus,Clindamycin,0.483088,,,0.3932,0.184615,,,0.601912,0.184615,,,0.184615,65,,,,0.166667,caution_low_n_matched_and_low_pairwise,caution_low_matched_support,108,40,18,13,1,2,2,False
+2,DRIAMS-D,Staphylococcus aureus,Erythromycin,0.576706,,,0.246264,0.576563,,,0.225072,0.569438,,,0.564595,154123,,,,0.962536,interpretable,weak_raw_signal,1735,344,1670,304,8,2,2,False
+2,DRIAMS-D,Staphylococcus aureus,Gentamicin,0.515826,,,0.0129401,0.502382,,,0.0133111,0.431442,,,0.458619,5244,,,,0.753932,interpretable,weak_raw_signal,2162,25,1630,21,6,2,2,False
+2,DRIAMS-D,Staphylococcus aureus,Penicillin,0.572733,,,0.907597,0.568892,,,0.903735,0.570871,,,0.573815,86622,,,,0.964052,interpretable,weak_raw_signal,1530,1344,1475,1291,9,2,2,False
+3,A-2018,Staphylococcus aureus,Ciprofloxacin,0.760738,,,0.512681,0.777404,,,0.529378,0.702911,,,0.666125,11684,,,,0.857143,interpretable,focal_signal_retained,1183,155,1014,125,12,3,3,False
+3,A-2018,Staphylococcus aureus,Clindamycin,0.625962,,,0.23682,0.646093,,,0.267837,0.526846,,,0.421748,7035,,,,0.749126,interpretable,background_driven_collapse,1144,149,857,112,8,3,3,False
+3,A-2018,Staphylococcus aureus,Erythromycin,0.630668,,,0.285524,0.599569,,,0.186452,0.539817,,,0.485513,8387,,,,0.834495,interpretable,background_driven_collapse,1148,181,958,103,9,3,3,False
+3,A-2018,Staphylococcus aureus,Fusidic acid,0.646576,,,0.10192,0.661434,,,0.104416,0.628557,,,0.64274,13416,,,,0.755738,interpretable,focal_signal_retained,1220,71,922,57,8,3,3,False
+3,A-2018,Staphylococcus aureus,Gentamicin,0.765831,,,0.115957,0.816202,,,0.13434,0.659305,,,0.569163,1829,,,,0.517597,interpretable,focal_signal_retained,1165,28,603,17,5,3,3,False
+3,A-2018,Staphylococcus aureus,Oxacillin,0.838238,,,0.665199,0.831281,,,0.715239,0.762878,,,0.769511,32110,,,,0.600816,interpretable,focal_signal_retained,1225,178,736,155,9,3,3,False
+3,A-2018,Staphylococcus aureus,Penicillin,0.626836,,,0.82444,0.568711,,,0.720302,0.568614,,,0.556429,110634,,,,0.777778,interpretable,partially_retained_or_uncertain,1134,812,882,579,8,3,3,False
+3,DRIAMS-B,Staphylococcus aureus,Ciprofloxacin,0.710736,,,0.24778,0.702652,,,0.0426758,0.702652,,,0.702652,528,,,,0.532738,interpretable,focal_signal_retained,336,14,179,3,1,3,3,False
+3,DRIAMS-B,Staphylococcus aureus,Clindamycin,0.585904,,,0.169651,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,348,37,0,0,0,3,3,False
+3,DRIAMS-B,Staphylococcus aureus,Erythromycin,0.605093,,,0.18753,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,347,38,0,0,0,3,3,False
+3,DRIAMS-B,Staphylococcus aureus,Fusidic acid,0.660429,,,0.103019,0.662295,,,0.179985,0.569945,,,0.588561,1084,,,,0.557803,interpretable,partially_retained_or_uncertain,346,20,193,10,2,3,3,False
+3,DRIAMS-B,Staphylococcus aureus,Gentamicin,0.580147,,,0.0676256,0.315018,,,0.030117,0.315018,,,0.315018,273,,,,0.270115,caution_low_n_matched,caution_low_matched_support,348,8,94,3,1,3,3,False
+3,DRIAMS-B,Staphylococcus aureus,Oxacillin,0.775238,,,0.260976,0.863636,,,0.27763,0.863636,,,0.863636,1056,,,,0.526012,interpretable,focal_signal_retained,346,21,182,6,1,3,3,False
+3,DRIAMS-B,Staphylococcus aureus,Penicillin,0.531911,,,0.668417,0.52678,,,0.657691,0.52678,,,0.532777,16170,,,,0.83908,interpretable,weak_raw_signal,348,227,292,190,2,3,3,False
+3,DRIAMS-C,Staphylococcus aureus,Ciprofloxacin,0.576531,,,0.083435,0.634219,,,0.121089,0.590147,,,0.500757,3964,,,,0.825203,interpretable,weak_raw_signal,738,33,609,23,4,3,3,False
+3,DRIAMS-C,Staphylococcus aureus,Clindamycin,0.529565,,,0.145691,0.518998,,,0.119667,0.51574,,,0.539055,17232,,,,0.930876,interpretable,weak_raw_signal,651,79,606,64,3,3,3,False
+3,DRIAMS-C,Staphylococcus aureus,Fusidic acid,0.459733,,,0.024279,0.502715,,,0.0217892,0.504992,,,0.505845,3422,,,,0.814132,interpretable,weak_raw_signal,651,17,530,11,2,3,3,False
+3,DRIAMS-C,Staphylococcus aureus,Gentamicin,0.488704,,,0.0200927,0.599595,,,0.0269678,0.471779,,,0.44571,1317,,,,0.607046,interpretable,weak_raw_signal,738,15,448,9,3,3,3,False
+3,DRIAMS-C,Staphylococcus aureus,Oxacillin,0.725199,,,0.132116,0.703499,,,0.141011,0.699471,,,0.719428,8807,,,,0.596206,interpretable,focal_signal_retained,738,41,440,29,2,3,3,False
+3,DRIAMS-C,Staphylococcus aureus,Penicillin,0.552208,,,0.776848,0.532645,,,0.742488,0.537408,,,0.533165,56189,,,,0.915989,interpretable,weak_raw_signal,738,547,676,488,5,3,3,False
+3,DRIAMS-D,Staphylococcus aureus,Ciprofloxacin,0.656042,,,0.191893,0.661259,,,0.200549,0.63711,,,0.66724,44741,,,,0.844054,interpretable,focal_signal_retained,2161,138,1824,117,7,3,3,False
+3,DRIAMS-D,Staphylococcus aureus,Clindamycin,0.483088,,,0.3932,0.184615,,,0.601912,0.184615,,,0.184615,65,,,,0.166667,caution_low_n_matched_and_low_pairwise,caution_low_matched_support,108,40,18,13,1,3,3,False
+3,DRIAMS-D,Staphylococcus aureus,Erythromycin,0.576706,,,0.246264,0.576499,,,0.224775,0.5686,,,0.564591,154115,,,,0.959078,interpretable,weak_raw_signal,1735,344,1664,302,7,3,3,False
+3,DRIAMS-D,Staphylococcus aureus,Gentamicin,0.515826,,,0.0129401,0.499658,,,0.0127776,0.441553,,,0.461715,4362,,,,0.547179,interpretable,weak_raw_signal,2162,25,1183,15,3,3,3,False
+3,DRIAMS-D,Staphylococcus aureus,Penicillin,0.572733,,,0.907597,0.567971,,,0.901558,0.571057,,,0.573815,86554,,,,0.940523,interpretable,weak_raw_signal,1530,1344,1439,1257,8,3,3,False
+5,A-2018,Staphylococcus aureus,Ciprofloxacin,0.760738,,,0.512681,0.771807,,,0.512163,0.693503,,,0.665543,11568,,,,0.822485,interpretable,focal_signal_retained,1183,155,973,114,9,5,5,False
+5,A-2018,Staphylococcus aureus,Clindamycin,0.625962,,,0.23682,0.590716,,,0.16313,0.520008,,,0.417597,6899,,,,0.712413,interpretable,background_driven_collapse,1144,149,815,77,6,5,5,False
+5,A-2018,Staphylococcus aureus,Erythromycin,0.630668,,,0.285524,0.596608,,,0.232402,0.535481,,,0.465227,7362,,,,0.601045,interpretable,background_driven_collapse,1148,181,690,92,6,5,5,False
+5,A-2018,Staphylococcus aureus,Fusidic acid,0.646576,,,0.10192,0.665733,,,0.0930538,0.634124,,,0.642,13081,,,,0.662295,interpretable,focal_signal_retained,1220,71,808,39,3,5,5,False
+5,A-2018,Staphylococcus aureus,Gentamicin,0.765831,,,0.115957,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,1165,28,0,0,0,5,5,False
+5,A-2018,Staphylococcus aureus,Oxacillin,0.838238,,,0.665199,0.83586,,,0.719099,0.764687,,,0.769906,32026,,,,0.577143,interpretable,focal_signal_retained,1225,178,707,147,7,5,5,False
+5,A-2018,Staphylococcus aureus,Penicillin,0.626836,,,0.82444,0.568899,,,0.71695,0.571484,,,0.556507,110543,,,,0.748677,interpretable,partially_retained_or_uncertain,1134,812,849,553,6,5,5,False
+5,DRIAMS-B,Staphylococcus aureus,Ciprofloxacin,0.710736,,,0.24778,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,336,14,0,0,0,5,5,False
+5,DRIAMS-B,Staphylococcus aureus,Clindamycin,0.585904,,,0.169651,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,348,37,0,0,0,5,5,False
+5,DRIAMS-B,Staphylococcus aureus,Erythromycin,0.605093,,,0.18753,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,347,38,0,0,0,5,5,False
+5,DRIAMS-B,Staphylococcus aureus,Fusidic acid,0.660429,,,0.103019,0.588068,,,0.0506839,0.588068,,,0.588068,1056,,,,0.526012,interpretable,partially_retained_or_uncertain,346,20,182,6,1,5,5,False
+5,DRIAMS-B,Staphylococcus aureus,Gentamicin,0.580147,,,0.0676256,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,348,8,0,0,0,5,5,False
+5,DRIAMS-B,Staphylococcus aureus,Oxacillin,0.775238,,,0.260976,0.863636,,,0.27763,0.863636,,,0.863636,1056,,,,0.526012,interpretable,focal_signal_retained,346,21,182,6,1,5,5,False
+5,DRIAMS-B,Staphylococcus aureus,Penicillin,0.531911,,,0.668417,0.52678,,,0.657691,0.52678,,,0.532777,16170,,,,0.83908,interpretable,weak_raw_signal,348,227,292,190,2,5,5,False
+5,DRIAMS-C,Staphylococcus aureus,Ciprofloxacin,0.576531,,,0.083435,0.666627,,,0.143417,0.614115,,,0.504734,3380,,,,0.621951,interpretable,weak_raw_signal,738,33,459,19,3,5,5,False
+5,DRIAMS-C,Staphylococcus aureus,Clindamycin,0.529565,,,0.145691,0.518998,,,0.119667,0.51574,,,0.539055,17232,,,,0.930876,interpretable,weak_raw_signal,651,79,606,64,3,5,5,False
+5,DRIAMS-C,Staphylococcus aureus,Fusidic acid,0.459733,,,0.024279,0.505362,,,0.0236518,0.505362,,,0.505362,2984,,,,0.585253,interpretable,weak_raw_signal,651,17,381,8,1,5,5,False
+5,DRIAMS-C,Staphylococcus aureus,Gentamicin,0.488704,,,0.0200927,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,738,15,0,0,0,5,5,False
+5,DRIAMS-C,Staphylococcus aureus,Oxacillin,0.725199,,,0.132116,0.703499,,,0.141011,0.699471,,,0.719428,8807,,,,0.596206,interpretable,focal_signal_retained,738,41,440,29,2,5,5,False
+5,DRIAMS-C,Staphylococcus aureus,Penicillin,0.552208,,,0.776848,0.529778,,,0.742184,0.534273,,,0.533073,56133,,,,0.884824,interpretable,weak_raw_signal,738,547,653,472,3,5,5,False
+5,DRIAMS-D,Staphylococcus aureus,Ciprofloxacin,0.656042,,,0.191893,0.681109,,,0.211024,0.652298,,,0.66914,44336,,,,0.792226,interpretable,focal_signal_retained,2161,138,1712,110,5,5,5,False
+5,DRIAMS-D,Staphylococcus aureus,Clindamycin,0.483088,,,0.3932,0.184615,,,0.601912,0.184615,,,0.184615,65,,,,0.166667,caution_low_n_matched_and_low_pairwise,caution_low_matched_support,108,40,18,13,1,5,5,False
+5,DRIAMS-D,Staphylococcus aureus,Erythromycin,0.576706,,,0.246264,0.574561,,,0.217486,0.566388,,,0.564518,154073,,,,0.94755,interpretable,weak_raw_signal,1735,344,1644,290,5,5,5,False
+5,DRIAMS-D,Staphylococcus aureus,Gentamicin,0.515826,,,0.0129401,0.482517,,,0.0614405,0.482517,,,0.482517,1287,,,,0.0703053,caution_low_retention,caution_low_matched_support,2162,25,152,9,1,5,5,False
+5,DRIAMS-D,Staphylococcus aureus,Penicillin,0.572733,,,0.907597,0.559451,,,0.897889,0.560796,,,0.573495,86332,,,,0.894771,interpretable,weak_raw_signal,1530,1344,1369,1197,5,5,5,False

@@ -1,0 +1,18 @@
+model_family,site,organism,drug,raw_auc,raw_auc_95ci,stratum_centered_auc,stratum_centered_auc_95ci,matched_retention,n_total,n_matched,n_valid_strata,adequacy_label,interpretation_category
+Weis/Borgwardt-style logistic regression,DRIAMS-B,Escherichia coli,Amox-Clav,0.461905,0.462 (0.285-0.631),0.485507,0.486 (0.181-0.850),0.674419,43,29,1,caution_low_n_matched,caution_low_matched_support
+Weis/Borgwardt-style logistic regression,DRIAMS-B,Escherichia coli,FEP,0.676471,0.676 (0.505-0.863),,,0.0,43,0,0,not_interpretable_no_valid_strata,insufficient_matched_overlap
+Weis/Borgwardt-style logistic regression,DRIAMS-B,Escherichia coli,CAZ,0.434641,0.435 (0.232-0.673),,,0.0,43,0,0,not_interpretable_no_valid_strata,insufficient_matched_overlap
+Weis/Borgwardt-style logistic regression,DRIAMS-B,Escherichia coli,CRO,0.683007,0.683 (0.486-0.847),,,0.0,43,0,0,not_interpretable_no_valid_strata,insufficient_matched_overlap
+Weis/Borgwardt-style logistic regression,DRIAMS-B,Escherichia coli,Cipro,0.75,0.750 (0.533-0.951),,,0.0,43,0,0,not_interpretable_no_valid_strata,insufficient_matched_overlap
+Weis/Borgwardt-style logistic regression,DRIAMS-B,Escherichia coli,Norflox,0.666667,0.667 (0.483-0.833),,,0.0,43,0,0,not_interpretable_no_valid_strata,insufficient_matched_overlap
+Weis/Borgwardt-style logistic regression,DRIAMS-C,Escherichia coli,Amox-Clav,0.626248,0.626 (0.523-0.722),0.578182,0.578 (0.434-0.687),0.745856,181,135,3,interpretable,partially_retained_or_uncertain
+Weis/Borgwardt-style logistic regression,DRIAMS-C,Escherichia coli,FEP,0.4748,0.475 (0.297-0.657),0.2,0.200 (0.000-0.625),0.072,125,9,1,caution_low_n_matched_and_low_retention_and_low_pairwise,caution_low_matched_support
+Weis/Borgwardt-style logistic regression,DRIAMS-C,Escherichia coli,CAZ,0.533139,0.533 (0.430-0.683),,,0.0,183,0,0,not_interpretable_no_valid_strata,insufficient_matched_overlap
+Weis/Borgwardt-style logistic regression,DRIAMS-C,Escherichia coli,CRO,0.644589,0.645 (0.533-0.775),,,0.0,184,0,0,not_interpretable_no_valid_strata,insufficient_matched_overlap
+Weis/Borgwardt-style logistic regression,DRIAMS-C,Escherichia coli,Cipro,0.625,0.625 (0.548-0.709),0.816176,0.816 (0.639-0.953),0.438202,178,78,2,caution_low_n_matched,caution_low_matched_support
+Weis/Borgwardt-style logistic regression,DRIAMS-C,Escherichia coli,Norflox,0.694154,0.694 (0.538-0.884),,,0.0,90,0,0,not_interpretable_no_valid_strata,insufficient_matched_overlap
+Weis/Borgwardt-style logistic regression,DRIAMS-D,Escherichia coli,Amox-Clav,0.652425,0.652 (0.579-0.716),0.524015,0.524 (0.418-0.594),0.924812,399,369,3,interpretable,background_driven_collapse
+Weis/Borgwardt-style logistic regression,DRIAMS-D,Escherichia coli,FEP,0.622082,0.622 (0.529-0.676),0.5625,0.562 (0.143-1.000),0.02,400,8,1,caution_low_n_matched_and_low_retention_and_low_pairwise,caution_low_matched_support
+Weis/Borgwardt-style logistic regression,DRIAMS-D,Escherichia coli,CAZ,0.653278,0.653 (0.559-0.751),0.388889,0.389 (0.165-0.574),0.132832,399,53,2,caution_low_n_matched,caution_low_matched_support
+Weis/Borgwardt-style logistic regression,DRIAMS-D,Escherichia coli,CRO,0.627507,0.628 (0.552-0.715),0.612179,0.612 (0.212-0.871),0.117794,399,47,2,caution_low_n_matched,caution_low_matched_support
+Weis/Borgwardt-style logistic regression,DRIAMS-D,Escherichia coli,Cipro,0.667111,0.667 (0.582-0.739),0.619607,0.620 (0.527-0.686),0.914948,388,355,3,interpretable,focal_signal_retained
