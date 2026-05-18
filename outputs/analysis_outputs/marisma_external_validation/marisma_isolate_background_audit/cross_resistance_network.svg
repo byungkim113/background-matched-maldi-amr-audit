@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="520" viewBox="0 0 760 520">
+<rect width="100%" height="100%" fill="white"/>
+<text x="24" y="34" font-family="Arial" font-size="19" font-weight="700">Cross-resistance network</text>
+<line x1="380.0" y1="110.0" x2="527.2243186433545" y2="195.0" stroke="#3b5bdb" stroke-width="7.53" stroke-opacity="0.58"/>
+<line x1="380.0" y1="110.0" x2="527.2243186433545" y2="365.0" stroke="#3b5bdb" stroke-width="2.57" stroke-opacity="0.58"/>
+<line x1="380.0" y1="110.0" x2="380.0" y2="450.0" stroke="#3b5bdb" stroke-width="4.75" stroke-opacity="0.58"/>
+<line x1="380.0" y1="110.0" x2="232.77568135664546" y2="365.00000000000006" stroke="#3b5bdb" stroke-width="4.75" stroke-opacity="0.58"/>
+<line x1="380.0" y1="110.0" x2="232.77568135664544" y2="195.0" stroke="#3b5bdb" stroke-width="4.64" stroke-opacity="0.58"/>
+<line x1="527.2243186433545" y1="195.0" x2="527.2243186433545" y2="365.0" stroke="#3b5bdb" stroke-width="2.35" stroke-opacity="0.58"/>
+<line x1="527.2243186433545" y1="195.0" x2="380.0" y2="450.0" stroke="#3b5bdb" stroke-width="4.18" stroke-opacity="0.58"/>
+<line x1="527.2243186433545" y1="195.0" x2="232.77568135664546" y2="365.00000000000006" stroke="#3b5bdb" stroke-width="4.18" stroke-opacity="0.58"/>
+<line x1="527.2243186433545" y1="195.0" x2="232.77568135664544" y2="195.0" stroke="#3b5bdb" stroke-width="4.13" stroke-opacity="0.58"/>
+<line x1="527.2243186433545" y1="365.0" x2="380.0" y2="450.0" stroke="#3b5bdb" stroke-width="2.87" stroke-opacity="0.58"/>
+<line x1="527.2243186433545" y1="365.0" x2="232.77568135664546" y2="365.00000000000006" stroke="#3b5bdb" stroke-width="2.87" stroke-opacity="0.58"/>
+<line x1="527.2243186433545" y1="365.0" x2="232.77568135664544" y2="195.0" stroke="#3b5bdb" stroke-width="2.59" stroke-opacity="0.58"/>
+<line x1="380.0" y1="450.0" x2="232.77568135664546" y2="365.00000000000006" stroke="#3b5bdb" stroke-width="8.00" stroke-opacity="0.58"/>
+<line x1="380.0" y1="450.0" x2="232.77568135664544" y2="195.0" stroke="#3b5bdb" stroke-width="7.73" stroke-opacity="0.58"/>
+<line x1="232.77568135664546" y1="365.00000000000006" x2="232.77568135664544" y2="195.0" stroke="#3b5bdb" stroke-width="7.73" stroke-opacity="0.58"/>
+<circle cx="380.0" cy="110.0" r="30" fill="#f8f9fa" stroke="#222"/>
+<text x="380.0" y="114.0" text-anchor="middle" font-family="Arial" font-size="11">Ciprofloxacin</text>
+<circle cx="527.2243186433545" cy="195.0" r="30" fill="#f8f9fa" stroke="#222"/>
+<text x="527.2243186433545" y="199.0" text-anchor="middle" font-family="Arial" font-size="11">Norfloxacin</text>
+<circle cx="527.2243186433545" cy="365.0" r="30" fill="#f8f9fa" stroke="#222"/>
+<text x="527.2243186433545" y="369.0" text-anchor="middle" font-family="Arial" font-size="11">Amoxicillin-Clavu...</text>
+<circle cx="380.0" cy="450.0" r="30" fill="#f8f9fa" stroke="#222"/>
+<text x="380.0" y="454.0" text-anchor="middle" font-family="Arial" font-size="11">Ceftriaxone</text>
+<circle cx="232.77568135664546" cy="365.00000000000006" r="30" fill="#f8f9fa" stroke="#222"/>
+<text x="232.77568135664546" y="369.00000000000006" text-anchor="middle" font-family="Arial" font-size="11">Ceftazidime</text>
+<circle cx="232.77568135664544" cy="195.0" r="30" fill="#f8f9fa" stroke="#222"/>
+<text x="232.77568135664544" y="199.0" text-anchor="middle" font-family="Arial" font-size="11">Cefepime</text>
+</svg>

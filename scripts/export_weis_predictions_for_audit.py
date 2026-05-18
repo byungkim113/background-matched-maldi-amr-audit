@@ -41,7 +41,6 @@ from datetime import datetime
 from typing import Iterable
 
 import numpy as np
-from sklearn.metrics import accuracy_score, average_precision_score, roc_auc_score
 
 
 LABEL_CHAR = {0: "S", 1: "R"}
@@ -103,6 +102,38 @@ def load_weis_modules(weis_repo: pathlib.Path):
     print(f"[setup] Loading Weis model code from {ml_dir}", flush=True)
     models = import_from_path("weis_models_for_audit", ml_dir / "models.py")
     return models
+
+
+def git_metadata(repo: pathlib.Path) -> dict[str, str | None | bool]:
+    metadata: dict[str, str | None | bool] = {
+        "source_repo": str(repo),
+        "source_is_git_checkout": (repo / ".git").exists(),
+        "source_commit": None,
+        "source_branch": None,
+        "source_remote_url": None,
+    }
+    if not metadata["source_is_git_checkout"]:
+        return metadata
+
+    commands = {
+        "source_commit": ["rev-parse", "HEAD"],
+        "source_branch": ["rev-parse", "--abbrev-ref", "HEAD"],
+        "source_remote_url": ["config", "--get", "remote.origin.url"],
+    }
+    for key, args in commands.items():
+        try:
+            completed = subprocess.run(
+                ["git", "-C", str(repo), *args],
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+        except Exception:
+            continue
+        value = completed.stdout.strip()
+        if completed.returncode == 0 and value:
+            metadata[key] = value
+    return metadata
 
 
 def normalize_ast_value(value) -> int | None:
@@ -261,6 +292,14 @@ def class_one_probability(estimator, x_test) -> np.ndarray:
 
 
 def metrics_from_probability(y_true, prob: np.ndarray) -> dict:
+    try:
+        from sklearn.metrics import accuracy_score, average_precision_score, roc_auc_score
+    except ImportError as exc:
+        raise RuntimeError(
+            "scikit-learn is required to compute Weis export metrics. "
+            "Install scikit-learn or run this script in the original Weis/Kaggle environment."
+        ) from exc
+
     pred = (prob >= 0.5).astype(int)
     result = {
         "accuracy": float(accuracy_score(y_true, pred)),
@@ -434,9 +473,10 @@ def write_reproduction_report(
     raw_results: list[dict],
     predictions_csv: pathlib.Path,
 ) -> None:
+    source_metadata = git_metadata(args.weis_repo)
     report_json = {
         "source_url": WEIS_SOURCE_URL,
-        "source_repo": str(args.weis_repo),
+        **source_metadata,
         "model_code": str(args.weis_repo / "amr_maldi_ml" / "models.py"),
         "panel": args.panel,
         "external_row_policy": args.external_row_policy,
@@ -451,9 +491,11 @@ def write_reproduction_report(
         "n_raw_result_rows": len(raw_results),
         "note": (
             "This is an ID-preserving rerun through the original BorgwardtLab/maldi_amr "
-            "model code. Exact paper parity should additionally be checked by comparing "
-            "raw metrics against upstream Weis result JSONs for the same model, seed, "
-            "train/test split, and preprocessing."
+            "model code. With external_row_policy='all', the output is optimized for "
+            "background-matched auditing rather than exact paper-row parity. Exact paper "
+            "parity should additionally be checked by comparing raw metrics against "
+            "upstream Weis result JSONs for the same model, seed, train/test split, "
+            "and preprocessing."
         ),
     }
     (output_dir / "weis_reproduction_report.json").write_text(json.dumps(report_json, indent=2) + "\n")
@@ -467,6 +509,8 @@ def write_reproduction_report(
 Source repository: [{WEIS_SOURCE_URL}]({WEIS_SOURCE_URL})
 
 Loaded model code: `{args.weis_repo / "amr_maldi_ml" / "models.py"}`
+
+Source commit: `{source_metadata.get("source_commit") or "not recorded"}`
 
 This export reruns the original Weis/Borgwardt model implementation and writes
 isolate-level prediction rows for the background-matched audit.
@@ -488,10 +532,12 @@ isolate-level prediction rows for the background-matched audit.
 
 ## Parity Note
 
-This should be described as a Weis-code rerun with ID-preserving all-row external
-scoring. Calling it an exact reproduction of the published paper additionally
-requires matching the upstream stored raw metrics under the same model, seed,
-split logic, and preprocessing.
+This should be described as a Weis-code rerun with ID-preserving external
+scoring. If `external_row_policy=all`, it is the correct form for our
+background-matched audit because every eligible external isolate can enter a
+matched stratum. Calling it an exact reproduction of the published paper
+additionally requires matching the upstream stored raw metrics under the same
+model, seed, split logic and preprocessing.
 """
     (output_dir / "weis_reproduction_report.md").write_text(markdown)
 

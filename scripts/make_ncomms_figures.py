@@ -126,6 +126,31 @@ def axis_auc(c: canvas.Canvas, x0: float, x1: float, y: float, xmin: float = 0.4
     text(c, x0, y - 28, "AUC", size=8, fill=GRAY)
 
 
+def auc_fill(value: float):
+    """Color scale for centered AUC in the model-class matrix."""
+    if pd.isna(value):
+        return colors.white
+    value = max(0.45, min(0.90, float(value)))
+    t = (value - 0.45) / 0.45
+    if value < 0.58:
+        r0, g0, b0 = 250, 245, 241
+        r1, g1, b1 = 197, 107, 69
+    elif value < 0.68:
+        r0, g0, b0 = 239, 246, 255
+        r1, g1, b1 = 169, 200, 232
+        t = (value - 0.58) / 0.10
+    else:
+        r0, g0, b0 = 219, 235, 248
+        r1, g1, b1 = 43, 108, 176
+        t = (value - 0.68) / 0.22
+    t = max(0.0, min(1.0, t))
+    return colors.Color(
+        (r0 + (r1 - r0) * t) / 255,
+        (g0 + (g1 - g0) * t) / 255,
+        (b0 + (b1 - b0) * t) / 255,
+    )
+
+
 def marker(c: canvas.Canvas, x: float, y: float, color, shape: str, hollow: bool = False, size: float = 5) -> None:
     c.setStrokeColor(color)
     c.setFillColor(colors.white if hollow else color)
@@ -225,8 +250,134 @@ def figure_2_primary_audit(primary: pd.DataFrame) -> Path:
     return path
 
 
-def figure_3_model_replication(model_df: pd.DataFrame) -> Path:
+def model_class_column(row: pd.Series) -> str:
+    if row["model_class"] == "CNN/Mega":
+        return "CNN/Mega"
+    if row["model_class"] == "LightGBM" and row["model_variant"] == "multi-task":
+        return "LGBM multi"
+    if row["model_class"] == "LightGBM" and row["model_variant"] == "single-task":
+        return "LGBM single"
+    if row["model_class"] == "Weis LR":
+        return "Weis LR"
+    return f"{row['model_class']} {row['model_variant']}".strip()
+
+
+def figure_3_matrix_rows(matrix_df: pd.DataFrame) -> pd.DataFrame:
+    matrix = matrix_df[matrix_df["status"].eq("complete")].copy()
+    targets = [
+        ("E. coli", "Ciprofloxacin", "A-2018"),
+        ("E. coli", "Ciprofloxacin", "DRIAMS-C"),
+        ("E. coli", "Ciprofloxacin", "DRIAMS-D"),
+        ("E. coli", "Amoxicillin-Clavulanic acid", "A-2018"),
+        ("E. coli", "Amoxicillin-Clavulanic acid", "DRIAMS-C"),
+        ("E. coli", "Amoxicillin-Clavulanic acid", "DRIAMS-D"),
+        ("S. aureus", "Oxacillin", "A-2018"),
+        ("S. aureus", "Oxacillin", "DRIAMS-B"),
+        ("S. aureus", "Oxacillin", "DRIAMS-C"),
+    ]
+    target_index = {target: index for index, target in enumerate(targets)}
+
+    def organism_short(organism: str) -> str:
+        if organism == "Escherichia coli":
+            return "E. coli"
+        if organism == "Staphylococcus aureus":
+            return "S. aureus"
+        return organism
+
+    matrix["organism_short"] = matrix["organism"].map(organism_short)
+    matrix["target_key"] = list(zip(matrix["organism_short"], matrix["drug"], matrix["site"]))
+    matrix = matrix[matrix["target_key"].isin(target_index)].copy()
+    matrix["target_order"] = matrix["target_key"].map(target_index)
+    matrix["display_target"] = matrix.apply(
+        lambda row: f"{row['organism_short']} / {short_drug(row['drug'])} / {row['site']}",
+        axis=1,
+    )
+    matrix["model_column"] = matrix.apply(model_class_column, axis=1)
+    matrix = matrix[matrix["model_column"].isin(["CNN/Mega", "LGBM multi", "LGBM single"])].copy()
+    for col in ["raw_auc", "centered_auc", "matched_retention"]:
+        matrix[col] = pd.to_numeric(matrix[col], errors="coerce")
+    return matrix.sort_values(["target_order", "model_column"])
+
+
+def figure_3_model_replication(model_df: pd.DataFrame, matrix_df: pd.DataFrame | None = None) -> Path:
     path = FIG_DIR / "figure_3_model_family_replication.pdf"
+    if matrix_df is not None and not matrix_df.empty:
+        focus = figure_3_matrix_rows(matrix_df)
+        c = canvas.Canvas(str(path), pagesize=landscape(letter))
+        w, h = landscape(letter)
+        white_page(c, w, h)
+        text(c, 0.55 * inch, h - 0.45 * inch, "Fig. 3 | Completed model-class background-audit matrix", 14, True)
+        text(
+            c,
+            0.55 * inch,
+            h - 0.70 * inch,
+            "CNN/Mega, LightGBM multi-task and LightGBM single-task models are audited with the same co-resistance matching framework.",
+            9,
+            False,
+            GRAY,
+        )
+
+        columns = ["CNN/Mega", "LGBM multi", "LGBM single"]
+        x_label = 0.70 * inch
+        x0 = 3.20 * inch
+        cell_w = 1.80 * inch
+        cell_h = 0.34 * inch
+        y_top = h - 1.30 * inch
+        centered_text(c, x_label + 1.00 * inch, y_top + 0.18 * inch, "target / site", 8.2, True, DARK)
+        for i, col in enumerate(columns):
+            centered_text(c, x0 + i * cell_w + cell_w / 2, y_top + 0.18 * inch, col, 8.2, True, DARK)
+
+        row_targets = focus[["target_order", "display_target"]].drop_duplicates().sort_values("target_order")
+        for row_i, target in enumerate(row_targets.itertuples(index=False)):
+            y = y_top - (row_i + 1) * cell_h
+            if row_i in {3, 6}:
+                c.setStrokeColor(LIGHT_GRAY)
+                c.setLineWidth(0.7)
+                c.line(0.58 * inch, y + cell_h + 2, w - 0.60 * inch, y + cell_h + 2)
+            text(c, x_label, y + 0.10 * inch, target.display_target, 7.6, False, DARK)
+            row_subset = focus[focus["target_order"].eq(target.target_order)].set_index("model_column")
+            for col_i, col in enumerate(columns):
+                x = x0 + col_i * cell_w
+                if col in row_subset.index:
+                    record = row_subset.loc[col]
+                    raw = float(record["raw_auc"])
+                    centered = float(record["centered_auc"])
+                    caution = "caution" in str(record["adequacy_label"])
+                    c.setFillColor(auc_fill(centered))
+                    c.setStrokeColor(MID_GRAY if caution else LIGHT_GRAY)
+                    c.rect(x, y, cell_w - 0.04 * inch, cell_h - 0.04 * inch, stroke=1, fill=1)
+                    label = f"{raw:.2f}->{centered:.2f}"
+                    centered_text(c, x + (cell_w - 0.04 * inch) / 2, y + 0.10 * inch, label, 7.1, False, DARK)
+                    if caution:
+                        centered_text(c, x + cell_w - 0.14 * inch, y + 0.10 * inch, "*", 8.0, True, RED)
+                else:
+                    c.setFillColor(PALE)
+                    c.setStrokeColor(LIGHT_GRAY)
+                    c.rect(x, y, cell_w - 0.04 * inch, cell_h - 0.04 * inch, stroke=1, fill=1)
+                    centered_text(c, x + (cell_w - 0.04 * inch) / 2, y + 0.10 * inch, "not run", 7.0, False, GRAY)
+
+        text(
+            c,
+            0.70 * inch,
+            0.86 * inch,
+            "Cells show raw AUC -> background-centered AUC; color encodes centered AUC. * denotes low matched support.",
+            7.2,
+            False,
+            GRAY,
+        )
+        c.setFillColor(auc_fill(0.50))
+        c.rect(7.45 * inch, 0.80 * inch, 0.25 * inch, 0.13 * inch, stroke=0, fill=1)
+        text(c, 7.76 * inch, 0.80 * inch, "chance/weak", 6.8, False, GRAY)
+        c.setFillColor(auc_fill(0.65))
+        c.rect(8.55 * inch, 0.80 * inch, 0.25 * inch, 0.13 * inch, stroke=0, fill=1)
+        text(c, 8.86 * inch, 0.80 * inch, "moderate", 6.8, False, GRAY)
+        c.setFillColor(auc_fill(0.78))
+        c.rect(9.42 * inch, 0.80 * inch, 0.25 * inch, 0.13 * inch, stroke=0, fill=1)
+        text(c, 9.73 * inch, 0.80 * inch, "retained", 6.8, False, GRAY)
+        c.showPage()
+        c.save()
+        return path
+
     c = canvas.Canvas(str(path), pagesize=landscape(letter))
     w, h = landscape(letter)
     white_page(c, w, h)
@@ -830,16 +981,40 @@ def make_tables(primary: pd.DataFrame, model_df: pd.DataFrame, wgs: pd.DataFrame
 
 def write_source_data(primary: pd.DataFrame, model_df: pd.DataFrame, wgs: pd.DataFrame,
                       enrichment: pd.DataFrame,
+                      matrix_df: pd.DataFrame | None = None,
                       sa_summary: pd.DataFrame | None = None,
                       ecoli_bg: pd.DataFrame | None = None,
                       saureus_bg: pd.DataFrame | None = None) -> None:
     """Write figure source-data CSVs in a Nature-style layout."""
     primary.copy().to_csv(SOURCE_DIR / "source_data_fig2_primary_background_audit.csv", index=False)
 
-    fig3 = model_df[
-        model_df["drug"].isin(["Cipro", "Amox-Clav"])
-        & model_df["site"].isin(["A-2018", "DRIAMS-C", "DRIAMS-D"])
-    ].copy()
+    if matrix_df is not None and not matrix_df.empty:
+        fig3 = figure_3_matrix_rows(matrix_df)
+        fig3 = fig3[
+            [
+                "display_target",
+                "model_column",
+                "model_class",
+                "model_variant",
+                "scope",
+                "organism",
+                "drug",
+                "site",
+                "raw_auc",
+                "centered_auc",
+                "pairwise_accuracy",
+                "matched_retention",
+                "valid_strata",
+                "adequacy_label",
+                "interpretation",
+                "source_path",
+            ]
+        ].copy()
+    else:
+        fig3 = model_df[
+            model_df["drug"].isin(["Cipro", "Amox-Clav"])
+            & model_df["site"].isin(["A-2018", "DRIAMS-C", "DRIAMS-D"])
+        ].copy()
     fig3.to_csv(SOURCE_DIR / "source_data_fig3_model_family_replication.csv", index=False)
 
     edges = pd.read_csv(ANALYSIS / "cross_resistance_network" / "cross_resistance_edges.csv")
@@ -850,7 +1025,7 @@ def write_source_data(primary: pd.DataFrame, model_df: pd.DataFrame, wgs: pd.Dat
 
     manifest = [
         ["Figure 2", "source_data_fig2_primary_background_audit.csv", "Raw, matched and background-centered AUC values for the primary E. coli contrast."],
-        ["Figure 3", "source_data_fig3_model_family_replication.csv", "CNN and multi-task LGBM raw-to-centered audit rows."],
+        ["Figure 3", "source_data_fig3_model_family_replication.csv", "Completed CNN/Mega, LightGBM multi-task and LightGBM single-task raw-to-centered model-class audit rows."],
         ["Figure 4", "source_data_fig4_cross_resistance_edges_all_sites.csv", "All-sites E. coli cross-resistance edges used for the phi heatmap and strongest-edge annotations."],
         ["Figure 5a", "source_data_fig5a_public_wgs_maldi_auc.csv", "Public UPEC WGS-linked MALDI peak-feature AUCs."],
         ["Figure 5b", "source_data_fig5b_proteomic_biomarker_enrichment.csv", "Published ST131 biomarker enrichment results."],
@@ -870,6 +1045,8 @@ def main() -> None:
     model_df   = pd.read_csv(FINAL / "table_2_cnn_vs_lgbm_multi_background_audit.csv")
     wgs        = pd.read_csv(FINAL / "table_7_public_wgs_maldi_auc.csv")
     enrichment = pd.read_csv(FINAL / "table_9_published_st131_biomarker_enrichment.csv")
+    matrix_path = ANALYSIS / "model_class_matrix" / "model_class_matrix.csv"
+    matrix_df = pd.read_csv(matrix_path) if matrix_path.exists() else pd.DataFrame()
 
     sa_summary_path = ANALYSIS / "saureus_panel_oxa_background_audit" / "background_matched_audit_summary.csv"
     ecoli_bg_path   = ANALYSIS / "co_resistance_only_baseline_ecoli"   / "co_resistance_only_baseline.csv"
@@ -882,7 +1059,7 @@ def main() -> None:
     created = [
         figure_1_framework(),
         figure_2_primary_audit(primary),
-        figure_3_model_replication(model_df),
+        figure_3_model_replication(model_df, matrix_df),
         figure_4_cross_resistance(),
         figure_5_public_support(wgs, enrichment),
         figure_7_framework_comparison(),
@@ -894,7 +1071,7 @@ def main() -> None:
               "co_resistance_only_baseline_ecoli, co_resistance_only_baseline_saureus.")
 
     make_tables(primary, model_df, wgs, enrichment)
-    write_source_data(primary, model_df, wgs, enrichment, sa_summary, ecoli_bg, saureus_bg)
+    write_source_data(primary, model_df, wgs, enrichment, matrix_df, sa_summary, ecoli_bg, saureus_bg)
 
     print("Created figures:")
     for path in created:

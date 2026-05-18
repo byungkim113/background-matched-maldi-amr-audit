@@ -166,6 +166,14 @@ class ExportWeisPredictionsTests(unittest.TestCase):
             self.assertEqual(status["rows_written"], 123)
             self.assertIn("training", (out / "CURRENT_STAGE.txt").read_text())
 
+    def test_git_metadata_handles_non_git_source_directory(self):
+        exporter = load_exporter()
+        with tempfile.TemporaryDirectory() as tmp:
+            metadata = exporter.git_metadata(pathlib.Path(tmp))
+        self.assertFalse(metadata["source_is_git_checkout"])
+        self.assertIsNone(metadata["source_commit"])
+        self.assertIsNone(metadata["source_branch"])
+
 
 if __name__ == "__main__":
     unittest.main()
