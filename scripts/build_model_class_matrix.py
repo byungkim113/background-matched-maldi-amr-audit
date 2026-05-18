@@ -342,7 +342,36 @@ def markdown_table(rows: Sequence[dict]) -> str:
     return "\n".join(lines)
 
 
-def write_missing_commands(path: Path) -> None:
+def has_missing_rows(rows: Sequence[dict]) -> bool:
+    return any(str(row.get("status", "")).strip() != "complete" for row in rows)
+
+
+def write_missing_commands(path: Path, rows: Sequence[dict] | None = None) -> None:
+    if rows is not None and not has_missing_rows(rows):
+        path.write_text(
+            """# LGBM Model-Class Cells Completed
+
+All planned LGBM model-class audit cells have been exported, audited, and
+included in `model_class_matrix.csv`.
+
+Completed additions:
+
+- E. coli expanded-panel LGBM single-task background audit.
+- S. aureus/Oxacillin LGBM multi-task background audit.
+- S. aureus/Oxacillin LGBM single-task background audit.
+
+To reproduce these outputs on Kaggle or another machine with DRIAMS mounted,
+run:
+
+```bash
+python scripts/run_model_class_matrix_pipeline.py --dry-run
+python scripts/run_model_class_matrix_pipeline.py
+```
+""",
+            encoding="utf-8",
+        )
+        return
+
     path.write_text(
         """# Missing LGBM Model-Class Cells
 
@@ -421,7 +450,7 @@ def main() -> None:
         "# Model-Class Background-Audit Matrix\n\n" + markdown_table(rows) + "\n",
         encoding="utf-8",
     )
-    write_missing_commands(args.output_dir / "run_missing_lgbm_commands.md")
+    write_missing_commands(args.output_dir / "run_missing_lgbm_commands.md", rows)
     print(f"Wrote {args.output_dir / 'model_class_matrix.csv'}")
     print(f"Wrote {args.output_dir / 'model_class_matrix.md'}")
 

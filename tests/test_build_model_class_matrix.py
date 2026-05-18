@@ -87,6 +87,16 @@ class BuildModelClassMatrixTests(unittest.TestCase):
         self.assertEqual(missing["status"], "missing")
         self.assertEqual(missing["model_variant"], "single-task")
 
+    def test_completed_matrix_writes_completion_note_instead_of_missing_commands(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = pathlib.Path(tmp) / "run_missing_lgbm_commands.md"
+            matrix.write_missing_commands(path, [{"status": "complete"}])
+
+            text = path.read_text()
+
+        self.assertIn("LGBM Model-Class Cells Completed", text)
+        self.assertNotIn("Missing LGBM Model-Class Cells", text)
+
 
 if __name__ == "__main__":
     unittest.main()

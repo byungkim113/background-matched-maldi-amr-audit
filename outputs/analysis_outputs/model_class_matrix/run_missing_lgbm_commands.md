@@ -1,57 +1,18 @@
-# Missing LGBM Model-Class Cells
+# LGBM Model-Class Cells Completed
 
-Run this on Kaggle or another machine with the DRIAMS data mounted. The pipeline
-exports isolate-level LGBM predictions, runs the model-agnostic background audit,
-and rebuilds the matrix.
+All planned LGBM model-class audit cells have been exported, audited, and
+included in `model_class_matrix.csv`.
 
-```bash
-python scripts/run_model_class_matrix_pipeline.py \
-  --data-root /kaggle/input/datasets/drscarlat/driams \
-  --ecoli-run-dir /kaggle/working/runs/exp_ecoli_mechanism6_drugid_mae30 \
-  --saureus-run-dir /kaggle/working/runs/exp_saureus_panel_oxa_background_mae30
-```
+Completed additions:
 
-Use `--dry-run` first to print every command without running it.
+- E. coli expanded-panel LGBM single-task background audit.
+- S. aureus/Oxacillin LGBM multi-task background audit.
+- S. aureus/Oxacillin LGBM single-task background audit.
 
-The equivalent manual commands are below.
-
-## E. coli LGBM single-task
+To reproduce these outputs on Kaggle or another machine with DRIAMS mounted,
+run:
 
 ```bash
-python scripts/export_lgbm_predictions_for_audit.py \
-  --data-root /kaggle/input/datasets/drscarlat/driams \
-  --pair-profile ecoli_mechanism6 \
-  --run-dir /kaggle/working/runs/exp_ecoli_mechanism6_drugid_mae30 \
-  --variants single \
-  --output-dir /kaggle/working/lgbm_exports/ecoli
-
-python run_background_audit_framework.py \
-  --predictions-csv /kaggle/working/lgbm_exports/ecoli/lgbm_single_predictions_long.csv \
-  --background-signature-col background_signature \
-  --model-name LGBM-single-ecoli6 \
-  --output-dir /kaggle/working/ecoli_lgbm_single_background_audit
-```
-
-## S. aureus/Oxacillin LGBM single-task and multi-task
-
-```bash
-python scripts/export_lgbm_predictions_for_audit.py \
-  --data-root /kaggle/input/datasets/drscarlat/driams \
-  --pair-profile saureus_panel \
-  --run-dir /kaggle/working/runs/exp_saureus_panel_oxa_background_mae30 \
-  --variants single,multi \
-  --train-if-missing \
-  --output-dir /kaggle/working/lgbm_exports/saureus_oxa
-
-python run_background_audit_framework.py \
-  --predictions-csv /kaggle/working/lgbm_exports/saureus_oxa/lgbm_multi_predictions_long.csv \
-  --background-signature-col background_signature \
-  --model-name LGBM-multi-saureus-oxa \
-  --output-dir /kaggle/working/saureus_lgbm_multi_oxa_background_audit
-
-python run_background_audit_framework.py \
-  --predictions-csv /kaggle/working/lgbm_exports/saureus_oxa/lgbm_single_predictions_long.csv \
-  --background-signature-col background_signature \
-  --model-name LGBM-single-saureus-oxa \
-  --output-dir /kaggle/working/saureus_lgbm_single_oxa_background_audit
+python scripts/run_model_class_matrix_pipeline.py --dry-run
+python scripts/run_model_class_matrix_pipeline.py
 ```
