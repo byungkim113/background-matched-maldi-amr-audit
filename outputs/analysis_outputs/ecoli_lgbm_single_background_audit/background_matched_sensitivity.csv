@@ -1,0 +1,70 @@
+sensitivity_threshold,site,organism,drug,raw_auc,raw_auc_ci_low,raw_auc_ci_high,raw_aupr,matched_auc,matched_auc_ci_low,matched_auc_ci_high,matched_aupr,stratum_centered_auc,stratum_centered_auc_ci_low,stratum_centered_auc_ci_high,pairwise_accuracy,pairwise_comparisons,permutation_p,permutation_null_mean,permutation_null_std,matched_retention,adequacy_label,interpretation_category,n_total,n_r,n_matched,n_matched_r,n_valid_strata,min_pos_per_stratum,min_neg_per_stratum,match_year
+2,A-2018,Escherichia coli,Amoxicillin-Clavulanic acid,0.613805,,,0.405677,0.610181,,,0.379143,0.465989,,,0.53816,68095,,,,0.94733,interpretable,background_driven_collapse,1367,383,1295,336,18,2,2,False
+2,A-2018,Escherichia coli,Cefepime,0.887818,,,0.449579,0.857753,,,0.84994,0.58486,,,0.943548,248,,,,0.0658537,caution_low_n_matched_and_low_retention,caution_low_matched_support,1230,65,81,39,3,2,2,False
+2,A-2018,Escherichia coli,Ceftazidime,0.804485,,,0.370438,0.356098,,,0.604281,0.382927,,,0.377907,172,,,,0.0485282,caution_low_n_matched_and_low_retention,caution_low_matched_support,1257,120,61,41,5,2,2,False
+2,A-2018,Escherichia coli,Ceftriaxone,0.861078,,,0.704475,0.739055,,,0.498994,0.825749,,,0.854839,558,,,,0.109353,interpretable,focal_signal_retained,1390,258,152,28,6,2,2,False
+2,A-2018,Escherichia coli,Ciprofloxacin,0.827574,,,0.715522,0.845563,,,0.744629,0.648824,,,0.782416,31096,,,,0.641481,interpretable,focal_signal_retained,1350,355,866,230,13,2,2,False
+2,A-2018,Escherichia coli,Norfloxacin,0.684953,,,0.471424,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,439,87,0,0,0,2,2,False
+2,DRIAMS-B,Escherichia coli,Amoxicillin-Clavulanic acid,0.603686,,,0.458797,0.451507,,,0.18418,0.451507,,,0.451507,1526,,,,0.621212,interpretable,background_driven_collapse,198,61,123,14,1,2,2,False
+2,DRIAMS-B,Escherichia coli,Cefepime,0.798906,,,0.523538,1,,,1,1,,,1,4,,,,0.0187793,caution_low_n_matched_and_low_retention_and_low_pairwise,caution_low_matched_support,213,43,4,2,1,2,2,False
+2,DRIAMS-B,Escherichia coli,Ceftazidime,0.817063,,,0.633869,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,213,45,0,0,0,2,2,False
+2,DRIAMS-B,Escherichia coli,Ceftriaxone,0.835317,,,0.68484,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,213,45,0,0,0,2,2,False
+2,DRIAMS-B,Escherichia coli,Ciprofloxacin,0.815159,,,0.721805,0.846561,,,0.979048,0.759259,,,0.821429,168,,,,0.287736,caution_low_n_matched,caution_low_matched_support,212,58,61,54,2,2,2,False
+2,DRIAMS-B,Escherichia coli,Norfloxacin,0.753006,,,0.659184,0.52381,,,0.0666174,0.525063,,,0.443243,555,,,,0.57619,interpretable,background_driven_collapse,210,69,121,7,2,2,2,False
+2,DRIAMS-C,Escherichia coli,Amoxicillin-Clavulanic acid,0.559045,,,0.356799,0.595576,,,0.385687,0.519416,,,0.548007,24465,,,,0.925721,interpretable,weak_raw_signal,902,230,835,203,13,2,2,False
+2,DRIAMS-C,Escherichia coli,Cefepime,0.564802,,,0.296279,0.430127,,,0.223012,0.396293,,,0.476351,296,,,,0.223317,interpretable,weak_raw_signal,609,113,136,33,5,2,2,False
+2,DRIAMS-C,Escherichia coli,Ceftazidime,0.605888,,,0.22019,0.366667,,,0.12829,0.303333,,,0.283262,233,,,,0.104626,caution_low_n_matched,caution_low_matched_support,908,139,95,15,5,2,2,False
+2,DRIAMS-C,Escherichia coli,Ceftriaxone,0.649929,,,0.31399,0.81044,,,0.701105,0.752747,,,0.811024,127,,,,0.0438116,caution_low_n_matched_and_low_retention,caution_low_matched_support,913,148,40,14,3,2,2,False
+2,DRIAMS-C,Escherichia coli,Ciprofloxacin,0.804403,,,0.67342,0.784409,,,0.573482,0.683107,,,0.755384,7244,,,,0.481941,interpretable,focal_signal_retained,886,188,427,68,5,2,2,False
+2,DRIAMS-C,Escherichia coli,Norfloxacin,0.785991,,,0.707209,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,442,118,0,0,0,2,2,False
+2,DRIAMS-D,Escherichia coli,Amoxicillin-Clavulanic acid,0.559239,,,0.216074,0.557839,,,0.202806,0.486592,,,0.515882,207468,,,,0.976429,interpretable,weak_raw_signal,1994,332,1947,311,12,2,2,False
+2,DRIAMS-D,Escherichia coli,Cefepime,0.749695,,,0.211848,0.587719,,,0.832916,0.473136,,,0.606557,427,,,,0.0520021,caution_low_retention,caution_low_matched_support,1923,80,100,76,5,2,2,False
+2,DRIAMS-D,Escherichia coli,Ceftazidime,0.703359,,,0.282504,0.636809,,,0.0982074,0.472323,,,0.665222,6231,,,,0.83392,interpretable,background_driven_collapse,1987,178,1657,62,8,2,2,False
+2,DRIAMS-D,Escherichia coli,Ceftriaxone,0.730968,,,0.417538,0.651097,,,0.177406,0.544648,,,0.416251,11236,,,,0.821966,interpretable,background_driven_collapse,1994,198,1639,32,6,2,2,False
+2,DRIAMS-D,Escherichia coli,Ciprofloxacin,0.712116,,,0.498039,0.708254,,,0.483653,0.591114,,,0.655703,237917,,,,0.984012,interpretable,partially_retained_or_uncertain,1939,371,1908,354,10,2,2,False
+3,A-2018,Escherichia coli,Amoxicillin-Clavulanic acid,0.613805,,,0.405677,0.606581,,,0.362352,0.465149,,,0.53816,68043,,,,0.922458,interpretable,background_driven_collapse,1367,383,1261,313,14,3,3,False
+3,A-2018,Escherichia coli,Cefepime,0.887818,,,0.449579,0.868382,,,0.846295,0.575735,,,0.94958,238,,,,0.0601626,caution_low_n_matched_and_low_retention,caution_low_matched_support,1230,65,74,34,2,3,3,False
+3,A-2018,Escherichia coli,Ceftazidime,0.804485,,,0.370438,0.4,,,0.639265,0.410417,,,0.375,152,,,,0.0373906,caution_low_n_matched_and_low_retention,caution_low_matched_support,1257,120,47,32,3,3,3,False
+3,A-2018,Escherichia coli,Ceftriaxone,0.861078,,,0.704475,0.739055,,,0.498994,0.825749,,,0.854839,558,,,,0.109353,interpretable,focal_signal_retained,1390,258,152,28,6,3,3,False
+3,A-2018,Escherichia coli,Ciprofloxacin,0.827574,,,0.715522,0.844144,,,0.736416,0.652469,,,0.782301,31052,,,,0.619259,interpretable,focal_signal_retained,1350,355,836,213,9,3,3,False
+3,A-2018,Escherichia coli,Norfloxacin,0.684953,,,0.471424,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,439,87,0,0,0,3,3,False
+3,DRIAMS-B,Escherichia coli,Amoxicillin-Clavulanic acid,0.603686,,,0.458797,0.451507,,,0.18418,0.451507,,,0.451507,1526,,,,0.621212,interpretable,background_driven_collapse,198,61,123,14,1,3,3,False
+3,DRIAMS-B,Escherichia coli,Cefepime,0.798906,,,0.523538,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,213,43,0,0,0,3,3,False
+3,DRIAMS-B,Escherichia coli,Ceftazidime,0.817063,,,0.633869,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,213,45,0,0,0,3,3,False
+3,DRIAMS-B,Escherichia coli,Ceftriaxone,0.835317,,,0.68484,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,213,45,0,0,0,3,3,False
+3,DRIAMS-B,Escherichia coli,Ciprofloxacin,0.815159,,,0.721805,0.8,,,0.948946,0.8,,,0.8,100,,,,0.117925,caution_low_n_matched,caution_low_matched_support,212,58,25,20,1,3,3,False
+3,DRIAMS-B,Escherichia coli,Norfloxacin,0.753006,,,0.659184,0.436697,,,0.0451512,0.436697,,,0.436697,545,,,,0.542857,interpretable,background_driven_collapse,210,69,114,5,1,3,3,False
+3,DRIAMS-C,Escherichia coli,Amoxicillin-Clavulanic acid,0.559045,,,0.356799,0.606451,,,0.367577,0.532529,,,0.547692,24417,,,,0.892461,interpretable,weak_raw_signal,902,230,805,181,10,3,3,False
+3,DRIAMS-C,Escherichia coli,Cefepime,0.564802,,,0.296279,0.199495,,,0.158663,0.272727,,,0.214286,126,,,,0.0771757,caution_low_n_matched_and_low_retention,caution_low_matched_support,609,113,47,11,3,3,3,False
+3,DRIAMS-C,Escherichia coli,Ceftazidime,0.605888,,,0.22019,0.292308,,,0.0405959,0.292308,,,0.292308,195,,,,0.0748899,caution_low_n_matched_and_low_retention,caution_low_matched_support,908,139,68,3,1,3,3,False
+3,DRIAMS-C,Escherichia coli,Ceftriaxone,0.649929,,,0.31399,0.763889,,,0.503422,0.768519,,,0.803419,117,,,,0.0361446,caution_low_n_matched_and_low_retention,caution_low_matched_support,913,148,33,9,2,3,3,False
+3,DRIAMS-C,Escherichia coli,Ciprofloxacin,0.804403,,,0.67342,0.795001,,,0.585374,0.682482,,,0.755457,7238,,,,0.476298,interpretable,focal_signal_retained,886,188,422,65,4,3,3,False
+3,DRIAMS-C,Escherichia coli,Norfloxacin,0.785991,,,0.707209,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,442,118,0,0,0,3,3,False
+3,DRIAMS-D,Escherichia coli,Amoxicillin-Clavulanic acid,0.559239,,,0.216074,0.558437,,,0.202298,0.486938,,,0.515887,207464,,,,0.974423,interpretable,weak_raw_signal,1994,332,1943,309,11,3,3,False
+3,DRIAMS-D,Escherichia coli,Cefepime,0.749695,,,0.211848,0.598381,,,0.843893,0.476339,,,0.610451,421,,,,0.049402,caution_low_n_matched_and_low_retention,caution_low_matched_support,1923,80,95,73,4,3,3,False
+3,DRIAMS-D,Escherichia coli,Ceftazidime,0.703359,,,0.282504,0.636809,,,0.0982074,0.472323,,,0.665222,6231,,,,0.83392,interpretable,background_driven_collapse,1987,178,1657,62,8,3,3,False
+3,DRIAMS-D,Escherichia coli,Ceftriaxone,0.730968,,,0.417538,0.651097,,,0.177406,0.544648,,,0.416251,11236,,,,0.821966,interpretable,background_driven_collapse,1994,198,1639,32,6,3,3,False
+3,DRIAMS-D,Escherichia coli,Ciprofloxacin,0.712116,,,0.498039,0.708254,,,0.483653,0.591114,,,0.655703,237917,,,,0.984012,interpretable,partially_retained_or_uncertain,1939,371,1908,354,10,3,3,False
+5,A-2018,Escherichia coli,Amoxicillin-Clavulanic acid,0.613805,,,0.405677,0.597215,,,0.336336,0.459613,,,0.538049,67992,,,,0.903438,interpretable,background_driven_collapse,1367,383,1235,298,11,5,5,False
+5,A-2018,Escherichia coli,Cefepime,0.887818,,,0.449579,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,1230,65,0,0,0,5,5,False
+5,A-2018,Escherichia coli,Ceftazidime,0.804485,,,0.370438,0.345455,,,0.770513,0.345455,,,0.345455,110,,,,0.0214797,caution_low_n_matched_and_low_retention,caution_low_matched_support,1257,120,27,22,1,5,5,False
+5,A-2018,Escherichia coli,Ceftriaxone,0.861078,,,0.704475,0.672619,,,0.497867,0.845238,,,0.848592,284,,,,0.0388489,caution_low_n_matched_and_low_retention,caution_low_matched_support,1390,258,54,12,2,5,5,False
+5,A-2018,Escherichia coli,Ciprofloxacin,0.827574,,,0.715522,0.847565,,,0.742359,0.658402,,,0.782495,31043,,,,0.614815,interpretable,focal_signal_retained,1350,355,830,210,8,5,5,False
+5,A-2018,Escherichia coli,Norfloxacin,0.684953,,,0.471424,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,439,87,0,0,0,5,5,False
+5,DRIAMS-B,Escherichia coli,Amoxicillin-Clavulanic acid,0.603686,,,0.458797,0.451507,,,0.18418,0.451507,,,0.451507,1526,,,,0.621212,interpretable,background_driven_collapse,198,61,123,14,1,5,5,False
+5,DRIAMS-B,Escherichia coli,Cefepime,0.798906,,,0.523538,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,213,43,0,0,0,5,5,False
+5,DRIAMS-B,Escherichia coli,Ceftazidime,0.817063,,,0.633869,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,213,45,0,0,0,5,5,False
+5,DRIAMS-B,Escherichia coli,Ceftriaxone,0.835317,,,0.68484,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,213,45,0,0,0,5,5,False
+5,DRIAMS-B,Escherichia coli,Ciprofloxacin,0.815159,,,0.721805,0.8,,,0.948946,0.8,,,0.8,100,,,,0.117925,caution_low_n_matched,caution_low_matched_support,212,58,25,20,1,5,5,False
+5,DRIAMS-B,Escherichia coli,Norfloxacin,0.753006,,,0.659184,0.436697,,,0.0451512,0.436697,,,0.436697,545,,,,0.542857,interpretable,background_driven_collapse,210,69,114,5,1,5,5,False
+5,DRIAMS-C,Escherichia coli,Amoxicillin-Clavulanic acid,0.559045,,,0.356799,0.614262,,,0.368798,0.538685,,,0.548301,24306,,,,0.848115,interpretable,weak_raw_signal,902,230,765,168,7,5,5,False
+5,DRIAMS-C,Escherichia coli,Cefepime,0.564802,,,0.296279,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,609,113,0,0,0,5,5,False
+5,DRIAMS-C,Escherichia coli,Ceftazidime,0.605888,,,0.22019,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,908,139,0,0,0,5,5,False
+5,DRIAMS-C,Escherichia coli,Ceftriaxone,0.649929,,,0.31399,0.780952,,,0.438095,0.780952,,,0.780952,105,,,,0.0284775,caution_low_n_matched_and_low_retention,caution_low_matched_support,913,148,26,5,1,5,5,False
+5,DRIAMS-C,Escherichia coli,Ciprofloxacin,0.804403,,,0.67342,0.772537,,,0.430891,0.743369,,,0.753574,7134,,,,0.437923,interpretable,focal_signal_retained,886,188,388,39,2,5,5,False
+5,DRIAMS-C,Escherichia coli,Norfloxacin,0.785991,,,0.707209,,,,,,,,,0,,,,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,442,118,0,0,0,5,5,False
+5,DRIAMS-D,Escherichia coli,Amoxicillin-Clavulanic acid,0.559239,,,0.216074,0.554407,,,0.193688,0.488241,,,0.515885,207395,,,,0.958375,interpretable,weak_raw_signal,1994,332,1911,292,8,5,5,False
+5,DRIAMS-D,Escherichia coli,Cefepime,0.749695,,,0.211848,0.637778,,,0.888387,0.488889,,,0.616,375,,,,0.0390016,caution_low_n_matched_and_low_retention,caution_low_matched_support,1923,80,75,60,2,5,5,False
+5,DRIAMS-D,Escherichia coli,Ceftazidime,0.703359,,,0.282504,0.646055,,,0.321112,0.472727,,,0.699528,2120,,,,0.141922,interpretable,background_driven_collapse,1987,178,282,55,6,5,5,False
+5,DRIAMS-D,Escherichia coli,Ceftriaxone,0.730968,,,0.417538,0.64811,,,0.163801,0.595731,,,0.415691,11191,,,,0.811434,interpretable,partially_retained_or_uncertain,1994,198,1618,25,4,5,5,False
+5,DRIAMS-D,Escherichia coli,Ciprofloxacin,0.712116,,,0.498039,0.702772,,,0.468936,0.603461,,,0.655659,237814,,,,0.962867,interpretable,focal_signal_retained,1939,371,1867,323,7,5,5,False
