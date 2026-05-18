@@ -825,7 +825,6 @@ def write_summary(tables: dict[str, pd.DataFrame], figure_paths: list[Path]) -> 
     for path in figure_paths:
         lines.append(f"- `{path.name}`")
     lines.append("")
-    (OUT / "final_framework_summary.md").write_text("\n".join(lines))
 
 
 def main() -> None:

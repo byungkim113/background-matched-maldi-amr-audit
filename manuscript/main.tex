@@ -19,7 +19,7 @@
 
 \linenumbers
 
-\title{\bfseries Resistant-population background confounds MALDI-TOF antimicrobial resistance prediction across clinical sites}
+\title{\bfseries Resistant-population background biases MALDI-TOF antimicrobial resistance prediction across clinical sites}
 
 \author[1]{Byung Kim}
 \author[2]{Yuchen Wang}
@@ -115,7 +115,7 @@ The Weis-style logistic regression applied to the official published \textit{S.~
 
 A natural concern is that background sensitivity might be an artifact specific to the convolutional architecture. To address this, we applied the identical audit to CNN predictions and to multi-task LightGBM predictions trained on the same data splits. The goal was not to identify a superior model but to test whether raw-to-centered attenuation is architecture-specific or characteristic of the data relationship itself.
 
-Across the primary \textit{E.~coli}/ciprofloxacin and amoxicillin-clavulanic acid comparisons, CNN and LightGBM showed the same qualitative behavior (Supplementary~Fig.~1; Table~\ref{tab:model-replication}). Ciprofloxacin retained centered AUC more consistently than amoxicillin-clavulanic acid in both model families. Amoxicillin-clavulanic acid collapsed at DRIAMS-C and DRIAMS-D in both model families despite high matched retention. The magnitude of the raw-to-centered drop was quantitatively similar for CNN and LightGBM, which encode the MALDI spectrum through entirely different inductive biases. This consistency supports the interpretation that background sensitivity originates in the co-structure of spectra, AST labels and resistant-population ecology, not in a particular representational choice.
+Across the primary \textit{E.~coli}/ciprofloxacin and amoxicillin-clavulanic acid comparisons, CNN and multi-task LightGBM showed the same qualitative behavior (Supplementary~Fig.~1; Table~\ref{tab:model-replication}). Ciprofloxacin retained centered AUC more consistently than amoxicillin-clavulanic acid in both model families. Amoxicillin-clavulanic acid collapsed at DRIAMS-C and DRIAMS-D in both model families despite high matched retention. The magnitude of the raw-to-centered drop was quantitatively similar for CNN and LightGBM, which encode the MALDI spectrum through entirely different inductive biases. This consistency supports the interpretation that background sensitivity originates in the co-structure of spectra, AST labels and resistant-population ecology, not in a particular representational choice. An expanded model-class comparison including single-task LightGBM and the \textit{S.~aureus}/oxacillin model family is reported in Supplementary Table~4.
 
 \input{tables/table_2_model_replication.tex}
 

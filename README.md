@@ -25,7 +25,7 @@ python run_background_audit_framework.py \
     --output-dir outputs/example_run
 ```
 
-`example_predictions.csv` contains 300 synthetic *E. coli* isolates across two sites.
+`example_predictions.csv` contains 300 synthetic *E. coli* and 320 synthetic *S. aureus* isolates across two sites (2,480 total prediction rows).
 It is constructed so that the audit recovers two archetypal outcomes:
 
 | Drug | Expected outcome |

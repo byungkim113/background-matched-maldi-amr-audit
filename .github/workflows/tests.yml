@@ -62,3 +62,12 @@ jobs:
 
       - name: Run temporal reliability audit tests
         run: python -m unittest tests.test_temporal_reliability_audit
+
+      - name: Run co-resistance-only baseline tests
+        run: python -m unittest tests.test_co_resistance_only_baseline
+
+      - name: Run sensitivity sweep tests
+        run: python -m unittest tests.test_sensitivity_sweep
+
+      - name: Run model-class matrix pipeline tests
+        run: python -m unittest tests.test_run_model_class_matrix_pipeline

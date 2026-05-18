@@ -43,7 +43,7 @@ other rows that share the same `isolate_id`, `site`, `year`, and `organism`.
 
 ## Output files
 
-### `audit_summary.csv`
+### `background_matched_audit_summary.csv`
 
 One row per (site × organism × drug) combination.
 
@@ -68,7 +68,7 @@ One row per (site × organism × drug) combination.
 | `min_neg_per_stratum` | int | Minimum susceptible isolates required per stratum |
 | `adequacy` | string | `ok` or `caution` (low matched support) |
 
-### `retained_rows.csv`
+### `background_matched_retained_rows.csv`
 
 Individual isolate rows within matched strata. Includes all input columns plus:
 
@@ -80,7 +80,7 @@ Individual isolate rows within matched strata. Includes all input columns plus:
 | `centered_prob` | `prob` minus per-stratum mean probability |
 | `matched_valid_stratum` | Always `True` in this file |
 
-### `sensitivity_summary.csv` *(from `sensitivity_sweep.py`)*
+### `background_matched_sensitivity.csv` *(from `sensitivity_sweep.py`)*
 
 One row per minimum-stratum threshold.
 
