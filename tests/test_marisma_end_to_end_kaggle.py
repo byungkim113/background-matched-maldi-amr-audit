@@ -1,4 +1,5 @@
 import math
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -75,6 +76,73 @@ class MarismaEndToEndKaggleTests(unittest.TestCase):
         self.assertEqual(mz.shape, (8,))
         self.assertEqual(intensity.tolist(), list(range(8)))
         self.assertTrue(math.isclose(float(mz[0]), 2000.2688, rel_tol=0, abs_tol=1e-3))
+
+    def test_aggregate_predictions_to_isolate_drug_averages_spot_rows_and_reports_duplicates(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            prediction_csv = root / "predictions.csv"
+            output_csv = root / "isolate_level.csv"
+            report_json = root / "report.json"
+            prediction_csv.write_text(
+                "\n".join(
+                    [
+                        "model_name,site,year,isolate_id,spot_id,organism,drug,label,prob",
+                        "Mega,MARISMa,2024,iso1,spot1,Escherichia coli,Ciprofloxacin,1,0.8",
+                        "Mega,MARISMa,2024,iso1,spot2,Escherichia coli,Ciprofloxacin,1,0.6",
+                        "Mega,MARISMa,2024,iso1,spot2,Escherichia coli,Ciprofloxacin,1,0.6",
+                        "Mega,MARISMa,2024,iso1,spot1,Escherichia coli,Cefepime,0,0.2",
+                    ]
+                )
+                + "\n"
+            )
+
+            aggregated = marisma.aggregate_predictions_to_isolate_drug(
+                prediction_csv,
+                output_csv,
+                report_json,
+            )
+
+            self.assertEqual(len(aggregated), 2)
+            cipro = aggregated[aggregated["drug"].eq("Ciprofloxacin")].iloc[0]
+            self.assertAlmostEqual(float(cipro["prob"]), (0.8 + 0.6 + 0.6) / 3.0)
+            self.assertEqual(int(cipro["n_prediction_rows"]), 3)
+            self.assertEqual(int(cipro["n_unique_spots"]), 2)
+
+            report = json.loads(report_json.read_text())
+            self.assertEqual(report["input_rows"], 4)
+            self.assertEqual(report["isolate_drug_rows"], 2)
+            self.assertEqual(report["duplicate_site_year_isolate_drug_rows"], 2)
+            self.assertEqual(report["exact_duplicate_rows"], 1)
+
+    def test_aggregate_predictions_excludes_conflicting_label_groups(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            prediction_csv = root / "predictions.csv"
+            output_csv = root / "isolate_level.csv"
+            report_json = root / "report.json"
+            prediction_csv.write_text(
+                "\n".join(
+                    [
+                        "site,year,isolate_id,spot_id,organism,drug,label,prob",
+                        "MARISMa,2024,iso1,spot1,Escherichia coli,Cefepime,0,0.8",
+                        "MARISMa,2024,iso1,spot1,Escherichia coli,Cefepime,1,0.8",
+                        "MARISMa,2024,iso2,spot1,Escherichia coli,Cefepime,1,0.7",
+                    ]
+                )
+                + "\n"
+            )
+
+            aggregated = marisma.aggregate_predictions_to_isolate_drug(
+                prediction_csv,
+                output_csv,
+                report_json,
+            )
+
+            self.assertEqual(len(aggregated), 1)
+            self.assertEqual(aggregated.iloc[0]["isolate_id"], "iso2")
+            report = json.loads(report_json.read_text())
+            self.assertEqual(report["conflicting_isolate_drug_groups_excluded"], 1)
+            self.assertTrue(output_csv.with_name("marisma_conflicting_isolate_drug_rows.csv").exists())
 
 
 if __name__ == "__main__":

@@ -44,9 +44,11 @@ PYTHONPYCACHEPREFIX=/tmp/pycache python -m py_compile \
   scripts/run_background_audit.py \
   scripts/export_mega_predictions_for_audit.py \
   scripts/export_weis_predictions_for_audit.py \
+  scripts/compare_weis_raw_metrics.py \
   scripts/upec_wgs_validation_analysis.py \
   scripts/updated_proteomic_overlap_analysis.py \
   scripts/run_public_upec_analysis.py \
+  scripts/marisma_end_to_end_kaggle.py \
   scripts/make_final_framework_tables_figures.py \
   scripts/make_paper_figures.py
 ```
@@ -201,7 +203,7 @@ outputs/final_framework_outputs/
 
 It contains the current paper-facing tables, figures, and argument draft.
 
-## 10. Weis/Borgwardt Compatibility Audit
+## 10. Weis/Borgwardt Published-Code Audit
 
 The notebook:
 
@@ -209,9 +211,14 @@ The notebook:
 notebooks/weis_lightgbm_background_audit_kaggle.ipynb
 ```
 
-is a Kaggle-oriented compatibility workflow. It clones the Borgwardt/Weis code, exports predictions with isolate IDs, then runs the same model-agnostic background audit.
+is a Kaggle-oriented workflow. It clones the Borgwardt/Weis code, exports
+predictions with isolate IDs, then runs the same model-agnostic background
+audit. See `docs/weis_published_model_audit.md` for the exact claim hierarchy:
+exact replication, Weis-code rerun, and background-matched published-model
+audit.
 
-For the closest current rerun of the original Weis/Borgwardt setup, use the upstream repository and the original organism/drug panel:
+For a paper-parity check, use the upstream repository, the original
+organism/drug panel and the stratified external subset:
 
 ```bash
 git clone https://github.com/BorgwardtLab/maldi_amr.git /kaggle/working/maldi_amr
@@ -221,18 +228,51 @@ python scripts/export_weis_predictions_for_audit.py \
   --driams-root /kaggle/input/datasets/drscarlat/driams \
   --audit-script scripts/run_background_audit.py \
   --panel weis-core \
-  --model lightgbm \
+  --model lr \
+  --external-row-policy stratified \
+  --seed 35 \
+  --n-folds 5 \
+  --bootstrap-n 200 \
+  --permutation-n 200 \
+  --output-dir outputs/weis_lr_paper_parity_rerun
+```
+
+For the main background-matched audit, use the same official model code but
+score all eligible external isolates:
+
+```bash
+python scripts/export_weis_predictions_for_audit.py \
+  --weis-repo /kaggle/working/maldi_amr \
+  --driams-root /kaggle/input/datasets/drscarlat/driams \
+  --audit-script scripts/run_background_audit.py \
+  --panel weis-core \
+  --model lr \
   --external-row-policy all \
   --seed 35 \
-  --n-folds 2 \
+  --n-folds 5 \
   --bootstrap-n 500 \
   --permutation-n 500 \
-  --output-dir outputs/weis_lightgbm_full_external_audit
+  --output-dir outputs/weis_lr_full_external_audit
+```
+
+Check paper-parity metrics against the official stored JSONs before using
+"replication" language:
+
+```bash
+python scripts/compare_weis_raw_metrics.py \
+  --weis-raw-results outputs/weis_lr_paper_parity_rerun/weis_raw_results.json \
+  --reference-results-root /kaggle/working/maldi_amr/results/validation_per_species_and_antibiotic/lr \
+  --output-csv outputs/weis_lr_paper_parity_rerun/weis_metric_parity.csv \
+  --summary-md outputs/weis_lr_paper_parity_rerun/weis_metric_parity.md
 ```
 
 Use `--external-row-policy all` for paper-facing background matching. The legacy `--external-row-policy stratified` option intentionally scores only the stratified external subset and can leave too few rows for matched strata, especially at DRIAMS-B.
 
-Use the custom E. coli six-drug panel with:
+Repeat with `--model lightgbm` if the audited published-model claim is about
+the Weis/Borgwardt LightGBM family rather than logistic regression.
+
+Use the custom E. coli six-drug panel only for comparability with this
+repository's primary E. coli mechanism panel:
 
 ```bash
 python scripts/export_weis_predictions_for_audit.py \
@@ -311,8 +351,13 @@ Audit:
 python scripts/marisma_end_to_end_kaggle.py \
   --stage audit \
   --prediction-csv /kaggle/working/marisma_mega_predictions_long.csv \
-  --output-dir /kaggle/working/marisma_background_audit
+  --output-dir /kaggle/working/marisma_external_validation \
+  --audit-output-dir /kaggle/working/marisma_external_validation/marisma_isolate_background_audit
 ```
+
+The audit stage aggregates spot-level MARISMa rows to isolate/drug rows before
+running the framework, excludes isolate/drug groups with conflicting labels, and
+writes `marisma_duplicate_handling_report.json`.
 
 The current locked snapshot is committed under:
 

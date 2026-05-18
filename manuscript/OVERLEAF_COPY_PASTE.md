@@ -2,6 +2,20 @@
 
 Use this folder as the Overleaf project root.
 
+## Recommended: master paper draft
+
+Use `overleaf_master_paper.tex` as the main Overleaf document for the cleaned
+paper draft. It is self-contained except for the figure PDFs.
+
+Upload these figure files in a folder named `figures/`:
+
+```text
+figures/figure_1_framework.pdf
+figures/figure_2_primary_background_audit.pdf
+figures/figure_4_cross_resistance_network.pdf
+figures/figure_5_public_wgs_proteomic_support.pdf
+```
+
 ## Option A: Upload the manuscript folder
 
 Upload the full `manuscript/` folder with this structure:

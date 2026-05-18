@@ -30,6 +30,7 @@ scripts/
   make_paper_figures.py
   make_final_framework_tables_figures.py
   export_weis_predictions_for_audit.py
+  compare_weis_raw_metrics.py
   marisma_end_to_end_kaggle.py
   background_matched_contrastive_kaggle.py
   build_cross_resistance_network.py
@@ -57,6 +58,8 @@ manuscript/
 - `scripts/export_mega_predictions_for_audit.py` — **Mega/CNN locked-prediction exporter**. Use this after a completed Mega run to create `mega_predictions_long.csv`, the isolate-level prediction table required by the background-matched audit.
 - `run_background_audit_framework.py` — **model-agnostic audit engine**. Use this on any long prediction CSV from Mega/CNN, LGBM, Weis-style models, or external models.
 - `scripts/run_background_audit.py` — **thin audit wrapper** for the default prediction CSV format.
+- `scripts/export_weis_predictions_for_audit.py` — **Weis/Borgwardt published-code exporter**. Reruns the official `BorgwardtLab/maldi_amr` model API and writes isolate-level predictions for audit.
+- `scripts/compare_weis_raw_metrics.py` — **Weis parity checker**. Compares a Weis-code rerun with upstream stored result JSONs before any exact-replication language is used.
 - `scripts/marisma_end_to_end_kaggle.py` — **MARISMa external stress-test workflow**. Vectorizes MARISMa Bruker spectra, exports Mega/CNN predictions, and runs the same audit on the external MARISMa snapshot.
 
 ## Core Claim
@@ -144,6 +147,9 @@ the other drug labels available for the same isolate.
 The included outputs summarize:
 
 - Raw external AUC versus background-centered AUC for CNN and LGBM variants.
+- A Weis/Borgwardt-style compatibility audit. This should be promoted to a
+  clean published-model audit only after the official-code rerun and raw-metric
+  parity checks in `docs/weis_published_model_audit.md` pass.
 - Cross-resistance network structure in the E. coli expanded panel.
 - Public WGS-linked UPEC evidence that MALDI spectra encode ST131 lineage.
 - Published ST131 biomarker overlap/enrichment for discriminative MALDI peaks.

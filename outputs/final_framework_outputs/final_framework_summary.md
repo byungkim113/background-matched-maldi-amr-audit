@@ -13,8 +13,11 @@ MALDI-TOF AMR models should be interpreted as background-sensitive predictors: r
 - Deployment readiness assigns 5 action categories across 23 audited pair/site rows.
 - Temporal reliability monitoring reports 23/23 rows as single-period only; current DRIAMS export cannot estimate reliability duration without future periods.
 - Falsification controls report 0/23 pair/site rows exceeding both burden-only and within-background shuffle controls; 3/23 exceed the shuffle null, while burden-only controls remain competitive in 23/23 rows.
-- Public WGS-linked Bruker MALDI data show ST131 AUC=0.906, higher than Cipro-R and Ceftriaxone-R peak-only AUCs.
+- Public WGS-linked Bruker MALDI data show ST131 AUC=0.932, higher than Cipro-R and Ceftriaxone-R peak-only AUCs.
 - Published ST131 biomarker enrichment is strongest for ST131 itself (3.11x) and remains significant for Cipro-R and Ceftriaxone-R discriminative peaks.
+- The official Weis/Borgwardt LR parity panel matches 8/8 upstream stored result rows within tolerance, with maximum absolute metric difference 5.55e-17.
+- The separate Weis-LR E. coli six-drug background audit adds 17 external pair/site rows; 3 are fully interpretable, including DRIAMS-D Ciprofloxacin signal retention and DRIAMS-D Amox-Clav background-driven collapse.
+- MARISMa is reported as an isolate-level aggregated external stress test, with all current rows interpreted as weak raw signal.
 
 ## What These Tables/Figures Are For
 
@@ -31,6 +34,8 @@ MALDI-TOF AMR models should be interpreted as background-sensitive predictors: r
 - Table 14: temporal reliability and recalibration monitor.
 - Table 15: falsification controls against burden-only and within-background shuffled labels.
 - Table 16: pair-level deployment readiness actions.
+- Table 17: Weis/Borgwardt-style E. coli six-drug background-audit rows.
+- Table 18: MARISMa external stress-test audit with duplicate-handling metadata.
 
 ## Figure Captions
 
@@ -39,11 +44,15 @@ Figure 2. Signal drop versus matched retention. This distinguishes interpretable
 Figure 3. Cross-resistance phi heatmap. Strong drug-drug blocks show the label ecology that AMR models can exploit.
 Figure 4. Public WGS-linked support. ST131 is strongly predictable from MALDI peaks, and resistance-associated peaks are enriched for published ST131 biomarkers.
 Figure 5. Framework schematic.
+Figure 6. Published-workflow audit. Exact LR parity is established for the official Weis/Borgwardt subset; the separate six-drug E. coli export is evaluated with the background-matched audit.
+Figure 7. Falsification controls. Observed model AUC is compared with burden-only and shuffled-label controls.
+Figure 8. Deployment decision flow. Audit outcomes map to validation, recalibration, retraining, or no-deployment actions.
 
 ## Cautious Claims
 
 - We can claim background sensitivity and the need for background-matched evaluation.
 - We can claim the current evidence supports lineage/co-resistance background as part of the MALDI-AMR signal.
+- We can claim exact Weis/Borgwardt LR parity only for the official 8-row subset; the six-drug Weis-LR audit is a background-matching stress test, not an additional exact paper-parity panel.
 - We should not claim direct protein identity for DRIAMS saliency peaks or prove ST131 detection inside DRIAMS without WGS labels.
 
 ## Output Files
@@ -55,6 +64,8 @@ Figure 5. Framework schematic.
 - `table_14_temporal_reliability_audit.csv`
 - `table_15_falsification_controls.csv`
 - `table_16_deployment_readiness_by_pair.csv`
+- `table_17_published_style_model_audit.csv`
+- `table_18_marisma_external_stress_test.csv`
 - `table_1_primary_background_matched_audit.csv`
 - `table_2_cnn_vs_lgbm_multi_background_audit.csv`
 - `table_3_ecology_interpretation.csv`
@@ -69,3 +80,6 @@ Figure 5. Framework schematic.
 - `figure_3_cross_resistance_phi_heatmap.png`
 - `figure_4_public_wgs_proteomic_support.png`
 - `figure_5_framework_flow.png`
+- `figure_6_published_style_model_audit.png`
+- `figure_7_falsification_controls.png`
+- `figure_8_deployment_decision_flow.png`

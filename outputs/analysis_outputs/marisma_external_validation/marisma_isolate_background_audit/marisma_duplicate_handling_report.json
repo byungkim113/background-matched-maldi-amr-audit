@@ -1,0 +1,12 @@
+{
+  "input_prediction_csv": "outputs/analysis_outputs/marisma_external_validation/marisma_mega_predictions_long.csv",
+  "output_prediction_csv": "outputs/analysis_outputs/marisma_external_validation/marisma_isolate_background_audit/marisma_isolate_level_predictions.csv",
+  "conflict_csv": "outputs/analysis_outputs/marisma_external_validation/marisma_isolate_background_audit/marisma_conflicting_isolate_drug_rows.csv",
+  "input_rows": 9597,
+  "isolate_drug_rows": 6022,
+  "conflicting_isolate_drug_groups_excluded": 20,
+  "duplicate_site_year_isolate_drug_rows": 3555,
+  "exact_duplicate_rows": 1472,
+  "max_prediction_rows_per_isolate_drug": 12,
+  "max_unique_spots_per_isolate_drug": 6
+}

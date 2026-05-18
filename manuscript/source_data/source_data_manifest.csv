@@ -1,6 +1,8 @@
 display_item,file,description
 Figure 2,source_data_fig2_primary_background_audit.csv,"Raw, matched and background-centered AUC values for the primary E. coli contrast."
-Figure 3,source_data_fig3_model_family_replication.csv,CNN and multi-task LGBM raw-to-centered audit rows.
+Figure 3,source_data_fig3_model_family_replication.csv,"Mega/CNN, LGBM and Weis/Borgwardt-style compatibility raw-to-centered audit rows."
 Figure 4,source_data_fig4_cross_resistance_edges_all_sites.csv,All-sites E. coli cross-resistance edges used for the phi heatmap and strongest-edge annotations.
 Figure 5a,source_data_fig5a_public_wgs_maldi_auc.csv,Public UPEC WGS-linked MALDI peak-feature AUCs.
 Figure 5b,source_data_fig5b_proteomic_biomarker_enrichment.csv,Published ST131 biomarker enrichment results.
+Figure 6,source_data_fig6_falsification_controls.csv,"Observed model AUC, background-burden control AUC and within-background shuffle null."
+Figure 7,source_data_fig7_deployment_decision_flow.csv,Deployment interpretation rules for audited model outputs.

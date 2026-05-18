@@ -23,6 +23,7 @@ import importlib.util
 import json
 import math
 import re
+import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -123,7 +124,8 @@ def build_parser() -> argparse.ArgumentParser:
         default="preprocess",
         help=(
             "preprocess builds vectors/manifest; predict scores an existing Mega_Model run; "
-            "all runs preprocess then predict. The audit stage is handled by run_background_audit.py."
+            "audit aggregates spot-level predictions to isolate/drug rows and runs the background audit; "
+            "all runs preprocess then predict."
         ),
     )
     p.add_argument("--amr-csv", type=Path, default=None, help="Path to MARISMa AMR.csv.")
@@ -144,6 +146,20 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--batch-size", type=int, default=256)
     p.add_argument("--tta-passes", type=int, default=None, help="Override config TTA passes. Use 1 for smoke tests.")
     p.add_argument("--max-prediction-rows", type=int, default=None, help="Optional smoke-test cap after pair filtering.")
+    p.add_argument(
+        "--audit-script",
+        type=Path,
+        default=Path("run_background_audit_framework.py"),
+        help="Path to the model-agnostic audit script for --stage audit.",
+    )
+    p.add_argument(
+        "--audit-output-dir",
+        type=Path,
+        default=None,
+        help="Audit output directory. Defaults to <output-dir>/marisma_isolate_background_audit.",
+    )
+    p.add_argument("--bootstrap-n", type=int, default=500, help="Bootstrap replicates for --stage audit.")
+    p.add_argument("--permutation-n", type=int, default=500, help="Permutation replicates for --stage audit.")
     return p
 
 
@@ -776,11 +792,99 @@ def predict(args: argparse.Namespace) -> None:
     log(json.dumps(report, indent=2))
 
 
-def guarded_not_implemented(stage: str) -> None:
-    raise NotImplementedError(
-        f"Stage '{stage}' is not implemented in this script yet. Run the exported "
-        "prediction CSV through scripts/run_background_audit.py."
+def aggregate_predictions_to_isolate_drug(prediction_csv: Path, output_csv: Path, report_json: Path) -> pd.DataFrame:
+    df = pd.read_csv(prediction_csv)
+    required = {"site", "year", "isolate_id", "organism", "drug", "label", "prob"}
+    missing = sorted(required - set(df.columns))
+    if missing:
+        raise ValueError(f"{prediction_csv} is missing required columns: {', '.join(missing)}")
+
+    key_cols = ["site", "year", "isolate_id", "organism", "drug"]
+    exact_cols = [col for col in [*key_cols, "spot_id", "label", "prob"] if col in df.columns]
+    duplicate_key_rows = int(df.duplicated(key_cols).sum())
+    exact_duplicate_rows = int(df.duplicated(exact_cols).sum()) if exact_cols else 0
+
+    rows: list[dict[str, object]] = []
+    conflicts: list[dict[str, object]] = []
+    for key, group in df.groupby(key_cols, dropna=False, sort=False):
+        labels = sorted({int(float(value)) for value in group["label"].dropna().unique()})
+        if len(labels) != 1:
+            conflicts.append({col: value for col, value in zip(key_cols, key)} | {"labels": labels})
+            continue
+        probs = pd.to_numeric(group["prob"], errors="coerce").dropna()
+        if probs.empty:
+            continue
+        row = {col: value for col, value in zip(key_cols, key)}
+        row["label"] = labels[0]
+        row["prob"] = float(probs.mean())
+        row["n_prediction_rows"] = int(len(group))
+        row["n_unique_spots"] = int(group["spot_id"].nunique()) if "spot_id" in group.columns else int(len(group))
+        row["prob_sd"] = float(probs.std(ddof=0)) if len(probs) > 1 else 0.0
+        if "model_name" in group.columns:
+            row["model_name"] = str(group["model_name"].dropna().iloc[0]) if group["model_name"].notna().any() else ""
+        rows.append(row)
+
+    aggregated = pd.DataFrame(rows)
+    output_csv.parent.mkdir(parents=True, exist_ok=True)
+    aggregated.to_csv(output_csv, index=False)
+    conflict_csv = output_csv.with_name("marisma_conflicting_isolate_drug_rows.csv")
+    if conflicts:
+        pd.DataFrame(conflicts).to_csv(conflict_csv, index=False)
+    elif conflict_csv.exists():
+        conflict_csv.unlink()
+    report = {
+        "input_prediction_csv": str(prediction_csv),
+        "output_prediction_csv": str(output_csv),
+        "conflict_csv": str(conflict_csv) if conflicts else "",
+        "input_rows": int(len(df)),
+        "isolate_drug_rows": int(len(aggregated)),
+        "conflicting_isolate_drug_groups_excluded": int(len(conflicts)),
+        "duplicate_site_year_isolate_drug_rows": duplicate_key_rows,
+        "exact_duplicate_rows": exact_duplicate_rows,
+        "max_prediction_rows_per_isolate_drug": int(aggregated["n_prediction_rows"].max()) if not aggregated.empty else 0,
+        "max_unique_spots_per_isolate_drug": int(aggregated["n_unique_spots"].max()) if not aggregated.empty else 0,
+    }
+    report_json.write_text(json.dumps(report, indent=2) + "\n")
+    return aggregated
+
+
+def audit(args: argparse.Namespace) -> None:
+    prediction_csv = args.prediction_csv or (args.output_dir / "marisma_mega_predictions_long.csv")
+    if not prediction_csv.exists():
+        raise FileNotFoundError(f"Missing MARISMa prediction CSV: {prediction_csv}")
+
+    audit_output_dir = args.audit_output_dir or (args.output_dir / "marisma_isolate_background_audit")
+    audit_output_dir.mkdir(parents=True, exist_ok=True)
+    aggregate_csv = audit_output_dir / "marisma_isolate_level_predictions.csv"
+    duplicate_report = audit_output_dir / "marisma_duplicate_handling_report.json"
+
+    aggregated = aggregate_predictions_to_isolate_drug(prediction_csv, aggregate_csv, duplicate_report)
+    log(
+        "[audit] aggregated MARISMa predictions: "
+        f"{prediction_csv} -> {aggregate_csv} ({len(aggregated):,} isolate/drug rows)"
     )
+
+    audit_script = args.audit_script
+    if not audit_script.is_absolute():
+        audit_script = Path(__file__).resolve().parents[1] / audit_script
+    cmd = [
+        sys.executable,
+        str(audit_script),
+        "--predictions-csv",
+        str(aggregate_csv),
+        "--output-dir",
+        str(audit_output_dir),
+        "--id-col",
+        "isolate_id",
+        "--model-name",
+        args.model_name,
+        "--bootstrap-n",
+        str(args.bootstrap_n),
+        "--permutation-n",
+        str(args.permutation_n),
+    ]
+    log("Running: " + " ".join(cmd))
+    subprocess.run(cmd, check=True)
 
 
 def main() -> None:
@@ -790,11 +894,10 @@ def main() -> None:
     elif args.stage == "all":
         preprocess(args)
         predict(args)
-    else:
-        if args.stage == "predict":
-            predict(args)
-        else:
-            guarded_not_implemented(args.stage)
+    elif args.stage == "predict":
+        predict(args)
+    elif args.stage == "audit":
+        audit(args)
 
 
 if __name__ == "__main__":

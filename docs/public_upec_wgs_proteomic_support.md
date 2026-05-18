@@ -25,9 +25,9 @@ WGS-linked MALDI validation:
 
 | Target | AUC |
 | --- | ---: |
-| ST131 | 0.9062 |
-| Ciprofloxacin resistance | 0.7394 |
-| Ceftriaxone resistance | 0.6498 |
+| ST131 | 0.9318 |
+| Ciprofloxacin resistance | 0.7548 |
+| Ceftriaxone resistance | 0.6888 |
 
 Published ST131 biomarker enrichment:
 

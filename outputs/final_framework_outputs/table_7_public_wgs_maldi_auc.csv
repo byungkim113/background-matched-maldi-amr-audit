@@ -1,4 +1,4 @@
 target,n,class_0,class_1,auc,folds,model
-ST131,407,352,55,0.9062,5,centroid_direction
-Ciprofloxacin_R,350,297,53,0.7394,5,centroid_direction
-Ceftriaxone_R,360,330,30,0.6498,5,centroid_direction
+ST131,407,352,55,0.9317665289256198,5,centroid_direction
+Ciprofloxacin_R,350,297,53,0.7547805094974906,5,centroid_direction
+Ceftriaxone_R,360,330,30,0.6887878787878788,5,centroid_direction

@@ -244,37 +244,54 @@ def figure_2_primary_audit(primary: pd.DataFrame) -> Path:
     return path
 
 
-def figure_3_model_replication(model_df: pd.DataFrame) -> Path:
+def figure_3_model_replication(model_df: pd.DataFrame, published_df: pd.DataFrame | None = None) -> Path:
     path = FIG_DIR / "figure_3_model_family_replication.pdf"
     c = canvas.Canvas(str(path), pagesize=landscape(letter))
     w, h = landscape(letter)
     white_page(c, w, h)
     text(c, 0.55 * inch, h - 0.45 * inch, "Fig. 3 | Background sensitivity across model families", 14, True)
-    text(c, 0.55 * inch, h - 0.70 * inch, "CNN and multi-task LGBM outputs are audited using the same co-resistance strata.", 9, False, GRAY)
+    text(c, 0.55 * inch, h - 0.70 * inch, "Mega/CNN, LGBM and a Weis/Borgwardt-style compatibility export are audited using the same co-resistance framework.", 9, False, GRAY)
 
     keep = model_df[model_df["drug"].isin(["Cipro", "Amox-Clav"]) & model_df["site"].isin(["A-2018", "DRIAMS-C", "DRIAMS-D"])].copy()
     keep["drug_order"] = keep["drug"].map({"Cipro": 0, "Amox-Clav": 1})
     keep["site_order"] = keep["site"].map({"A-2018": 0, "DRIAMS-C": 1, "DRIAMS-D": 2})
     keep = keep.sort_values(["drug_order", "site_order"])
 
-    panels = [("CNN", "cnn_raw_auc", "cnn_centered_auc", 0.75 * inch), ("LGBM multi", "lgbm_raw_auc", "lgbm_centered_auc", 5.70 * inch)]
+    panels = [
+        ("Mega CNN", keep, "cnn_raw_auc", "cnn_centered_auc", 0.55 * inch),
+        ("LGBM multi", keep, "lgbm_raw_auc", "lgbm_centered_auc", 3.95 * inch),
+    ]
+    if published_df is not None and not published_df.empty:
+        pub = published_df[
+            published_df["drug"].isin(["Cipro", "Amox-Clav"])
+            & published_df["site"].isin(["DRIAMS-C", "DRIAMS-D"])
+        ].copy()
+        pub["drug_order"] = pub["drug"].map({"Cipro": 0, "Amox-Clav": 1})
+        pub["site_order"] = pub["site"].map({"DRIAMS-C": 0, "DRIAMS-D": 1})
+        pub = pub.sort_values(["drug_order", "site_order"])
+        panels.append(("Weis/Borgwardt style", pub, "raw_auc", "stratum_centered_auc", 7.35 * inch))
+
     xmin, xmax = 0.45, 0.90
-    for model, raw_col, cen_col, px in panels:
+    for model, panel_df, raw_col, cen_col, px in panels:
         panel_label(c, px, h - 1.15 * inch, model)
-        x0, x1 = px + 1.05 * inch, px + 4.05 * inch
+        x0, x1 = px + 1.00 * inch, px + 2.95 * inch
         y0 = 1.55 * inch
         axis_auc(c, x0, x1, y0, xmin, xmax)
-        for i, row in enumerate(keep.itertuples(index=False)):
+        for i, row in enumerate(panel_df.itertuples(index=False)):
             y = h - 1.75 * inch - i * 0.37 * inch
             color = BLUE if row.drug == "Cipro" else ORANGE
             right_text(c, x0 - 0.18 * inch, y - 3, f"{row.drug} {row.site}", 7.2, False, DARK)
             raw = float(getattr(row, raw_col))
-            cen = float(getattr(row, cen_col))
-            c.setStrokeColor(color)
-            c.setLineWidth(1.1)
-            c.line(xmap(raw, x0, x1, xmin, xmax), y, xmap(cen, x0, x1, xmin, xmax), y)
+            cen = getattr(row, cen_col)
+            if not pd.isna(cen):
+                cen = float(cen)
+                c.setStrokeColor(color)
+                c.setLineWidth(1.1)
+                c.line(xmap(raw, x0, x1, xmin, xmax), y, xmap(cen, x0, x1, xmin, xmax), y)
+                marker(c, xmap(cen, x0, x1, xmin, xmax), y, color, "square", size=4.4)
             marker(c, xmap(raw, x0, x1, xmin, xmax), y, color, "circle", size=4.4)
-            marker(c, xmap(cen, x0, x1, xmin, xmax), y, color, "square", size=4.4)
+            if pd.isna(getattr(row, cen_col)):
+                text(c, x1 + 0.04 * inch, y - 3, "no valid strata", 6.2, False, GRAY)
     c.showPage()
     c.save()
     return path
@@ -399,6 +416,82 @@ def figure_5_public_support(wgs: pd.DataFrame, enrichment: pd.DataFrame) -> Path
     return path
 
 
+def figure_6_falsification_controls(falsification: pd.DataFrame) -> Path:
+    path = FIG_DIR / "figure_6_falsification_controls.pdf"
+    c = canvas.Canvas(str(path), pagesize=landscape(letter))
+    w, h = landscape(letter)
+    white_page(c, w, h)
+    text(c, 0.55 * inch, h - 0.45 * inch, "Fig. 6 | Falsification controls for background-aware interpretation", 14, True)
+    text(c, 0.55 * inch, h - 0.70 * inch, "Observed AUC is compared with a resistance-burden-only score and a within-background shuffled-label null.", 9, False, GRAY)
+
+    keep = falsification[
+        falsification["drug"].isin(["Cipro", "Amox-Clav", "CRO", "CAZ", "FEP"])
+        & falsification["site"].isin(["A-2018", "DRIAMS-C", "DRIAMS-D"])
+    ].copy()
+    keep["drug_order"] = keep["drug"].map({"Cipro": 0, "Amox-Clav": 1, "CRO": 2, "CAZ": 3, "FEP": 4})
+    keep["site_order"] = keep["site"].map({"A-2018": 0, "DRIAMS-C": 1, "DRIAMS-D": 2})
+    keep = keep.sort_values(["drug_order", "site_order"]).head(15)
+
+    x0, x1 = 2.55 * inch, 8.95 * inch
+    y_top = h - 1.30 * inch
+    xmin, xmax = 0.30, 1.00
+    for tick in [0.3, 0.5, 0.7, 0.9, 1.0]:
+        x = xmap(tick, x0, x1, xmin, xmax)
+        c.setStrokeColor(LIGHT_GRAY)
+        c.line(x, y_top + 0.10 * inch, x, 1.10 * inch)
+        centered_text(c, x, 0.88 * inch, f"{tick:.1f}", 7, False, GRAY)
+    for i, row in enumerate(keep.itertuples(index=False)):
+        y = y_top - i * 0.29 * inch
+        right_text(c, x0 - 0.15 * inch, y - 3, f"{row.drug} {row.site}", 7.2, False, DARK)
+        obs = xmap(row.observed_auc, x0, x1, xmin, xmax)
+        burden = xmap(row.background_burden_auc, x0, x1, xmin, xmax)
+        shuffle = xmap(row.shuffle_null_mean_auc, x0, x1, xmin, xmax)
+        c.setStrokeColor(LIGHT_GRAY)
+        c.line(min(obs, burden, shuffle), y, max(obs, burden, shuffle), y)
+        marker(c, obs, y, BLUE, "circle", size=4.4)
+        marker(c, burden, y, ORANGE, "square", size=4.2)
+        c.setFillColor(RED)
+        c.setStrokeColor(RED)
+        c.line(shuffle - 4, y - 4, shuffle + 4, y + 4)
+        c.line(shuffle - 4, y + 4, shuffle + 4, y - 4)
+
+    marker(c, 0.65 * inch, 0.70 * inch, BLUE, "circle", size=4.5)
+    text(c, 0.80 * inch, 0.66 * inch, "observed model", 7.5, False, GRAY)
+    marker(c, 2.20 * inch, 0.70 * inch, ORANGE, "square", size=4.5)
+    text(c, 2.35 * inch, 0.66 * inch, "background-burden score", 7.5, False, GRAY)
+    c.setStrokeColor(RED)
+    c.line(4.30 * inch - 4, 0.70 * inch - 4, 4.30 * inch + 4, 0.70 * inch + 4)
+    c.line(4.30 * inch - 4, 0.70 * inch + 4, 4.30 * inch + 4, 0.70 * inch - 4)
+    text(c, 4.45 * inch, 0.66 * inch, "within-background shuffle null", 7.5, False, GRAY)
+    c.showPage()
+    c.save()
+    return path
+
+
+def figure_7_deployment_flow(rules: pd.DataFrame) -> Path:
+    path = FIG_DIR / "figure_7_deployment_decision_flow.pdf"
+    c = canvas.Canvas(str(path), pagesize=landscape(letter))
+    w, h = landscape(letter)
+    white_page(c, w, h)
+    text(c, 0.55 * inch, h - 0.45 * inch, "Fig. 7 | Deployment interpretation framework", 14, True)
+    text(c, 0.55 * inch, h - 0.70 * inch, "Audit outcomes are mapped to validation, recalibration, retraining or no-deployment actions.", 9, False, GRAY)
+
+    colors_for = [GREEN, BLUE, ORANGE, GRAY, RED]
+    y = h - 1.35 * inch
+    for i, row in enumerate(rules.itertuples(index=False)):
+        yy = y - i * 0.78 * inch
+        color = colors_for[min(i, len(colors_for) - 1)]
+        c.setStrokeColor(color)
+        c.setFillColor(PALE)
+        c.roundRect(0.62 * inch, yy - 0.45 * inch, 9.85 * inch, 0.55 * inch, 6, stroke=1, fill=1)
+        text(c, 0.78 * inch, yy - 0.02 * inch, row.scenario, 7.8, True, DARK)
+        text(c, 4.75 * inch, yy - 0.02 * inch, row.decision_category, 7.6, True, color)
+        text(c, 7.05 * inch, yy - 0.02 * inch, str(row.recommended_action)[:88], 6.4, False, GRAY)
+    c.showPage()
+    c.save()
+    return path
+
+
 def latex_escape(value: object) -> str:
     text_value = "" if value is None or (isinstance(value, float) and math.isnan(value)) else str(value)
     replacements = {
@@ -442,7 +535,13 @@ def write_latex_table(path: Path, caption: str, label: str, df: pd.DataFrame, no
     path.write_text("\n".join(lines) + "\n")
 
 
-def make_tables(primary: pd.DataFrame, model_df: pd.DataFrame, wgs: pd.DataFrame, enrichment: pd.DataFrame) -> None:
+def make_tables(
+    primary: pd.DataFrame,
+    model_df: pd.DataFrame,
+    wgs: pd.DataFrame,
+    enrichment: pd.DataFrame,
+    published_df: pd.DataFrame | None = None,
+) -> None:
     def manuscript_interpretation(row: pd.Series) -> str:
         pair = str(row["pair"])
         site = str(row["site"])
@@ -472,18 +571,25 @@ def make_tables(primary: pd.DataFrame, model_df: pd.DataFrame, wgs: pd.DataFrame
         "Centered AUC is computed after subtracting the mean model score within each co-resistance background stratum. Caution rows are reported but not used as the main evidence.",
     )
 
-    t2 = model_df[model_df["drug"].isin(["Cipro", "Amox-Clav"]) & model_df["site"].isin(["A-2018", "DRIAMS-C", "DRIAMS-D"])][
-        ["site", "drug", "cnn_raw_auc", "cnn_centered_auc", "lgbm_raw_auc", "lgbm_centered_auc", "model_family_consensus"]
-    ].copy()
-    t2.columns = ["Site", "Drug", "CNN raw", "CNN centered", "LGBM raw", "LGBM centered", "Consensus"]
-    for col in ["CNN raw", "CNN centered", "LGBM raw", "LGBM centered"]:
+    base = model_df[model_df["drug"].isin(["Cipro", "Amox-Clav"]) & model_df["site"].isin(["A-2018", "DRIAMS-C", "DRIAMS-D"])].copy()
+    rows = []
+    for _, row in base.iterrows():
+        rows.append(["Mega CNN", row["site"], row["drug"], row["cnn_raw_auc"], row["cnn_centered_auc"], row["cnn_retention"], row["cnn_adequacy"]])
+        rows.append(["LGBM multi", row["site"], row["drug"], row["lgbm_raw_auc"], row["lgbm_centered_auc"], row["lgbm_retention"], row["lgbm_adequacy"]])
+    if published_df is not None and not published_df.empty:
+        pub = published_df[published_df["drug"].isin(["Cipro", "Amox-Clav"]) & published_df["site"].isin(["DRIAMS-C", "DRIAMS-D"])].copy()
+        for _, row in pub.iterrows():
+            model_label = row.get("model_family", "Weis/Borgwardt style")
+            rows.append([model_label, row["site"], row["drug"], row["raw_auc"], row["stratum_centered_auc"], row["matched_retention"], row["adequacy_label"]])
+    t2 = pd.DataFrame(rows, columns=["Model", "Site", "Drug", "Raw AUC", "Centered AUC", "Retention", "Adequacy"])
+    for col in ["Raw AUC", "Centered AUC", "Retention"]:
         t2[col] = t2[col].map(lambda x: "" if pd.isna(x) else f"{float(x):.3f}")
     write_latex_table(
         TABLE_DIR / "table_2_model_replication.tex",
-        "Model-family replication of raw-to-background-centered attenuation.",
+        "Model-family audit of raw-to-background-centered attenuation.",
         "tab:model-replication",
         t2,
-        "The same audit is applied to CNN and multi-task LGBM predictions.",
+        "The same audit is applied to Mega/CNN, multi-task LGBM and a Weis/Borgwardt-style compatibility export. Weis rows are supplementary and are not claimed as an exact replication of Weis et al.",
     )
 
     edges = pd.read_csv(FINAL / "table_5_top_cross_resistance_edges.csv").head(6).copy()
@@ -547,7 +653,15 @@ def make_tables(primary: pd.DataFrame, model_df: pd.DataFrame, wgs: pd.DataFrame
     )
 
 
-def write_source_data(primary: pd.DataFrame, model_df: pd.DataFrame, wgs: pd.DataFrame, enrichment: pd.DataFrame) -> None:
+def write_source_data(
+    primary: pd.DataFrame,
+    model_df: pd.DataFrame,
+    wgs: pd.DataFrame,
+    enrichment: pd.DataFrame,
+    published_df: pd.DataFrame | None = None,
+    falsification: pd.DataFrame | None = None,
+    deployment_rules: pd.DataFrame | None = None,
+) -> None:
     """Write figure source-data CSVs in a Nature-style layout."""
     primary.copy().to_csv(SOURCE_DIR / "source_data_fig2_primary_background_audit.csv", index=False)
 
@@ -555,6 +669,13 @@ def write_source_data(primary: pd.DataFrame, model_df: pd.DataFrame, wgs: pd.Dat
         model_df["drug"].isin(["Cipro", "Amox-Clav"])
         & model_df["site"].isin(["A-2018", "DRIAMS-C", "DRIAMS-D"])
     ].copy()
+    if published_df is not None and not published_df.empty:
+        pub = published_df[
+            published_df["drug"].isin(["Cipro", "Amox-Clav"])
+            & published_df["site"].isin(["DRIAMS-C", "DRIAMS-D"])
+        ].copy()
+        pub = pub.add_prefix("published_")
+        fig3 = pd.concat([fig3.reset_index(drop=True), pub.reset_index(drop=True)], axis=0, ignore_index=True, sort=False)
     fig3.to_csv(SOURCE_DIR / "source_data_fig3_model_family_replication.csv", index=False)
 
     edges = pd.read_csv(ANALYSIS / "cross_resistance_network" / "cross_resistance_edges.csv")
@@ -562,13 +683,19 @@ def write_source_data(primary: pd.DataFrame, model_df: pd.DataFrame, wgs: pd.Dat
 
     wgs.copy().to_csv(SOURCE_DIR / "source_data_fig5a_public_wgs_maldi_auc.csv", index=False)
     enrichment.copy().to_csv(SOURCE_DIR / "source_data_fig5b_proteomic_biomarker_enrichment.csv", index=False)
+    if falsification is not None:
+        falsification.copy().to_csv(SOURCE_DIR / "source_data_fig6_falsification_controls.csv", index=False)
+    if deployment_rules is not None:
+        deployment_rules.copy().to_csv(SOURCE_DIR / "source_data_fig7_deployment_decision_flow.csv", index=False)
 
     manifest = [
         ["Figure 2", "source_data_fig2_primary_background_audit.csv", "Raw, matched and background-centered AUC values for the primary E. coli contrast."],
-        ["Figure 3", "source_data_fig3_model_family_replication.csv", "CNN and multi-task LGBM raw-to-centered audit rows."],
+        ["Figure 3", "source_data_fig3_model_family_replication.csv", "Mega/CNN, LGBM and Weis/Borgwardt-style compatibility raw-to-centered audit rows."],
         ["Figure 4", "source_data_fig4_cross_resistance_edges_all_sites.csv", "All-sites E. coli cross-resistance edges used for the phi heatmap and strongest-edge annotations."],
         ["Figure 5a", "source_data_fig5a_public_wgs_maldi_auc.csv", "Public UPEC WGS-linked MALDI peak-feature AUCs."],
         ["Figure 5b", "source_data_fig5b_proteomic_biomarker_enrichment.csv", "Published ST131 biomarker enrichment results."],
+        ["Figure 6", "source_data_fig6_falsification_controls.csv", "Observed model AUC, background-burden control AUC and within-background shuffle null."],
+        ["Figure 7", "source_data_fig7_deployment_decision_flow.csv", "Deployment interpretation rules for audited model outputs."],
     ]
     pd.DataFrame(manifest, columns=["display_item", "file", "description"]).to_csv(SOURCE_DIR / "source_data_manifest.csv", index=False)
 
@@ -579,16 +706,22 @@ def main() -> None:
     model_df = pd.read_csv(FINAL / "table_2_cnn_vs_lgbm_multi_background_audit.csv")
     wgs = pd.read_csv(FINAL / "table_7_public_wgs_maldi_auc.csv")
     enrichment = pd.read_csv(FINAL / "table_9_published_st131_biomarker_enrichment.csv")
+    published_path = FINAL / "table_17_published_style_model_audit.csv"
+    published_df = pd.read_csv(published_path) if published_path.exists() else pd.DataFrame()
+    falsification = pd.read_csv(FINAL / "table_15_falsification_controls.csv")
+    deployment_rules = pd.read_csv(FINAL / "table_12_deployment_decision_rules.csv")
 
     created = [
         figure_1_framework(),
         figure_2_primary_audit(primary),
-        figure_3_model_replication(model_df),
+        figure_3_model_replication(model_df, published_df),
         figure_4_cross_resistance(),
         figure_5_public_support(wgs, enrichment),
+        figure_6_falsification_controls(falsification),
+        figure_7_deployment_flow(deployment_rules),
     ]
-    make_tables(primary, model_df, wgs, enrichment)
-    write_source_data(primary, model_df, wgs, enrichment)
+    make_tables(primary, model_df, wgs, enrichment, published_df)
+    write_source_data(primary, model_df, wgs, enrichment, published_df, falsification, deployment_rules)
 
     print("Created figures:")
     for path in created:

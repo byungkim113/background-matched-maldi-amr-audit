@@ -58,13 +58,18 @@ python scripts/run_background_audit.py \
 
 For non-Mega models, any script is acceptable if it writes the same long prediction schema. The audit is intentionally model-agnostic.
 
-The Weis/Borgwardt compatibility script is:
+The Weis/Borgwardt published-code exporter is:
 
 ```text
 scripts/export_weis_predictions_for_audit.py
 ```
 
-That script is supplementary and Kaggle-oriented because the upstream Weis/Borgwardt workflow has its own dependencies and runtime assumptions. It reruns the original BorgwardtLab `maldi_amr` model code and writes isolate-level predictions that the background audit can consume.
+That script is supplementary and Kaggle-oriented because the upstream
+Weis/Borgwardt workflow has its own dependencies and runtime assumptions. It
+reruns the original BorgwardtLab `maldi_amr` model code and writes isolate-level
+predictions that the background audit can consume. See
+`docs/weis_published_model_audit.md` before describing the output as an exact
+replication.
 
 Recommended full external-row audit command:
 
@@ -74,11 +79,11 @@ python scripts/export_weis_predictions_for_audit.py \
   --driams-root /kaggle/input/datasets/drscarlat/driams \
   --audit-script scripts/run_background_audit.py \
   --panel weis-core \
-  --model lightgbm \
+  --model lr \
   --external-row-policy all \
   --seed 35 \
-  --n-folds 2 \
-  --output-dir outputs/weis_lightgbm_full_external_audit
+  --n-folds 5 \
+  --output-dir outputs/weis_lr_full_external_audit
 ```
 
 Important options:
@@ -89,4 +94,7 @@ Important options:
 - `--external-row-policy stratified` reproduces the older small external subset diagnostic and should not be used for primary audit figures.
 - `--model` is passed directly into upstream `amr_maldi_ml.models.run_experiment`; original supported values include `lr`, `svm-rbf`, `svm-linear`, `rf`, `lightgbm`, and `mlp`. Run separate exports for separate model families.
 
-The output includes `weis_reproduction_report.md` and `weis_reproduction_report.json`. Treat these results as a Weis-code rerun until the raw AUCs are checked against the upstream Weis result JSONs for exact publication parity.
+The output includes `weis_reproduction_report.md` and
+`weis_reproduction_report.json`, including the upstream git commit when
+available. Treat these results as a Weis-code rerun until the raw AUCs are
+checked against the upstream Weis result JSONs for exact publication parity.

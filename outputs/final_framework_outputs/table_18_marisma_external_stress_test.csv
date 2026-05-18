@@ -1,0 +1,7 @@
+analysis_level,site,organism,drug,raw_auc,raw_auc_95ci,stratum_centered_auc,stratum_centered_auc_95ci,matched_retention,n_total,n_matched,n_valid_strata,adequacy_label,interpretation_category,input_rows,isolate_drug_rows,duplicate_site_year_isolate_drug_rows,exact_duplicate_rows
+isolate-level aggregated,MARISMa,Escherichia coli,Amox-Clav,0.50355,0.504 (0.467-0.541),0.526842,0.527 (0.493-0.562),0.961739,1150,1106,9,interpretable,weak_raw_signal,9597,6022,3555,1472
+isolate-level aggregated,MARISMa,Escherichia coli,FEP,0.465519,0.466 (0.413-0.507),0.430702,0.431 (0.266-0.585),0.0920826,1162,107,2,caution_low_retention,caution_low_matched_support,9597,6022,3555,1472
+isolate-level aggregated,MARISMa,Escherichia coli,CAZ,0.468164,0.468 (0.430-0.510),,,0.0,1165,0,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,9597,6022,3555,1472
+isolate-level aggregated,MARISMa,Escherichia coli,CRO,0.46709,0.467 (0.424-0.512),,,0.0,1165,0,0,not_interpretable_no_valid_strata,insufficient_matched_overlap,9597,6022,3555,1472
+isolate-level aggregated,MARISMa,Escherichia coli,Cipro,0.54469,0.545 (0.512-0.579),0.537698,0.538 (0.504-0.574),0.789282,1101,869,5,interpretable,weak_raw_signal,9597,6022,3555,1472
+isolate-level aggregated,MARISMa,Escherichia coli,Norflox,0.54161,0.542 (0.474-0.602),0.458753,0.459 (0.295-0.609),0.55914,279,156,2,interpretable,weak_raw_signal,9597,6022,3555,1472
