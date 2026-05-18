@@ -1,0 +1,24 @@
+\begin{table}[ht]
+\centering
+\small
+\caption{What the background-matched audit adds relative to prior work and TRIPOD+AI.}
+\label{tab:framework-comparison}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lccc}
+\toprule
+Dimension & Prior MALDI-AMR & TRIPOD+AI & This framework \\
+\midrule
+Reports external-site AUC & Yes & Required & Yes \\
+Controls for co-resistance background & No & Not required & Yes \\
+Quantifies signal collapse vs. retention & No & No & Yes \\
+Site-specific evaluation & Yes & Recommended & Yes \\
+Multi-drug panel (> 2 pairs) & Some & N/A & Yes \\
+Second organism validation & No & N/A & Yes \\
+Sensitivity analysis (stratum threshold) & No & No & Yes \\
+Model-agnostic (accepts any CSV) & No & N/A & Yes \\
+Open code + reproducible example data & Partial & N/A & Yes \\
+\bottomrule
+\end{tabular}%
+}
+\vspace{2mm}\parbox{0.95\linewidth}{\footnotesize Prior MALDI-AMR refers to Weis et al.\textbackslash\{\} 2022 (\textbackslash\{\}textit\{Nature Medicine\}) and comparable publications. TRIPOD+AI refers to the transparent reporting guideline (2024). N/A denotes dimensions not applicable to a reporting standard.}
+\end{table}

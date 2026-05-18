@@ -134,6 +134,14 @@ def marker(c: canvas.Canvas, x: float, y: float, color, shape: str, hollow: bool
         c.circle(x, y, size, stroke=1, fill=1)
     elif shape == "square":
         c.rect(x - size, y - size, 2 * size, 2 * size, stroke=1, fill=1)
+    elif shape == "diamond":
+        p = c.beginPath()
+        p.moveTo(x,          y + size)
+        p.lineTo(x + size,   y)
+        p.lineTo(x,          y - size)
+        p.lineTo(x - size,   y)
+        p.close()
+        c.drawPath(p, stroke=1, fill=1)
     else:
         c.circle(x, y, size, stroke=1, fill=1)
 
@@ -373,100 +381,162 @@ def _prep_auc_ci(data: pd.DataFrame) -> pd.DataFrame:
     return data
 
 
-def figure_6_saureus_oxa(sa_df: pd.DataFrame) -> Path:
-    """CNN AUC vs background-only AUC for Sa/Oxa and E.coli/Cipro.
+def _build_three_way_data(
+    primary_df: pd.DataFrame,
+    sa_summary_df: pd.DataFrame,
+    ecoli_bg_df: pd.DataFrame,
+    saureus_bg_df: pd.DataFrame,
+) -> pd.DataFrame:
+    """Combine raw MALDI, co-resistance-only, and background-centred AUC for figure 6."""
+    data = _prep_auc_ci(primary_df)
+    rows = []
 
-    sa_df columns: pair, site, cnn_auc, background_only_auc, cnn_minus_bg,
-                   interpretation, adequacy, n, n_r.
+    for pair_label, drug_long in [
+        ("E. coli / Cipro",     "Ciprofloxacin"),
+        ("E. coli / Amox-Clav", "Amoxicillin-Clavulanic acid"),
+    ]:
+        sub    = data[data["pair"].eq(pair_label)].copy()
+        bg_sub = ecoli_bg_df[ecoli_bg_df["drug"].eq(drug_long)].copy()
+        for _, row in sub.iterrows():
+            site   = row["site"]
+            bg_row = bg_sub[bg_sub["site"].eq(site)]
+            bg_auc = float(bg_row["exact_background_auc"].iloc[0]) if len(bg_row) else float("nan")
+            rows.append({
+                "pair":        pair_label,
+                "site":        site,
+                "raw_auc":     row["raw_auc_95ci_mid"],
+                "raw_lo":      row["raw_auc_95ci_low"],
+                "raw_hi":      row["raw_auc_95ci_high"],
+                "bg_only_auc": bg_auc,
+                "centered_auc": row["stratum_centered_auc_95ci_mid"],
+                "centered_lo": row["stratum_centered_auc_95ci_low"],
+                "centered_hi": row["stratum_centered_auc_95ci_high"],
+                "caution":     "caution" in str(row["adequacy"]),
+            })
 
-    Left panel:  S. aureus / Oxacillin  — CNN exceeds background at 2/3 sites.
-    Right panel: E. coli / Ciprofloxacin — background competitive at most sites.
+    sa_oxa  = sa_summary_df[sa_summary_df["drug"].eq("Oxacillin")].copy()
+    bg_sa   = saureus_bg_df[saureus_bg_df["drug"].eq("Oxacillin")].copy()
+    for _, row in sa_oxa.iterrows():
+        site    = row["site"]
+        bg_row  = bg_sa[bg_sa["site"].eq(site)]
+        bg_auc  = float(bg_row["exact_background_auc"].iloc[0]) if len(bg_row) else float("nan")
+        has_str = int(row["n_valid_strata"]) > 0
+        rows.append({
+            "pair":        "S. aureus / Oxacillin",
+            "site":        site,
+            "raw_auc":     float(row["raw_auc"]),
+            "raw_lo":      float(row["raw_auc_ci_low"]),
+            "raw_hi":      float(row["raw_auc_ci_high"]),
+            "bg_only_auc": bg_auc,
+            "centered_auc": float(row["stratum_centered_auc"])        if has_str else float("nan"),
+            "centered_lo":  float(row["stratum_centered_auc_ci_low"]) if has_str else float("nan"),
+            "centered_hi":  float(row["stratum_centered_auc_ci_high"]) if has_str else float("nan"),
+            "caution":     "caution" in str(row["adequacy_label"]),
+        })
+
+    return pd.DataFrame(rows)
+
+
+def figure_6_three_way_decomposition(
+    primary_df: pd.DataFrame,
+    sa_summary_df: pd.DataFrame,
+    ecoli_bg_df: pd.DataFrame,
+    saureus_bg_df: pd.DataFrame,
+) -> Path:
+    """Three-way AUC decomposition: raw MALDI, co-resistance-only, background-centred.
+
+    Filled circle  = raw MALDI AUC
+    Hollow square  = co-resistance-only AUC (no spectra, AST background only)
+    Filled diamond = background-centred MALDI AUC
     """
-    path = FIG_DIR / "figure_6_saureus_oxacillin_audit.pdf"
+    path = FIG_DIR / "figure_6_three_way_decomposition.pdf"
     c = canvas.Canvas(str(path), pagesize=landscape(letter))
     w, h = landscape(letter)
     white_page(c, w, h)
-    text(c, 0.55 * inch, h - 0.45 * inch,
-         "Fig. 6 | CNN vs. background-only AUC: second organism validation", 14, True)
-    text(c, 0.55 * inch, h - 0.70 * inch,
-         "Filled circle = CNN AUC; hollow square = background-only (exact co-resistance signature) AUC. "
-         "Positive delta = CNN exceeds background.", 9, False, GRAY)
+    text(c, 0.50 * inch, h - 0.44 * inch,
+         "Fig. 6 | Three-way AUC decomposition: raw MALDI, co-resistance-only, background-centred", 13, True)
+    text(c, 0.50 * inch, h - 0.67 * inch,
+         "Filled circle = raw MALDI AUC;  hollow square = co-resistance-only AUC (no spectra);  filled diamond = background-centred MALDI AUC.  * = sparse matched support (cautionary).",
+         8.5, False, GRAY)
 
     GREEN_SA = colors.HexColor("#2F855A")
-    xmin, xmax = 0.45, 1.05
+    xmin, xmax = 0.44, 1.02
+    site_order_map = {"A-2018": 0, "DRIAMS-B": 1, "DRIAMS-C": 2, "DRIAMS-D": 3}
+    df = _build_three_way_data(primary_df, sa_summary_df, ecoli_bg_df, saureus_bg_df)
 
     panels_cfg = [
-        ("S. aureus / Oxacillin",   GREEN_SA, 0.55 * inch,
-         "CNN exceeds background at source and DRIAMS-C (mecA/PBP2a structural phenotype)."),
-        ("E. coli / Ciprofloxacin", BLUE,     5.65 * inch,
-         "Background is competitive at external sites; CNN exceeds only at DRIAMS-D."),
+        ("E. coli / Cipro",       BLUE,     0.50 * inch,
+         "MALDI exceeds co-resistance-only at DRIAMS-D;\ncentred AUC above chance at all interpretable sites."),
+        ("E. coli / Amox-Clav",   ORANGE,   3.85 * inch,
+         "Co-resistance-only matches or beats MALDI at external\nsites; centred AUC collapses to chance."),
+        ("S. aureus / Oxacillin", GREEN_SA, 7.20 * inch,
+         "MALDI exceeds co-resistance-only at A-2018 (+0.076)\nand DRIAMS-C (+0.098); centred AUC retained at both."),
     ]
 
-    site_order_map = {"A-2018": 0, "DRIAMS-B": 1, "DRIAMS-C": 2, "DRIAMS-D": 3}
-
     for pair_label, col, px, subtitle in panels_cfg:
-        panel_label(c, px, h - 1.15 * inch, pair_label)
-        text(c, px, h - 1.38 * inch, subtitle, 8, False, GRAY)
+        panel_label(c, px, h - 1.10 * inch, pair_label)
+        for j, line in enumerate(subtitle.split("\n")):
+            text(c, px, h - 1.32 * inch - j * 0.155 * inch, line, 7.5, False, GRAY)
 
-        x0, x1 = px + 1.30 * inch, px + 4.55 * inch
+        x0, x1 = px + 0.92 * inch, px + 3.10 * inch
         y0 = 1.55 * inch
+        chart_h = 210
 
-        # Extended axis for values potentially > 1.0 (background can exceed 1.0 as raw AUC)
         c.setStrokeColor(LIGHT_GRAY)
         c.setLineWidth(0.6)
         for tick in [0.5, 0.6, 0.7, 0.8, 0.9, 1.0]:
-            x = xmap(tick, x0, x1, xmin, xmax)
-            c.line(x, y0, x, y0 + 200)
-            centered_text(c, x, y0 - 13, f"{tick:.1f}", size=7, fill=GRAY)
+            xt = xmap(tick, x0, x1, xmin, xmax)
+            c.line(xt, y0, xt, y0 + chart_h)
+            centered_text(c, xt, y0 - 13, f"{tick:.1f}", size=7, fill=GRAY)
         c.setStrokeColor(MID_GRAY)
         c.setLineWidth(1.0)
-        x_chance = xmap(0.5, x0, x1, xmin, xmax)
-        c.line(x_chance, y0, x_chance, y0 + 200)
-        text(c, x0, y0 - 28, "AUC", size=8, fill=GRAY)
+        xc = xmap(0.5, x0, x1, xmin, xmax)
+        c.line(xc, y0, xc, y0 + chart_h)
+        text(c, x0 - 0.05 * inch, y0 - 27, "AUC", size=8, fill=GRAY)
 
-        sub = sa_df[sa_df["pair"].eq(pair_label)].copy()
-        sub["site_order"] = sub["site"].map(site_order_map)
-        sub = sub.sort_values("site_order")
+        sub = df[df["pair"].eq(pair_label)].copy()
+        sub["_ord"] = sub["site"].map(site_order_map)
+        sub = sub.sort_values("_ord")
 
         for i, row in enumerate(sub.itertuples(index=False)):
-            y = h - 1.88 * inch - i * 0.50 * inch
-            caution = "caution" in str(row.adequacy)
+            y      = h - 1.78 * inch - i * 0.52 * inch
+            caution = bool(row.caution)
             bar_col = col if not caution else MID_GRAY
-            right_text(c, x0 - 0.18 * inch, y - 3, row.site, 8, False,
+            slabel  = row.site + ("*" if caution else "")
+            right_text(c, x0 - 0.08 * inch, y - 3, slabel, 8, False,
                        GRAY if caution else DARK)
 
-            cnn_x = xmap(min(float(row.cnn_auc), xmax), x0, x1, xmin, xmax)
-            bg_x  = xmap(min(float(row.background_only_auc), xmax), x0, x1, xmin, xmax)
+            raw = float(row.raw_auc)
+            bg  = float(row.bg_only_auc)
+            cen = float(row.centered_auc)
 
-            # Connector line
-            c.setStrokeColor(bar_col)
-            c.setLineWidth(1.2)
-            c.line(cnn_x, y, bg_x, y)
+            # Span line across all three values
+            vals = [v for v in [raw, bg, cen] if not math.isnan(v)]
+            if len(vals) >= 2:
+                lx = xmap(min(vals), x0, x1, xmin, xmax)
+                rx = xmap(max(vals), x0, x1, xmin, xmax)
+                c.setStrokeColor(LIGHT_GRAY if caution else bar_col)
+                c.setLineWidth(0.9)
+                c.line(lx, y, rx, y)
 
-            # CNN AUC — filled circle
-            marker(c, cnn_x, y, bar_col, "circle", hollow=False)
-            # Background-only AUC — hollow square
-            marker(c, bg_x, y, bar_col, "square", hollow=True)
+            if not math.isnan(raw):
+                marker(c, xmap(raw, x0, x1, xmin, xmax), y, bar_col, "circle")
+            if not math.isnan(bg):
+                marker(c, xmap(bg, x0, x1, xmin, xmax), y, bar_col, "square", hollow=True)
+            if not math.isnan(cen):
+                marker(c, xmap(cen, x0, x1, xmin, xmax), y, bar_col, "diamond")
 
-            # Interpretation badge
-            interp = str(row.interpretation)
-            delta  = float(row.cnn_minus_bg)
-            badge_col = GREEN if delta > 0 else ORANGE
-            badge_txt = f"Δ={delta:+.3f} {('CNN>bg' if delta > 0 else 'bg≥CNN')}"
-            text(c, x1 + 0.12 * inch, y - 3, badge_txt, 7.2, False,
-                 badge_col if not caution else GRAY)
-
-        # Legend
-        marker(c, px + 0.10 * inch, y0 - 0.18 * inch, DARK, "circle")
-        text(c, px + 0.25 * inch, y0 - 0.22 * inch, "CNN AUC", 7.5, False, GRAY)
-        marker(c, px + 0.95 * inch, y0 - 0.18 * inch, DARK, "square", hollow=True)
-        text(c, px + 1.10 * inch, y0 - 0.22 * inch, "background-only AUC", 7.5, False, GRAY)
-
-    # Interpretation note
-    note_y = 1.00 * inch
-    text(c, 0.55 * inch, note_y,
-         "Background-only AUC: predicts focal drug from co-resistance signature without MALDI spectra "
-         "(exact-background smoothed prevalence).", 7.5, False, GRAY)
+    # Shared legend
+    lx, ly = 0.50 * inch, 0.92 * inch
+    marker(c, lx + 0.10 * inch, ly, DARK, "circle")
+    text(c, lx + 0.22 * inch, ly - 4, "Raw MALDI AUC", 7.5, False, GRAY)
+    marker(c, lx + 1.60 * inch, ly, DARK, "square", hollow=True)
+    text(c, lx + 1.72 * inch, ly - 4, "Co-resistance-only AUC", 7.5, False, GRAY)
+    marker(c, lx + 3.40 * inch, ly, DARK, "diamond")
+    text(c, lx + 3.52 * inch, ly - 4, "Background-centred AUC", 7.5, False, GRAY)
+    text(c, lx, 0.55 * inch,
+         "Co-resistance-only baseline: predicts focal drug from co-resistance AST signature only, without MALDI spectra (exact-background smoothed prevalence, leave-one-out).",
+         7, False, GRAY)
 
     c.showPage()
     c.save()
@@ -759,7 +829,10 @@ def make_tables(primary: pd.DataFrame, model_df: pd.DataFrame, wgs: pd.DataFrame
 
 
 def write_source_data(primary: pd.DataFrame, model_df: pd.DataFrame, wgs: pd.DataFrame,
-                      enrichment: pd.DataFrame, sa_df: pd.DataFrame | None = None) -> None:
+                      enrichment: pd.DataFrame,
+                      sa_summary: pd.DataFrame | None = None,
+                      ecoli_bg: pd.DataFrame | None = None,
+                      saureus_bg: pd.DataFrame | None = None) -> None:
     """Write figure source-data CSVs in a Nature-style layout."""
     primary.copy().to_csv(SOURCE_DIR / "source_data_fig2_primary_background_audit.csv", index=False)
 
@@ -782,29 +855,29 @@ def write_source_data(primary: pd.DataFrame, model_df: pd.DataFrame, wgs: pd.Dat
         ["Figure 5a", "source_data_fig5a_public_wgs_maldi_auc.csv", "Public UPEC WGS-linked MALDI peak-feature AUCs."],
         ["Figure 5b", "source_data_fig5b_proteomic_biomarker_enrichment.csv", "Published ST131 biomarker enrichment results."],
     ]
-    if sa_df is not None:
-        sa_df.to_csv(SOURCE_DIR / "source_data_fig6_saureus_oxa_audit.csv", index=False)
-        manifest.append(["Figure 6", "source_data_fig6_saureus_oxa_audit.csv",
-                         "S. aureus / Oxacillin background-matched audit (second organism validation)."])
+    if sa_summary is not None and ecoli_bg is not None and saureus_bg is not None:
+        fig6_df = _build_three_way_data(_prep_auc_ci(primary), sa_summary, ecoli_bg, saureus_bg)
+        fig6_df.to_csv(SOURCE_DIR / "source_data_fig6_three_way_decomposition.csv", index=False)
+        manifest.append(["Figure 6", "source_data_fig6_three_way_decomposition.csv",
+                         "Three-way AUC decomposition: raw MALDI, co-resistance-only, background-centred, for E. coli Cipro/Amox-Clav and S. aureus/Oxacillin."])
 
     pd.DataFrame(manifest, columns=["display_item", "file", "description"]).to_csv(SOURCE_DIR / "source_data_manifest.csv", index=False)
 
 
 def main() -> None:
     ensure_dirs()
-    primary  = pd.read_csv(FINAL / "table_1_primary_background_matched_audit.csv")
-    model_df = pd.read_csv(FINAL / "table_2_cnn_vs_lgbm_multi_background_audit.csv")
-    wgs      = pd.read_csv(FINAL / "table_7_public_wgs_maldi_auc.csv")
+    primary    = pd.read_csv(FINAL / "table_1_primary_background_matched_audit.csv")
+    model_df   = pd.read_csv(FINAL / "table_2_cnn_vs_lgbm_multi_background_audit.csv")
+    wgs        = pd.read_csv(FINAL / "table_7_public_wgs_maldi_auc.csv")
     enrichment = pd.read_csv(FINAL / "table_9_published_st131_biomarker_enrichment.csv")
 
-    # S. aureus / Oxacillin result — CNN vs background-only AUC.
-    # Built from co_resistance_only_baseline_saureus and co_resistance_only_baseline_ecoli.
-    sa_path = FINAL / "table_6_saureus_oxa_background_audit.csv"
-    sa_df: pd.DataFrame | None = (
-        pd.read_csv(sa_path)
-        if sa_path.exists()
-        else None
-    )
+    sa_summary_path = ANALYSIS / "saureus_panel_oxa_background_audit" / "background_matched_audit_summary.csv"
+    ecoli_bg_path   = ANALYSIS / "co_resistance_only_baseline_ecoli"   / "co_resistance_only_baseline.csv"
+    saureus_bg_path = ANALYSIS / "co_resistance_only_baseline_saureus" / "co_resistance_only_baseline.csv"
+
+    sa_summary  = pd.read_csv(sa_summary_path)  if sa_summary_path.exists()  else None
+    ecoli_bg    = pd.read_csv(ecoli_bg_path)    if ecoli_bg_path.exists()    else None
+    saureus_bg  = pd.read_csv(saureus_bg_path)  if saureus_bg_path.exists()  else None
 
     created = [
         figure_1_framework(),
@@ -814,14 +887,14 @@ def main() -> None:
         figure_5_public_support(wgs, enrichment),
         figure_7_framework_comparison(),
     ]
-    if sa_df is not None:
-        created.append(figure_6_saureus_oxa(sa_df))
+    if sa_summary is not None and ecoli_bg is not None and saureus_bg is not None:
+        created.append(figure_6_three_way_decomposition(primary, sa_summary, ecoli_bg, saureus_bg))
     else:
-        print("  [figure_6] table_6_saureus_oxa_background_audit.csv not found — "
-              "run the Kaggle saureus_panel notebook first.")
+        print("  [figure_6] one or more inputs missing — check saureus_panel_oxa_background_audit, "
+              "co_resistance_only_baseline_ecoli, co_resistance_only_baseline_saureus.")
 
     make_tables(primary, model_df, wgs, enrichment)
-    write_source_data(primary, model_df, wgs, enrichment, sa_df)
+    write_source_data(primary, model_df, wgs, enrichment, sa_summary, ecoli_bg, saureus_bg)
 
     print("Created figures:")
     for path in created:

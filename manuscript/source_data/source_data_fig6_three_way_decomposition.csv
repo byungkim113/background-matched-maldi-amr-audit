@@ -1,0 +1,12 @@
+pair,site,raw_auc,raw_lo,raw_hi,bg_only_auc,centered_auc,centered_lo,centered_hi,caution
+E. coli / Cipro,A-2018,0.823,0.799,0.849,0.860127,0.703,0.664,0.747,False
+E. coli / Cipro,DRIAMS-B,0.774,0.692,0.841,0.973018,0.86,0.636,1.0,True
+E. coli / Cipro,DRIAMS-C,0.75,0.702,0.795,0.918323,0.646,0.576,0.719,False
+E. coli / Cipro,DRIAMS-D,0.671,0.64,0.7,0.522197,0.596,0.565,0.624,False
+E. coli / Amox-Clav,A-2018,0.65,0.619,0.685,0.627205,0.541,0.504,0.576,False
+E. coli / Amox-Clav,DRIAMS-B,0.694,0.611,0.765,0.795979,0.576,0.41,0.715,False
+E. coli / Amox-Clav,DRIAMS-C,0.535,0.494,0.577,0.687332,0.497,0.449,0.547,False
+E. coli / Amox-Clav,DRIAMS-D,0.557,0.521,0.59,0.522141,0.486,0.45,0.521,False
+S. aureus / Oxacillin,A-2018,0.838238,0.798716,0.87563,0.762489,0.762878,0.714345,0.807542,False
+S. aureus / Oxacillin,DRIAMS-B,0.775238,0.648791,0.877607,0.794505,0.863636,0.775141,0.948034,False
+S. aureus / Oxacillin,DRIAMS-C,0.725199,0.642542,0.800324,0.627358,0.699471,0.614684,0.781993,False
