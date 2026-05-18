@@ -1,0 +1,26 @@
+site,organism,drug,n,n_r,n_s,prevalence,observed_auc,background_burden_auc,exact_background_auc,observed_minus_burden_auc,observed_minus_exact_background_auc,exact_minus_burden_auc,score_exact_background_correlation,score_background_burden_correlation,unique_backgrounds,singleton_backgrounds,smoothing_alpha,adequacy_label,baseline_interpretation
+A-2018,Staphylococcus aureus,Ciprofloxacin,1183,155,1028,0.131023,0.760738,0.638578,0.815436,0.12216,-0.0546975,0.176858,0.397467,0.283707,44,6,2,interpretable,maldi_exceeds_burden_but_not_exact_background
+A-2018,Staphylococcus aureus,Clindamycin,1144,149,995,0.130245,0.625962,0.737655,0.905794,-0.111693,-0.279832,0.168139,0.179877,0.162268,46,5,2,interpretable,exact_background_competitive
+A-2018,Staphylococcus aureus,Erythromycin,1148,181,967,0.157666,0.630668,0.783036,0.896719,-0.152368,-0.26605,0.113682,0.193566,0.226524,45,7,2,interpretable,exact_background_competitive
+A-2018,Staphylococcus aureus,Fusidic acid,1220,71,1149,0.0581967,0.646576,0.619406,0.577771,0.02717,0.0688045,-0.0416345,0.15743,0.316923,56,7,2,interpretable,maldi_exceeds_exact_background
+A-2018,Staphylococcus aureus,Gentamicin,1165,28,1137,0.0240343,0.765831,0.816214,0.814078,-0.0503832,-0.0482473,-0.00213595,0.30639,0.293029,55,6,2,interpretable,exact_background_competitive
+A-2018,Staphylococcus aureus,Oxacillin,1225,178,1047,0.145306,0.838238,0.771721,0.762489,0.066517,0.0757488,-0.00923183,0.431603,0.303075,61,9,2,interpretable,maldi_exceeds_exact_background
+A-2018,Staphylococcus aureus,Penicillin,1134,812,322,0.716049,0.626836,0.576772,0.472771,0.0500643,0.154065,-0.104001,0.4028,0.375799,49,8,2,interpretable,maldi_exceeds_exact_background
+DRIAMS-B,Staphylococcus aureus,Ciprofloxacin,336,14,322,0.0416667,0.710736,0.836291,0.861136,-0.125555,-0.150399,0.0248447,0.165928,0.130602,20,6,2,interpretable,exact_background_competitive
+DRIAMS-B,Staphylococcus aureus,Clindamycin,348,37,311,0.106322,0.585904,0.865517,0.99496,-0.279612,-0.409055,0.129443,0.109074,0.166907,23,6,2,interpretable,exact_background_competitive
+DRIAMS-B,Staphylococcus aureus,Erythromycin,347,38,309,0.10951,0.605093,0.820729,0.973344,-0.215636,-0.368251,0.152615,0.108464,0.178437,22,6,2,interpretable,exact_background_competitive
+DRIAMS-B,Staphylococcus aureus,Fusidic acid,346,20,326,0.0578035,0.660429,0.59816,0.593021,0.0622699,0.067408,-0.00513804,0.187432,0.0757761,18,4,2,interpretable,maldi_exceeds_exact_background
+DRIAMS-B,Staphylococcus aureus,Gentamicin,348,8,340,0.0229885,0.580147,0.639522,0.835478,-0.059375,-0.255331,0.195956,0.166817,0.158291,22,7,2,interpretable,exact_background_competitive
+DRIAMS-B,Staphylococcus aureus,Oxacillin,346,21,325,0.0606936,0.775238,0.869744,0.794505,-0.0945055,-0.0192674,-0.0752381,0.185308,0.11932,22,7,2,interpretable,exact_background_competitive
+DRIAMS-B,Staphylococcus aureus,Penicillin,348,227,121,0.652299,0.531911,0.517494,0.324717,0.0144173,0.207194,-0.192777,0.0325966,0.104125,21,7,2,interpretable,maldi_exceeds_exact_background
+DRIAMS-C,Staphylococcus aureus,Ciprofloxacin,738,33,705,0.0447154,0.576531,0.643219,0.631442,-0.0666882,-0.0549108,-0.0117773,0.044701,0.109834,19,4,2,interpretable,exact_background_competitive
+DRIAMS-C,Staphylococcus aureus,Clindamycin,651,79,572,0.121352,0.529565,0.570096,0.433921,-0.0405307,0.0956449,-0.136176,0.0891363,-0.0147052,16,4,2,interpretable,maldi_exceeds_exact_background
+DRIAMS-C,Staphylococcus aureus,Fusidic acid,651,17,634,0.0261137,0.459733,0.611431,0.297365,-0.151698,0.162368,-0.314066,0.0170456,0.0147467,15,2,2,interpretable,maldi_exceeds_exact_background
+DRIAMS-C,Staphylococcus aureus,Gentamicin,738,15,723,0.0203252,0.488704,0.767404,0.646196,-0.2787,-0.157492,-0.121208,0.110348,0.0354826,20,3,2,interpretable,exact_background_competitive
+DRIAMS-C,Staphylococcus aureus,Oxacillin,738,41,697,0.0555556,0.725199,0.744427,0.627358,-0.0192288,0.0978409,-0.11707,0.125769,0.0576483,22,3,2,interpretable,maldi_exceeds_exact_background
+DRIAMS-C,Staphylococcus aureus,Penicillin,738,547,191,0.741192,0.552208,0.527719,0.27575,0.0244886,0.276458,-0.251969,0.0973557,0.109359,19,4,2,interpretable,maldi_exceeds_exact_background
+DRIAMS-D,Staphylococcus aureus,Ciprofloxacin,2161,138,2023,0.0638593,0.656042,0.709319,0.644976,-0.0532768,0.0110666,-0.0643434,0.105888,0.0864652,29,4,2,interpretable,exact_background_competitive
+DRIAMS-D,Staphylococcus aureus,Clindamycin,108,40,68,0.37037,0.483088,0.875368,0.954228,-0.392279,-0.47114,0.0788603,0.0968442,0.11641,20,5,2,interpretable,exact_background_competitive
+DRIAMS-D,Staphylococcus aureus,Erythromycin,1735,344,1391,0.198271,0.576706,0.585132,0.444819,-0.00842626,0.131887,-0.140313,0.063617,0.0120024,24,4,2,interpretable,maldi_exceeds_exact_background
+DRIAMS-D,Staphylococcus aureus,Gentamicin,2162,25,2137,0.0115634,0.515826,0.731371,0.644651,-0.215545,-0.128825,-0.0867197,0.0536039,0.0715872,37,6,2,interpretable,exact_background_competitive
+DRIAMS-D,Staphylococcus aureus,Penicillin,1530,1344,186,0.878431,0.572733,0.528148,0.423537,0.0445849,0.149196,-0.104611,-0.0195227,0.0918968,21,4,2,interpretable,maldi_exceeds_exact_background
