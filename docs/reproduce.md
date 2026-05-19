@@ -24,9 +24,7 @@ RDKit is only required for Morgan-fingerprint drug conditioning. Install it sepa
 ## 2. Verify The Repository
 
 ```bash
-python -m unittest tests.test_background_audit_framework
-python -m unittest tests.test_mega_model_regressions
-python -m unittest tests.test_export_weis_predictions_for_audit
+python -m pytest tests
 ```
 
 Syntax-check the main scripts:
@@ -185,10 +183,11 @@ Key outputs:
 ## 9. Regenerate Final Tables And Figures
 
 ```bash
-python scripts/make_paper_figures.py
+python scripts/make_paper_figures.py --output-dir /tmp/maldi_amr_final_framework_outputs
 ```
 
-The final artifact folder is:
+This writes reproduced artifacts to a scratch folder so a clean clone is not
+modified. The committed paper-facing artifact folder is:
 
 ```text
 outputs/final_framework_outputs/

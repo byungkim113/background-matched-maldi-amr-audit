@@ -16,12 +16,20 @@ DEFAULT_BUILDER = ROOT / "scripts" / "make_final_framework_tables_figures.py"
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Build final paper tables and figures.")
     p.add_argument("--builder", type=Path, default=DEFAULT_BUILDER)
+    p.add_argument(
+        "--output-dir",
+        type=Path,
+        default=None,
+        help="Optional output directory forwarded to the final artifact builder.",
+    )
     return p
 
 
-def main() -> None:
-    args = build_parser().parse_args()
+def main(argv: list[str] | None = None) -> None:
+    args = build_parser().parse_args(argv)
     cmd = [sys.executable, str(args.builder)]
+    if args.output_dir is not None:
+        cmd.extend(["--output-dir", str(args.output_dir)])
     print("Running:", " ".join(cmd), flush=True)
     subprocess.run(cmd, check=True)
 

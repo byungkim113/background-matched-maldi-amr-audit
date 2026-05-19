@@ -41,6 +41,9 @@ class RunModelClassMatrixPipelineTests(unittest.TestCase):
         self.assertTrue(args.dry_run)
         self.assertEqual(args.repo_root, pathlib.Path("/repo"))
 
+    def test_auto_clone_branch_tracks_main(self):
+        self.assertEqual(pipeline.REPO_BRANCH, "main")
+
     def test_discovers_repo_root_nested_under_kaggle_working(self):
         with tempfile.TemporaryDirectory() as tmp:
             working = pathlib.Path(tmp) / "kaggle" / "working"
@@ -91,6 +94,30 @@ class RunModelClassMatrixPipelineTests(unittest.TestCase):
             self.assertIn("saureus_panel", config.mega_model.read_text())
             self.assertEqual(config.bootstrap_n, 7)
             self.assertEqual(config.permutation_n, 9)
+
+    def test_dry_run_config_uses_placeholders_when_data_and_runs_missing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = pathlib.Path(tmp)
+            repo = make_repo_root(root / "background-matched-maldi-amr-audit")
+            args = SimpleNamespace(
+                repo_root=repo,
+                data_root=None,
+                ecoli_run_dir=None,
+                saureus_run_dir=None,
+                output_root=root / "model_class_matrix_outputs",
+                bootstrap_n=7,
+                permutation_n=9,
+                no_train_if_missing=True,
+                no_auto_clone=True,
+            )
+
+            config = pipeline.resolve_config(args, search_roots=[root], allow_missing=True)
+
+            self.assertEqual(config.repo_root, repo.resolve())
+            self.assertEqual(config.data_root, pipeline.DEFAULT_DRIAMS_ROOT)
+            self.assertEqual(config.ecoli_run_dir.name, pipeline.ECOLI_RUN_NAME)
+            self.assertEqual(config.saureus_run_dir.name, pipeline.SAUREUS_RUN_NAME)
+            self.assertFalse(config.train_if_missing)
 
     def test_lgbm_export_commands_use_compatible_mega_model_path(self):
         config = pipeline.PipelineConfig(

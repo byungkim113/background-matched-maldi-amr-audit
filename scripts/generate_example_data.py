@@ -180,7 +180,7 @@ def main() -> None:
             rows.extend(generate_saureus_isolate(rng, site, year, i + 1))
 
     with OUT.open("w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
+        writer = csv.DictWriter(f, fieldnames=FIELDNAMES, lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
 

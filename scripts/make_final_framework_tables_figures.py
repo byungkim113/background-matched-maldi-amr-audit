@@ -8,6 +8,7 @@ paper-facing CSV/Markdown tables plus PNG figures.
 
 from __future__ import annotations
 
+import argparse
 import math
 import json
 import textwrap
@@ -25,7 +26,8 @@ from matplotlib.lines import Line2D
 
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "outputs" / "final_framework_outputs"
+DEFAULT_OUT = ROOT / "outputs" / "final_framework_outputs"
+OUT = DEFAULT_OUT
 
 INPUTS = {
     "figure_table": ROOT / "outputs" / "analysis_outputs" / "background_matched_transfer_audit_figure_table.csv",
@@ -1083,7 +1085,21 @@ def write_summary(tables: dict[str, pd.DataFrame], figure_paths: list[Path]) -> 
     lines.append("")
 
 
-def main() -> None:
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Build final framework tables and figures.")
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=DEFAULT_OUT,
+        help="Directory for generated tables and figures. Defaults to outputs/final_framework_outputs.",
+    )
+    return parser
+
+
+def main(argv: list[str] | None = None) -> None:
+    global OUT
+    args = build_parser().parse_args(argv)
+    OUT = args.output_dir if args.output_dir.is_absolute() else ROOT / args.output_dir
     OUT.mkdir(parents=True, exist_ok=True)
     ensure_inputs()
     tables = build_tables()

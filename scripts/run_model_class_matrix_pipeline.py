@@ -27,12 +27,15 @@ from typing import Sequence
 
 REPO_NAME = "background-matched-maldi-amr-audit"
 REPO_URL = "https://github.com/byungkim113/background-matched-maldi-amr-audit.git"
-REPO_BRANCH = "weis-lr-results"
+REPO_BRANCH = "main"
 ECOLI_RUN_NAME = "exp_ecoli_mechanism6_drugid_mae30"
 SAUREUS_RUN_NAME = "exp_saureus_panel_oxa_background_mae30"
 DEFAULT_BOOTSTRAP_N = 500
 DEFAULT_PERMUTATION_N = 500
 DEFAULT_TRAIN_IF_MISSING = True
+DEFAULT_DRIAMS_ROOT = Path("/kaggle/input/datasets/drscarlat/driams")
+DEFAULT_ECOLI_RUN_DIR = Path("/kaggle/input/newruns/runs") / ECOLI_RUN_NAME
+DEFAULT_SAUREUS_RUN_DIR = Path("/kaggle/input/saoxapaneldata/runs") / SAUREUS_RUN_NAME
 REPO_MARKERS = (
     "run_background_audit_framework.py",
     "scripts/export_lgbm_predictions_for_audit.py",
@@ -125,8 +128,8 @@ def default_search_roots(extra: Sequence[Path] | None = None) -> list[Path]:
         if env_roots:
             roots.extend(Path(item) for item in env_roots.split(os.pathsep) if item)
         cwd = Path.cwd().resolve()
-        # Limit parent traversal to avoid including filesystem roots like / or C:\
-        roots.extend([cwd, *list(cwd.parents)[:3], Path("/kaggle/working"), Path("/kaggle/input")])
+        # Limit parent traversal to avoid broad scans of /, /Users, or C:\.
+        roots.extend([cwd, cwd.parent, Path("/kaggle/working"), Path("/kaggle/input")])
     return [path for path in unique_paths(roots) if path.exists()]
 
 
@@ -207,7 +210,7 @@ def discover_driams_root(search_roots: Sequence[Path], explicit: Path | None = N
     if explicit is not None:
         return explicit.resolve()
 
-    candidates = [Path("/kaggle/input/datasets/drscarlat/driams")]
+    candidates = [DEFAULT_DRIAMS_ROOT]
     for root in default_search_roots(search_roots):
         candidates.extend([root, root / "DRIAMS", root / "driams"])
     for candidate in unique_paths(candidates):
@@ -237,7 +240,11 @@ def discover_run_dir(run_name: str, search_roots: Sequence[Path], explicit: Path
         for candidate in direct_candidates:
             if candidate.exists():
                 return candidate.resolve()
-        for candidate in sorted(root.rglob(run_name)):
+        try:
+            recursive_candidates = sorted(root.rglob(run_name))
+        except OSError:
+            recursive_candidates = []
+        for candidate in recursive_candidates:
             if candidate.is_dir():
                 return candidate.resolve()
 
@@ -475,7 +482,22 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     return parsed
 
 
-def resolve_config(args: argparse.Namespace, search_roots: Sequence[Path] | None = None) -> PipelineConfig:
+def dry_run_placeholder(label: str, error: FileNotFoundError, fallback: Path) -> Path:
+    print(
+        f"WARNING: {label} was not discovered; dry-run is using placeholder path {fallback}. "
+        f"Original error: {error}",
+        file=sys.stderr,
+        flush=True,
+    )
+    return fallback
+
+
+def resolve_config(
+    args: argparse.Namespace,
+    search_roots: Sequence[Path] | None = None,
+    *,
+    allow_missing: bool = False,
+) -> PipelineConfig:
     roots = default_search_roots(search_roots)
     repo_root = discover_repo_root(
         explicit=args.repo_root,
@@ -483,9 +505,24 @@ def resolve_config(args: argparse.Namespace, search_roots: Sequence[Path] | None
         auto_clone=not args.no_auto_clone,
     )
     roots = default_search_roots([repo_root, repo_root.parent, *roots])
-    data_root = discover_driams_root(roots, explicit=args.data_root)
-    ecoli_run_dir = discover_run_dir(ECOLI_RUN_NAME, roots, explicit=args.ecoli_run_dir)
-    saureus_run_dir = discover_run_dir(SAUREUS_RUN_NAME, roots, explicit=args.saureus_run_dir)
+    try:
+        data_root = discover_driams_root(roots, explicit=args.data_root)
+    except FileNotFoundError as exc:
+        if not allow_missing:
+            raise
+        data_root = dry_run_placeholder("DRIAMS data root", exc, DEFAULT_DRIAMS_ROOT)
+    try:
+        ecoli_run_dir = discover_run_dir(ECOLI_RUN_NAME, roots, explicit=args.ecoli_run_dir)
+    except FileNotFoundError as exc:
+        if not allow_missing:
+            raise
+        ecoli_run_dir = dry_run_placeholder("E. coli run directory", exc, DEFAULT_ECOLI_RUN_DIR)
+    try:
+        saureus_run_dir = discover_run_dir(SAUREUS_RUN_NAME, roots, explicit=args.saureus_run_dir)
+    except FileNotFoundError as exc:
+        if not allow_missing:
+            raise
+        saureus_run_dir = dry_run_placeholder("S. aureus run directory", exc, DEFAULT_SAUREUS_RUN_DIR)
     resolved_output_root = under_repo(repo_root, args.output_root)
     mega_model = ensure_mega_model_compat(repo_root, resolved_output_root)
     return PipelineConfig(
@@ -517,7 +554,7 @@ def print_config(config: PipelineConfig, *, dry_run: bool) -> None:
 
 def main() -> None:
     args = parse_args()
-    config = resolve_config(args)
+    config = resolve_config(args, allow_missing=args.dry_run)
     print_config(config, dry_run=args.dry_run)
     steps = build_pipeline_steps(config)
     if not args.dry_run:
