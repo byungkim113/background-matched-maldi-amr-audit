@@ -6,6 +6,8 @@ authors:
     given-names: "Byung"
   - family-names: "Wang"
     given-names: "Yucheng"
+  - family-names: "Khoury-Levy"
+    given-names: "Nicolas Samuel"
 date-released: 2026-04-29
 version: "0.1.0"
 repository-code: "https://github.com/byungkim113/background-matched-maldi-amr-audit"

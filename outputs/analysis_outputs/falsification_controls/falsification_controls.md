@@ -2,7 +2,7 @@
 
 Compares observed model AUC with background-burden-only AUC and a within-background label-shuffle null.
 
-- Prediction rows: `/Users/byungkim/Downloads/results-2/background_matched_contrastive/background_matched_predictions.csv`
+- Prediction rows: `outputs/analysis_outputs/background_matched_transfer_audit_cnn_vs_lgbm.csv` (CNN isolate-level predictions, DRIAMS all sites)
 - Permutations: 500
 
 | site     | organism         | drug                        | n    | n_r | n_s  | observed_auc | background_burden_auc | observed_minus_burden_auc | score_background_burden_correlation | shuffle_null_mean_auc | shuffle_null_sd_auc | shuffle_empirical_p_ge_observed | observed_minus_shuffle_null_auc | permutations | adequacy_label | control_interpretation                       |

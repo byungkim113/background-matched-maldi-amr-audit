@@ -107,7 +107,8 @@ class RunModelClassMatrixPipelineTests(unittest.TestCase):
 
         command_text = "\n".join(" ".join(step.command) for step in pipeline.build_pipeline_steps(config))
 
-        self.assertIn("--mega-model /repo/outputs/_compat/Mega_Model_with_saureus_panel.py", command_text)
+        expected = f"--mega-model {pathlib.Path('/repo/outputs/_compat/Mega_Model_with_saureus_panel.py')}"
+        self.assertIn(expected, command_text)
 
     def test_builds_expected_lgbm_export_audit_and_matrix_steps(self):
         config = pipeline.PipelineConfig(

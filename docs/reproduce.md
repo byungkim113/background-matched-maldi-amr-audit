@@ -10,23 +10,16 @@ Most reviewers should start with levels 1 and 2. Level 3 requires local access t
 
 ## 1. Environment Setup
 
-Recommended conda/mamba setup:
-
-```bash
-mamba env create -f environment.yml
-conda activate background-matched-maldi-amr
-```
-
-Minimal pip setup:
+Pip setup (recommended for most users):
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-RDKit is only required for Morgan-fingerprint drug conditioning. If you need that path, prefer the conda environment because RDKit is much cleaner through conda-forge.
+RDKit is only required for Morgan-fingerprint drug conditioning. Install it separately via conda-forge (`conda install -c conda-forge rdkit`) if you need that path, as it is not included in `requirements.txt`.
 
 ## 2. Verify The Repository
 

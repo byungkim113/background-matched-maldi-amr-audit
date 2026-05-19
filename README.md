@@ -95,7 +95,7 @@ The scatter below shows how much AUC was lost after matching (y-axis) against ho
 
 | Drug | Raw AUC (range) | Centered AUC (range) | Verdict |
 |---|---|---|---|
-| Ciprofloxacin | 0.67 – 0.82 | 0.60 – 0.70 | Survives background matching |
+| Ciprofloxacin | 0.67 – 0.82 | 0.596 – 0.703 | Survives background matching |
 | Norfloxacin | 0.70 – 0.78 | 0.34 – 0.86 | Site-dependent; low matched support |
 | Ceftriaxone | 0.62 – 0.87 | 0.59 – 0.73 | Partially survives; strongly attenuated |
 | Ceftazidime | 0.61 – 0.84 | 0.37 – 0.72 | Mostly background-driven or underpowered |

@@ -125,7 +125,8 @@ def default_search_roots(extra: Sequence[Path] | None = None) -> list[Path]:
         if env_roots:
             roots.extend(Path(item) for item in env_roots.split(os.pathsep) if item)
         cwd = Path.cwd().resolve()
-        roots.extend([cwd, *cwd.parents, Path("/kaggle/working"), Path("/kaggle/input")])
+        # Limit parent traversal to avoid including filesystem roots like / or C:\
+        roots.extend([cwd, *list(cwd.parents)[:3], Path("/kaggle/working"), Path("/kaggle/input")])
     return [path for path in unique_paths(roots) if path.exists()]
 
 
@@ -213,10 +214,12 @@ def discover_driams_root(search_roots: Sequence[Path], explicit: Path | None = N
         if (candidate / "DRIAMS-A").exists():
             return candidate.resolve()
 
+    # Bounded 3-level search — avoids scanning filesystem roots via rglob
     for root in default_search_roots(search_roots):
-        for site_dir in sorted(root.rglob("DRIAMS-A")):
-            if site_dir.is_dir():
-                return site_dir.parent.resolve()
+        for pattern in ("DRIAMS-A", "*/DRIAMS-A", "*/*/DRIAMS-A"):
+            for site_dir in sorted(root.glob(pattern)):
+                if site_dir.is_dir():
+                    return site_dir.parent.resolve()
 
     raise FileNotFoundError("Could not discover DRIAMS data root. Pass --data-root explicitly.")
 

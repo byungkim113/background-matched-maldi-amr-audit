@@ -2,7 +2,7 @@
 
 Running title: Background-matched MALDI-AMR evaluation
 
-Authors: Byung Kim, Yuchen Wang, Nicolas Samuel Khoury-Levy
+Authors: Byung Kim, Yucheng Wang, Nicolas Samuel Khoury-Levy
 
 Affiliations: To be completed before submission.
 
@@ -44,13 +44,13 @@ The distinction between the last two statistics is important. Background-centere
 
 Figure 1 illustrates this workflow: isolate-level predictions enter the audit; co-resistance signatures define strata; valid strata support matched and centered evaluation; rows with low matched support are flagged rather than overinterpreted.
 
-### Ciprofloxacin retained signal after matching, whereas amoxicillin-clavulanic acid collapsed externally
+### Ciprofloxacin retained signal after matching, whereas amoxicillin-clavulanic acid collapsed at external sites
 
 The primary comparison was *E. coli*/ciprofloxacin versus *E. coli*/amoxicillin-clavulanic acid. The two drugs were evaluated with the same training site, model pipeline, organism, and external sites, but they differed in resistant-population ecology.
 
-Ciprofloxacin retained residual discrimination after background matching at the main interpretable sites. Background-centered AUC was 0.703 at A-2018, 0.646 at DRIAMS-C, and 0.596 at DRIAMS-D. The direct within-background statistic agreed with this pattern: pairwise within-background accuracy was 0.754, 0.675, and 0.616 at the same sites. DRIAMS-B had a high centered estimate, but it was based on only 25 matched isolates and one valid stratum, so it is treated as cautionary support rather than primary evidence.
+Ciprofloxacin retained residual discrimination after background matching at the main interpretable sites. Background-centered AUC was 0.703 at the temporal A-2018 holdout, 0.646 at external DRIAMS-C, and 0.596 at external DRIAMS-D. The direct within-background statistic agreed with this pattern: pairwise within-background accuracy was 0.754, 0.675, and 0.616 at the same sites. DRIAMS-B had a high centered estimate (0.860), but it was based on only 25 matched isolates and one valid stratum; centering increased AUC relative to the matched estimate in that single stratum because the stratum mean happened to differ from the pooled mean in a direction that inflated residual AUC, and the low matched support prevents any strong interpretation. DRIAMS-B is therefore treated as cautionary support rather than primary evidence.
 
-Amoxicillin-clavulanic acid behaved differently. At A-2018, the model showed only weak residual signal after centering, with centered AUC 0.541. At DRIAMS-C and DRIAMS-D, centered AUC fell to 0.497 and 0.486 despite high matched retention, and pairwise within-background accuracy fell to chance or below chance. DRIAMS-B again provided only uncertain support. Thus, the contrast was not simply that one drug had higher raw AUC than another. The key result is that ciprofloxacin retained ranking information inside matched backgrounds, whereas amoxicillin-clavulanic acid did not retain meaningful external within-background signal.
+Amoxicillin-clavulanic acid behaved differently. At A-2018 (temporal holdout), the model showed only borderline residual signal after centering, with centered AUC 0.541 — below the ≤ 0.55 near-chance threshold. At the external sites DRIAMS-C and DRIAMS-D, centered AUC fell further to 0.497 and 0.486 despite high matched retention, and pairwise within-background accuracy fell to chance or below chance. DRIAMS-B again provided only uncertain support. Thus, the contrast was not simply that one drug had higher raw AUC than another. The key result is that ciprofloxacin retained ranking information inside matched backgrounds, whereas amoxicillin-clavulanic acid did not retain meaningful within-background signal at the temporal holdout or at external sites.
 
 Figure 2 shows raw versus background-centered AUC for the primary drug-site rows. Table 1 reports raw AUC, centered AUC, matched retention, valid strata, pairwise within-background accuracy, and interpretation labels for the primary contrast.
 
@@ -59,6 +59,8 @@ Figure 2 shows raw versus background-centered AUC for the primary drug-site rows
 The audit results were consistent with the structure of the AST panel. Across the *E. coli* panel, ciprofloxacin and norfloxacin formed an exceptionally strong fluoroquinolone block, with phi = 0.976 and resistant Jaccard similarity = 0.963. Extended-spectrum cephalosporins also formed strong co-resistance blocks: ceftriaxone-ceftazidime phi = 0.884, ceftazidime-cefepime phi = 0.828, and ceftriaxone-cefepime phi = 0.804. These correlations mean that a model trained on focal resistance labels is also exposed to a broader label ecology in which resistance to one drug often identifies resistance to another.
 
 This structure is exactly the kind of background that can inflate or destabilize raw AUC. If a model assigns higher scores to isolates from a co-resistant population, it can perform well in aggregate even when focal-drug discrimination within matched backgrounds is weak. The cephalosporin rows illustrate the same caution. Several raw AUCs were high, but many matched analyses had low retention or strong attenuation after centering, so those rows are reported as secondary or cautionary rather than as clean evidence of focal signal.
+
+The exceptional fluoroquinolone collinearity also explains a structural audit limitation for norfloxacin. Ciprofloxacin and norfloxacin co-resistance is nearly universal (phi = 0.976), so when norfloxacin is the focal drug, the background signature of nearly every isolate contains ciprofloxacin resistance. This leaves the background strata so homogeneous that no stratum contains both sufficient resistant and susceptible norfloxacin isolates at DRIAMS-A-2018 and DRIAMS-C, producing zero valid strata. This is an inherent consequence of the extreme collinearity and is not a computational error; it is reported as "not interpretable" in Table 1.
 
 ### Background sensitivity was not specific to one model architecture
 
@@ -82,7 +84,7 @@ Figure 3 combines the strongest biological support: the co-resistance structure 
 
 We ran two additional analyses to define what the framework can and cannot claim.
 
-First, falsification controls compared observed model AUC with a background-burden-only score and a within-background shuffled-label null. None of 23 audited pair-site rows exceeded both controls. Three rows exceeded the shuffle null while remaining competitive with the burden-only control. These controls make the interpretation conservative: high raw AUC should not be treated as focal-drug evidence unless it survives background-aware comparisons.
+First, falsification controls compared observed model AUC with a background-burden-only score and a within-background shuffled-label null. None of 23 audited pair-site rows exceeded both controls. Three rows exceeded the shuffle null while remaining competitive with the burden-only control. Notably, for cephalosporin rows at DRIAMS-A-2018, the observed model AUC was actually lower than the background-burden-only score (e.g., cefepime: observed 0.867, burden-only 0.985; ceftazidime: observed 0.838, burden-only 0.938). This means that for these drug-site combinations, a trivial score derived purely from counting co-resistant drug labels outperformed the learned model — direct evidence that the model's apparent performance was driven by co-resistance background rather than any focal-drug feature. These controls make the interpretation conservative: high raw AUC should not be treated as focal-drug evidence unless it survives background-aware comparisons.
 
 Second, we aggregated MARISMa spot-level predictions to isolate-drug rows and audited the resulting external predictions. The locked DRIAMS-trained model showed weak raw signal across all six targets in this stress test, with raw AUCs near chance. This is a transfer failure, not a successful external validation. It is useful because it shows how the audit should be used in practice: when raw performance is weak, the correct conclusion is failed transfer before any more nuanced background interpretation.
 

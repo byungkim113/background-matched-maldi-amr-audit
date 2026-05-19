@@ -1,0 +1,7 @@
+# Normalize line endings for all text files
+* text=auto
+
+# Lock generated CSV files to LF so cross-platform regeneration is idempotent
+example_predictions.csv text eol=lf
+outputs/**/*.csv text eol=lf
+manuscript/source_data/**/*.csv text eol=lf
